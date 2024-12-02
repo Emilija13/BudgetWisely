@@ -1,5 +1,6 @@
 package com.finki.budgetwisely.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ public class Account {
     private String name;
     private Long balance;
     @ManyToOne
+    @JsonIgnore
     private User user;
     public Account() {
     }
