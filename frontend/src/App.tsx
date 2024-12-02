@@ -3,7 +3,8 @@ import Header from "./components/Header";
 import OverviewPage from "./pages/OverviewPage";
 import AccountsPage from "./pages/AccountsPage";
 import Sidebar from "./components/Sidebar";
-// import { SidebarItem } from "./components/Sidebar";
+import TransactionsPage from "./pages/TransactionsPage";
+import BudgetsPage from "./pages/BudgetsPage";
 
 function App() {
   return (
@@ -16,7 +17,9 @@ function App() {
           <Header /> 
           <Routes>
             <Route path="/" element={<OverviewPage />} />
+            <Route path="/transactions" element={<TransactionsPage />} />
             <Route path="/overview" element={<OverviewPage />} />
+            <Route path="/budgets" element={<BudgetsPage />} />
             <Route path="/accounts" element={<AccountsPage />} />
           </Routes>
         </div>
