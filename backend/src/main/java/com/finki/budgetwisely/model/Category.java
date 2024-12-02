@@ -1,5 +1,6 @@
 package com.finki.budgetwisely.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -14,6 +15,7 @@ public class Category {
     private Long spendingLimit;
     private Long leftover;
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private List<Transaction> transactions;
     public Category() {
     }

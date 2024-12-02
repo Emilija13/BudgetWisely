@@ -15,8 +15,9 @@ public class Account {
     private User user;
     public Account() {
     }
-    public Account(String name, Long balance) {
+    public Account(String name, Long balance, User user) {
         this.name = name;
         this.balance = balance;
+        this.user = user;
     }
 }

@@ -1,5 +1,6 @@
 package com.finki.budgetwisely.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -15,6 +16,7 @@ public class User {
     private String email;
     private String password;
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Account> accounts;
     public User() {
     }

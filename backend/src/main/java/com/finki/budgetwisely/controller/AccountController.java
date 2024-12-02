@@ -1,7 +1,9 @@
 package com.finki.budgetwisely.controller;
 
+import com.finki.budgetwisely.dto.AccountRequestDto;
 import com.finki.budgetwisely.model.Account;
 import com.finki.budgetwisely.service.AccountService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -18,5 +20,25 @@ public class AccountController {
     @GetMapping
     private List<Account> findAll() {
         return this.accountService.findAll();
+    }
+    @PostMapping("/add")
+    public ResponseEntity<Account> save(@RequestBody AccountRequestDto accountDto) {
+        return this.accountService.save(accountDto)
+                .map(account -> ResponseEntity.ok().body(account))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Account> save(@PathVariable Long id, @RequestBody AccountRequestDto accountDto) {
+        return this.accountService.edit(id, accountDto)
+                .map(account -> ResponseEntity.ok().body(account))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteById(@PathVariable Long id) {
+        this.accountService.deleteById(id);
+        if (this.accountService.findById(id).isEmpty()) return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
     }
 }

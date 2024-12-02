@@ -17,9 +17,10 @@ public class Transaction {
     private Category category;
     public Transaction() {
     }
-    public Transaction(String name, Long cost, LocalDateTime date) {
+    public Transaction(String name, Long cost, LocalDateTime date, Category category) {
         this.name = name;
         this.cost = cost;
         this.date = date;
+        this.category = category;
     }
 }
