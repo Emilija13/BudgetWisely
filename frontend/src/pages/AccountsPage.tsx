@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AccountService } from "../services/AccountService";
 import { Account } from "../models/Account";
 import { Card, Typography } from "@material-tailwind/react";
+import Table from "../components/Table";
 
 const AccountsPage = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -14,9 +15,10 @@ const AccountsPage = () => {
         const response = await AccountService.getAllAccounts();
         setAccounts(response.data);
       } catch (err) {
-        setError("Failed to load accounts.");
+        console.error("Error fetching accounts:", err);
+        setError("Failed to load accounts:");
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -40,55 +42,15 @@ const AccountsPage = () => {
           Accounts List
         </Typography>
         <Typography className="mb-4 w-80 font-normal text-gray-600 md:w-full">
-          A list of all you current accounts.
+          A list of all your current accounts.
         </Typography>
       </div>
       <Card className="h-full w-full border border-gray-300 px-6 overflow-hidden">
-        <table className="w-full min-w-max table-auto text-left">
-          <thead>
-            <tr>
-              {TABLE_HEAD.map((head) => (
-                <th key={head} className="border-b border-gray-300 pb-4 pt-10">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-bold leading-none"
-                  >
-                    {head}
-                  </Typography>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {accounts.map(({ name, balance }, index) => {
-              const isLast = index === accounts.length - 1;
-              const classes = isLast ? "py-4" : "py-4 border-b border-gray-300";
-
-              return (
-                <tr key={name} className="hover:bg-gray-50">
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-bold"
-                    >
-                      {name}
-                    </Typography>
-                  </td>
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      className="font-normal text-gray-600"
-                    >
-                      {balance} MKD
-                    </Typography>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        {accounts.length > 0 ? (
+          <Table TABLE_HEAD={TABLE_HEAD} accounts={accounts} />
+        ) : (
+          <Typography>No accounts available.</Typography>
+        )}
       </Card>
     </section>
   );

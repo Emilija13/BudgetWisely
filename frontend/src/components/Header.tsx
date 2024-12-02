@@ -1,6 +1,3 @@
-// src/components/Header.tsx
-import { Link } from "react-router-dom";
-
 const Header = () => {
   return (
     <header className="bg-[rgb(64,49,139)] text-white p-4 flex justify-between items-center">
