@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AccountService } from "../services/AccountService";
 import { Account } from "../models/Account";
+import { Card, Typography } from "@material-tailwind/react";
 
 const AccountsPage = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -30,15 +31,66 @@ const AccountsPage = () => {
     return <div>{error}</div>;
   }
 
+  const TABLE_HEAD = ["Name", "Balance"];
+
   return (
-    <div className="p-7 m-4 bg-white rounded-lg shadow">
-      <h1 className="text-2xl font-bold mb-4">Accounts</h1>
-      <ul>
-        {accounts.map((account) => (
-          <li key={account.id}>{account.name}: {account.balance}MKD</li>
-        ))}
-      </ul>
-    </div>
+    <section className="w-full bg-white">
+      <div className="p-6">
+        <Typography variant="lead" color="blue-gray" className="font-bold">
+          Accounts List
+        </Typography>
+        <Typography className="mb-4 w-80 font-normal text-gray-600 md:w-full">
+          A list of all you current accounts.
+        </Typography>
+      </div>
+      <Card className="h-full w-full border border-gray-300 px-6 overflow-hidden">
+        <table className="w-full min-w-max table-auto text-left">
+          <thead>
+            <tr>
+              {TABLE_HEAD.map((head) => (
+                <th key={head} className="border-b border-gray-300 pb-4 pt-10">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-bold leading-none"
+                  >
+                    {head}
+                  </Typography>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {accounts.map(({ name, balance }, index) => {
+              const isLast = index === accounts.length - 1;
+              const classes = isLast ? "py-4" : "py-4 border-b border-gray-300";
+
+              return (
+                <tr key={name} className="hover:bg-gray-50">
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-bold"
+                    >
+                      {name}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      className="font-normal text-gray-600"
+                    >
+                      {balance} MKD
+                    </Typography>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </Card>
+    </section>
   );
 };
 
