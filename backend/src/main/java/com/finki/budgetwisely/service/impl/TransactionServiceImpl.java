@@ -5,6 +5,7 @@ import com.finki.budgetwisely.exceptions.*;
 import com.finki.budgetwisely.model.Account;
 import com.finki.budgetwisely.model.Category;
 import com.finki.budgetwisely.model.Transaction;
+import com.finki.budgetwisely.model.enums.TransactionType;
 import com.finki.budgetwisely.repository.AccountRepository;
 import com.finki.budgetwisely.repository.CategoryRepository;
 import com.finki.budgetwisely.repository.TransactionRepository;
@@ -48,6 +49,16 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionDto.getDate(), transactionDto.getType(), category, account);
 
         this.transactionRepository.save(transaction);
+        if(transaction.getType().equals(TransactionType.INCOME)){
+            account.setBalance(account.getBalance()+transaction.getCost());
+        }
+        else{
+            account.setBalance(account.getBalance()-transaction.getCost());
+        }
+
+        this.accountRepository.save(account);
+
+        //TODO CHANGE BUDGET BALANCE
 
         return Optional.of(transaction);
     }

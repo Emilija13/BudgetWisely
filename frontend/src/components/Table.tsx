@@ -52,7 +52,7 @@ const Table: React.FC<TableProps> = ({
             );
           })
         ) : transactions.length > 0 ? (
-          transactions.map(({ name, cost, date }, index) => {
+          transactions.map(({ name, cost, date, category, type, account }, index) => {
             const isLast = index === transactions.length - 1;
             const classes = isLast ? "py-4" : "py-4 border-b border-gray-300";
 
@@ -78,9 +78,35 @@ const Table: React.FC<TableProps> = ({
                 <td className={classes}>
                   <Typography
                     variant="small"
+                    color="blue-gray"
+                    className="font-normal text-gray-600 "
+                  >
+                    {type=="INCOME"? "Income" : "Expense"}
+                  </Typography>
+                </td>
+                <td className={classes}>
+                  <Typography
+                    variant="small"
                     className="font-normal text-gray-600"
                   >
                     {new Date(date).toLocaleDateString()}
+                  </Typography>
+                </td>
+                <td className={classes}>
+                  <Typography
+                    variant="small"
+                    className="font-normal text-gray-600"
+                  >
+                    {category.name}
+                  </Typography>
+                </td>
+                <td className={classes}>
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal text-gray-600"
+                  >
+                    {account.name}
                   </Typography>
                 </td>
               </tr>
