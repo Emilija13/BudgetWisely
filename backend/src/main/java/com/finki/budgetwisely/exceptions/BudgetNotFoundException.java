@@ -8,4 +8,8 @@ public class BudgetNotFoundException extends RuntimeException{
     public BudgetNotFoundException(Long id) {
         super(String.format("Budget with id: %d is not found", id));
     }
+
+    public BudgetNotFoundException() {
+        super(String.format("Budget not found"));
+    }
 }

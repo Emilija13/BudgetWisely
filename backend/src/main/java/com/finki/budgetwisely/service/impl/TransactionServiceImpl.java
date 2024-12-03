@@ -2,15 +2,14 @@ package com.finki.budgetwisely.service.impl;
 
 import com.finki.budgetwisely.dto.TransactionRequestDto;
 import com.finki.budgetwisely.exceptions.*;
-import com.finki.budgetwisely.model.Account;
-import com.finki.budgetwisely.model.Category;
-import com.finki.budgetwisely.model.Transaction;
+import com.finki.budgetwisely.model.*;
 import com.finki.budgetwisely.model.enums.TransactionType;
-import com.finki.budgetwisely.repository.AccountRepository;
-import com.finki.budgetwisely.repository.CategoryRepository;
-import com.finki.budgetwisely.repository.TransactionRepository;
+import com.finki.budgetwisely.repository.*;
 import com.finki.budgetwisely.service.TransactionService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,12 +18,20 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
     private final AccountRepository accountRepository;
+    private final BudgetRepository budgetRepository;
+    private final UserRepository userRepository;
 
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository, CategoryRepository categoryRepository, AccountRepository accountRepository) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository,
+                                  CategoryRepository categoryRepository,
+                                  AccountRepository accountRepository,
+                                  BudgetRepository budgetRepository,
+                                  UserRepository userRepository) {
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
         this.accountRepository = accountRepository;
+        this.budgetRepository = budgetRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -37,6 +44,7 @@ public class TransactionServiceImpl implements TransactionService {
         return this.transactionRepository.findById(id);
     }
 
+    @Transactional
     @Override
     public Optional<Transaction> save(TransactionRequestDto transactionDto) {
         Category category = this.categoryRepository.findById(transactionDto.getCategory())
@@ -50,15 +58,27 @@ public class TransactionServiceImpl implements TransactionService {
 
         this.transactionRepository.save(transaction);
         if(transaction.getType().equals(TransactionType.INCOME)){
-            account.setBalance(account.getBalance()+transaction.getCost());
+            account.setBalance(account.getBalance() + transaction.getCost());
         }
+
         else{
-            account.setBalance(account.getBalance()-transaction.getCost());
+            account.setBalance(account.getBalance() - transaction.getCost());
+            User user = userRepository.findById(account.getUser().getId())
+                    .orElseThrow(() -> new UserNotFoundException(account.getUser().getId()));
+
+            LocalDate yearMonth = transactionDto.getDate().toLocalDate().withDayOfMonth(1);
+
+            Budget budget = budgetRepository
+                    .findByUserAndCategoryAndYearMonth(user.getId(), category.getId(), yearMonth)
+                    .orElse(null);
+
+            if(budget!=null){
+                budget.setLeftover(budget.getLeftover()-transactionDto.getCost());
+                budgetRepository.save(budget);
+            }
         }
 
         this.accountRepository.save(account);
-
-        //TODO CHANGE BUDGET BALANCE
 
         return Optional.of(transaction);
     }

@@ -1,6 +1,7 @@
 package com.finki.budgetwisely.service.impl;
 
 import com.finki.budgetwisely.dto.BudgetRequestDto;
+import com.finki.budgetwisely.exceptions.BudgetForCategoryAlreadyExistsException;
 import com.finki.budgetwisely.exceptions.BudgetNotFoundException;
 import com.finki.budgetwisely.exceptions.CategoryNotFoundException;
 import com.finki.budgetwisely.exceptions.UserNotFoundException;
@@ -12,6 +13,8 @@ import com.finki.budgetwisely.repository.CategoryRepository;
 import com.finki.budgetwisely.repository.UserRepository;
 import com.finki.budgetwisely.service.BudgetService;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,9 +48,16 @@ public class BudgetServiceImpl implements BudgetService {
         User user = this.userRepository.findById(budgetDto.getUser())
                 .orElseThrow(() -> new UserNotFoundException(budgetDto.getUser()));
 
+        LocalDate yearMonth = LocalDate.now().withDayOfMonth(1);
+
+        Optional<Budget> existingBudget = budgetRepository
+                .findByUserAndCategoryAndYearMonth(user.getId(), category.getId(), yearMonth);
+        if (existingBudget.isPresent()) {
+            throw new BudgetForCategoryAlreadyExistsException();
+        }
 
         Budget budget = new Budget(budgetDto.getSpendingLimit(),
-                budgetDto.getLeftover(), category, user);
+                budgetDto.getLeftover(), category, user, yearMonth);
         budgetRepository.save(budget);
 
         return Optional.of(budget);

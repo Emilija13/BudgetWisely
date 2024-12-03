@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class Budget {
 
     private Long leftover;
 
-    private YearMonth yearMonth;
+    private LocalDate yearMonth;
 
     @ManyToOne
     private Category category;
@@ -29,10 +30,10 @@ public class Budget {
 
     public Budget() {
     }
-    public Budget(Long spendingLimit, Long leftover, Category category, User user) {
+    public Budget(Long spendingLimit, Long leftover, Category category, User user, LocalDate yearMonth) {
         this.spendingLimit = spendingLimit;
         this.leftover = leftover;
-        this.yearMonth = YearMonth.now();
+        this.yearMonth = yearMonth;
         this.category = category;
         this.user = user;
     }
