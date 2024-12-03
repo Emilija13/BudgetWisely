@@ -1,27 +1,24 @@
 package com.finki.budgetwisely.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.finki.budgetwisely.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
-    private Long spendingLimit;
-    private Long leftover;
-    @OneToMany(mappedBy = "category")
-    @JsonIgnore
-    private List<Transaction> transactions;
-    public Category() {
-    }
-    public Category(String name, Long spendingLimit, Long leftover) {
+
+    private String image;
+
+    public Category(String name, String image){
         this.name = name;
-        this.spendingLimit = spendingLimit;
-        this.leftover = leftover;
+        this.image = image;
     }
 }

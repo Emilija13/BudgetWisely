@@ -33,13 +33,18 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Account> accounts;
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Budget> budgets;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(String userName, String email, String password) {
+    public User(String userName, String email, String password, Role role) {
         this.userName = userName;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     @Override

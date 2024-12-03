@@ -1,5 +1,6 @@
 package com.finki.budgetwisely.model;
 
+import com.finki.budgetwisely.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -10,17 +11,31 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private Long cost;
+
     private LocalDateTime date;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
+
     @ManyToOne
     private Category category;
+
+    @ManyToOne
+    private Account account;
+
     public Transaction() {
     }
-    public Transaction(String name, Long cost, LocalDateTime date, Category category) {
+    public Transaction(String name, Long cost, LocalDateTime date, TransactionType type,
+                       Category category, Account account) {
         this.name = name;
         this.cost = cost;
         this.date = date;
+        this.type = type;
         this.category = category;
+        this.account = account;
     }
 }
