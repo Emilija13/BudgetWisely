@@ -5,6 +5,7 @@ import AccountsPage from "./pages/AccountsPage";
 import Sidebar from "./components/Sidebar";
 import TransactionsPage from "./pages/TransactionsPage";
 import BudgetsPage from "./pages/BudgetsPage";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Routes>
             <Route path="/" element={<OverviewPage />} />
             <Route path="/transactions" element={<TransactionsPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/overview" element={<OverviewPage />} />
             <Route path="/budgets" element={<BudgetsPage />} />
             <Route path="/accounts" element={<AccountsPage />} />
