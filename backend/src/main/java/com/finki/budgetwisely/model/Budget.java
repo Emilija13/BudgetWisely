@@ -5,20 +5,21 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.util.List;
 
 @Data
+@Table(name = "budgets")
 @Entity
 public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "spending_limit")
     private Long spendingLimit;
 
     private Long leftover;
 
+    @Column(name = "year_month")
     private LocalDate yearMonth;
 
     @ManyToOne

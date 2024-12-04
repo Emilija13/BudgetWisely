@@ -6,6 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
+@Table(name = "transactions")
 @Entity
 public class Transaction {
     @Id
@@ -21,7 +22,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType type;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     private Category category;
 
     @ManyToOne

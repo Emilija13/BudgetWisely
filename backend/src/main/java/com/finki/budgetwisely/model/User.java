@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "bw_user")
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -22,6 +22,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username")
     private String userName;
 
     @Column(unique = true)

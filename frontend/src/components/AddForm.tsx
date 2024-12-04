@@ -112,6 +112,9 @@ const AddForm: React.FC<FormProps> = ({ pageName, categories, accounts, onClose 
               className="w-full p-2 my-3 border border-gray-300 rounded-md font-normal text-gray-600"
             ></input>
 
+            <label className="font-normal text-gray-600">
+              Transaction type:
+            </label>
             <select
               className="w-full p-2 my-3 border border-gray-300 rounded-md font-normal text-gray-600"
               value={formData.type}
@@ -127,7 +130,6 @@ const AddForm: React.FC<FormProps> = ({ pageName, categories, accounts, onClose 
               <option value={TransactionType.EXPENSE} >
                 Expense
               </option>
-
             </select>
 
             <label className="font-normal text-gray-600">Category:</label>
@@ -148,7 +150,10 @@ const AddForm: React.FC<FormProps> = ({ pageName, categories, accounts, onClose 
                 );
               })}
             </select>
-
+            
+            <label className="font-normal text-gray-600">
+              Account:
+            </label>
             <select
               className="w-full p-2 my-3 border border-gray-300 rounded-md font-normal text-gray-600"
               value={formData.account}
