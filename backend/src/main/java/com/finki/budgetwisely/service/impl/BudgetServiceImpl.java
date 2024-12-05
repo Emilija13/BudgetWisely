@@ -12,9 +12,11 @@ import com.finki.budgetwisely.repository.BudgetRepository;
 import com.finki.budgetwisely.repository.CategoryRepository;
 import com.finki.budgetwisely.repository.UserRepository;
 import com.finki.budgetwisely.service.BudgetService;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +48,8 @@ public class BudgetServiceImpl implements BudgetService {
     public Optional<Budget> findById(Long id) {
         return this.budgetRepository.findById(id);
     }
+
+
 
     @Override
     public Optional<Budget> save(BudgetRequestDto budgetDto) {
@@ -85,6 +89,26 @@ public class BudgetServiceImpl implements BudgetService {
         this.budgetRepository.save(budget);
 
         return Optional.of(budget);
+    }
+
+    @Scheduled(cron = "0 0 0 1 * *")
+    public void createBudgetsForNewMonth() {
+        LocalDate today = LocalDate.now().withDayOfMonth(1);
+
+        LocalDate firstDayOfPreviousMonth = today.minusMonths(1).withDayOfMonth(1);
+
+        List<Budget> previousMonthBudgets = budgetRepository.findByYearMonth(firstDayOfPreviousMonth);
+
+        for (Budget previousBudget : previousMonthBudgets) {
+            Budget newBudget = new Budget();
+            newBudget.setUser(previousBudget.getUser());
+            newBudget.setCategory(previousBudget.getCategory());
+            newBudget.setSpendingLimit(previousBudget.getSpendingLimit());
+            newBudget.setLeftover(previousBudget.getSpendingLimit());
+            newBudget.setYearMonth(today.withDayOfMonth(1));
+
+            budgetRepository.save(newBudget);
+        }
     }
 
     @Override
