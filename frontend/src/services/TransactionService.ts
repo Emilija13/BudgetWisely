@@ -7,6 +7,9 @@ export const TransactionService = {
   getAllTransactions: async () => {
     return await axiosInstance.get<Transaction[]>(TransactionService.url);
   },
+  getAllTransactionsForUser: async (user: number) => {
+    return await axiosInstance.get<Transaction[]>(`${TransactionService.url}/${user}`);
+  },
   addTransaction: async (transactionData: {
     name: string;
     cost: number;

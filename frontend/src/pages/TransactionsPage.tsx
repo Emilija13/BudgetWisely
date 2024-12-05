@@ -20,12 +20,26 @@ const TransactionsPage = () => {
 
   const fetchTransactions = async () => {
     try {
-      const response = await TransactionService.getAllTransactions();
-      setTransactions(response.data);
+      const user = localStorage.getItem("user");
+
+      if(user){
+        const userId: number = JSON.parse(user).id; 
+
+        const response = await TransactionService.getAllTransactionsForUser(userId);
+        setTransactions(response.data);
+        const response2 = await AccountService.getAllAccountsForUser(userId);
+        setAccounts(response2.data);
+      }
+      else{
+        //TODO treba voopsto da ne se setiraat transactions i accounts
+        const response = await TransactionService.getAllTransactions();
+        setTransactions(response.data);
+        const response2 = await AccountService.getAllAccounts();
+        setAccounts(response2.data);
+      }
       const response1 = await CategoryService.getAllCategories();
       setCategories(response1.data);
-      const response2 = await AccountService.getAllAccounts();
-      setAccounts(response2.data);
+
     } catch (err) {
       console.error("Error fetching transactions:", err);
       setError("Failed to load transactions:");

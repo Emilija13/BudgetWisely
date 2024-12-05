@@ -7,6 +7,9 @@ export const AccountService = {
   getAllAccounts: async () => {
     return await axiosInstance.get<Account[]>(AccountService.url);
   },
+  getAllAccountsForUser: async (user: number) => {
+    return await axiosInstance.get<Account[]>(`${AccountService.url}/${user}`);
+  },
   addAccount: async (accountData: { name: string; balance: number; user: number; }) => {
     return await axiosInstance.post(AccountService.url+"/add", accountData);
   },

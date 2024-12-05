@@ -21,6 +21,12 @@ public class TransactionController {
     private List<Transaction> findAll() {
         return this.transactionService.findAll();
     }
+
+    @GetMapping("/{user}")
+    private List<Transaction> findAll(@PathVariable Long user) {
+        return this.transactionService.findAll(user);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Transaction> save(@RequestBody TransactionRequestDto transactionDto) {
         return this.transactionService.save(transactionDto)
