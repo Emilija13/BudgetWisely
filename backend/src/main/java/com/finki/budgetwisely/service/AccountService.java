@@ -7,6 +7,9 @@ import java.util.Optional;
 
 public interface AccountService {
     List<Account> findAll();
+
+    List<Account> findAll(Long userId);
+
     Optional<Account> findById(Long id);
 
     Optional<Account> save(AccountRequestDto accountDto);

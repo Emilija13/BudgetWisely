@@ -24,6 +24,11 @@ public class BudgetController {
         return this.budgetService.findAll();
     }
 
+    @GetMapping("/{user}")
+    private List<Budget> findAll(@PathVariable Long user) {
+        return this.budgetService.findAllCurrent(user);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Budget> save(@RequestBody BudgetRequestDto budgetDto) {
         return this.budgetService.save(budgetDto)

@@ -21,6 +21,12 @@ public class AccountController {
     private List<Account> findAll() {
         return this.accountService.findAll();
     }
+
+    @GetMapping("/{user}")
+    private List<Account> findAll(@PathVariable Long user) {
+        return this.accountService.findAll(user);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Account> save(@RequestBody AccountRequestDto accountDto) {
         return this.accountService.save(accountDto)

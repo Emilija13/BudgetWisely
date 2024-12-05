@@ -36,6 +36,13 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
+    public List<Budget> findAllCurrent(Long userId) {
+        LocalDate yearMonth = LocalDate.now().withDayOfMonth(1);
+
+        return budgetRepository.findByUserAndYearMonth(userId, yearMonth);
+    }
+
+    @Override
     public Optional<Budget> findById(Long id) {
         return this.budgetRepository.findById(id);
     }

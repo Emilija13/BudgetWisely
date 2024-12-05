@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public interface BudgetService {
     List<Budget> findAll();
+
+    List<Budget> findAllCurrent(Long userId);
+
     Optional<Budget> findById(Long id);
 
     Optional<Budget> save(BudgetRequestDto budgetDto);

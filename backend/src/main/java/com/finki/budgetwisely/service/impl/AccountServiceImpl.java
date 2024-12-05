@@ -33,6 +33,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<Account> findAll(Long userId) {
+        return accountRepository.findAllByUserId(userId);
+    }
+
+    @Override
     public Optional<Account> save(AccountRequestDto accountDto) {
         User user = this.userRepository.findById(accountDto.getUser())
                 .orElseThrow(() -> new UserNotFoundException(accountDto.getUser()));
@@ -42,7 +47,8 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account(accountDto.getName(), accountDto.getBalance(), user);
         this.accountRepository.save(account);
 
-        return Optional.of(account);    }
+        return Optional.of(account);
+    }
 
     @Override
     public Optional<Account> edit(Long id, AccountRequestDto accountDto) {

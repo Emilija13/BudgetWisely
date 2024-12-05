@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
@@ -14,4 +15,12 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
             "AND b.category.id = :category " +
             "AND b.yearMonth = :yearMonth")
     Optional<Budget> findByUserAndCategoryAndYearMonth(Long user, Long category, LocalDate yearMonth);
+
+    @Query("SELECT b FROM Budget b " +
+            "WHERE b.user.id = :user " +
+            "AND b.yearMonth = :yearMonth")
+    List<Budget> findByUserAndYearMonth(Long user, LocalDate yearMonth);
+
+
+    List<Budget> findAllByUserId(Long user);
 }

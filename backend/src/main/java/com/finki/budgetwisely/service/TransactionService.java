@@ -7,6 +7,9 @@ import java.util.Optional;
 
 public interface TransactionService {
     List<Transaction> findAll();
+
+    List<Transaction> findAll(Long userId);
+
     Optional<Transaction> findById(Long id);
 
     Optional<Transaction> save(TransactionRequestDto transactionDto);
