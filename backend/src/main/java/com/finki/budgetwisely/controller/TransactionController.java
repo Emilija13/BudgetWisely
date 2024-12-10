@@ -1,5 +1,6 @@
 package com.finki.budgetwisely.controller;
 
+import com.finki.budgetwisely.dto.FilterDto;
 import com.finki.budgetwisely.dto.TransactionRequestDto;
 import com.finki.budgetwisely.model.Transaction;
 import com.finki.budgetwisely.service.TransactionService;
@@ -26,6 +27,12 @@ public class TransactionController {
     private List<Transaction> findAll(@PathVariable Long user) {
         return this.transactionService.findAll(user);
     }
+
+    @GetMapping("/filter")
+    private List<Transaction> filter(@RequestBody FilterDto filterDto) {
+        return this.transactionService.filter(filterDto);
+    }
+
 
     @PostMapping("/add")
     public ResponseEntity<Transaction> save(@RequestBody TransactionRequestDto transactionDto) {
