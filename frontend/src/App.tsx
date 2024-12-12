@@ -3,11 +3,18 @@ import Header from "./components/Header";
 import OverviewPage from "./pages/OverviewPage";
 import AccountsPage from "./pages/AccountsPage";
 import Sidebar from "./components/Sidebar";
-import TransactionsPage from "./pages/TransactionsPage";
+import TransactionsPage from "./pages/TransactionsPage1";
 import BudgetsPage from "./pages/BudgetsPage";
 import LoginPage from "./pages/LoginPage";
+import './App.css';
 
 function App() {
+
+  const user = localStorage.getItem("user");
+
+  //if (!user) 
+    //return <LoginPage/>
+
   return (
     <BrowserRouter>
       <div className="flex font-medium rounded-md bg-[rgb(250,250,250)]">

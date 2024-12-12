@@ -21,8 +21,7 @@ const AddForm: React.FC<FormProps> = ({ pageName, categories, accounts, onClose 
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    console.log(`Changing: ${name}, Value: ${value}`);
-
+    
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,

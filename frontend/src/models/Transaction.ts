@@ -6,8 +6,8 @@ export interface Transaction{
     id : number;
     name : string;
     cost : number;
-    type : TransactionType; 
     date : Date;
+    type : TransactionType; 
     category : Category;
     account : Account;
 }

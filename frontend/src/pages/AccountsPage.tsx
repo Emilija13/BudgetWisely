@@ -21,6 +21,7 @@ const AccountsPage = () => {
         const userId: number = JSON.parse(user).id; 
         const response = await AccountService.getAllAccountsForUser(userId);
         setAccounts(response.data);
+        console.log("Acc: ",response.data)
       } else {
         const response = await AccountService.getAllAccounts();
         setAccounts(response.data);
