@@ -9,9 +9,9 @@ const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], 
     name: "",
     cost: 0,
     date: "",
-    category: "",
+    category: -1,
     user: 1,
-    account: "",
+    account: -1,
     type: "",
   });
 

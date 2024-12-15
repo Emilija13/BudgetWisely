@@ -20,7 +20,10 @@ function LoginPage() {
       const token = response.token;
       if (token) {
         setError(null);
-        navigate('/');  
+        console.log(response)
+        localStorage.setItem("user", token);
+        localStorage.setItem("userId", response.user.id);
+        navigate('/overview');  
       }
     } catch (error) {
       console.error('Login failed:', error);

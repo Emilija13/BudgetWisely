@@ -18,6 +18,8 @@ export const TransactionService = {
     name: string;
     cost: number;
     date: string;
+    type: string;
+    account: number;
     category: number;
   }) => {
     return await axiosInstance.post((TransactionService.url + "/add"), transactionData);

@@ -9,7 +9,6 @@ const AuthService = {
   currentUser: null as User | null,
 
   login(request: LoginRequest) {
-    console.log("Logging in")
     return axiosInstance.post(`${apiUrl}/authenticate`, request)
       .then((response) => {
         if (response.data.token) {
@@ -19,8 +18,8 @@ const AuthService = {
           localStorage.setItem('user', JSON.stringify(response.data.user));
           this.setCurrentUser(response.data.user)
   
-          console.log("Token: ", localStorage.getItem('jwtToken'))
-          console.log("User: ", localStorage.getItem('user'))
+          //console.log("Token: ", localStorage.getItem('jwtToken'))
+          //console.log("User: ", localStorage.getItem('user'))
 
           return response.data;
         }

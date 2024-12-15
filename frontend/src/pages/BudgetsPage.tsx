@@ -11,18 +11,18 @@ function BudgetsPage() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const userId = localStorage.getItem("userId");
 
   const fetchCategories = async () => {
     try {
-      const user = localStorage.getItem("user");
-
-      if (user) {
-        const userId: number = JSON.parse(user).id;
-
-        const response = await CategoryService.getAllCategories();
-        setCategories(response.data);
-        const response1 = await BudgetService.getAllCurrentBudgets(userId);
+      setLoading(true);
+      console.log("userid: ", userId);
+      const response = await CategoryService.getAllCategories();
+      setCategories(response.data);
+      if (userId) {
+        const response1 = await BudgetService.getAllBudgetsForUser(+userId);
         setBudgets(response1.data);
+        console.log("Budgets: ", response1.data);
       }
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -32,9 +32,14 @@ function BudgetsPage() {
     }
   };
 
-  const filterCategories = (categories: Category[], budgets: Budget[]): Category[] => {
+  const filterCategories = (
+    categories: Category[],
+    budgets: Budget[]
+  ): Category[] => {
     const budgetCategoryIds = budgets.map((budget) => budget.category.id);
-    return categories.filter((category) => !budgetCategoryIds.includes(category.id));
+    return categories.filter(
+      (category) => !budgetCategoryIds.includes(category.id)
+    );
   };
 
   useEffect(() => {
@@ -45,15 +50,15 @@ function BudgetsPage() {
 
   const addBudget = async (categoryId: number, spendingLimit: number) => {
     try {
-      const user = localStorage.getItem("user");
-      if (user) {
-        const userId: number = JSON.parse(user).id;
+      //const user = localStorage.getItem("user");
+      if (userId) {
+        //const userId: number = JSON.parse(user).id;
         const leftover = spendingLimit;
         const newBudget = {
           spendingLimit,
           leftover,
           category: categoryId,
-          user: userId,
+          user: +userId,
         };
         const response = await BudgetService.addBudget(newBudget);
         setBudgets([...budgets, response.data]);
@@ -63,6 +68,7 @@ function BudgetsPage() {
       setError("Failed to add budget.");
     }
   };
+
 
   const deleteBudget = async (budgetId: number) => {
     try {
@@ -77,6 +83,9 @@ function BudgetsPage() {
   if (error) {
     return <div>{error}</div>;
   }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <section className="w-full">
@@ -90,7 +99,7 @@ function BudgetsPage() {
           <CategoryListItem
             key={budget.category.id}
             budget={budget}
-            onDeleteBudget={deleteBudget} 
+            onDeleteBudget={deleteBudget}
           />
         ))}
         {filteredCategories.map((category) => (
@@ -101,10 +110,8 @@ function BudgetsPage() {
           />
         ))}
       </div>
-
     </section>
   );
 }
 
 export default BudgetsPage;
-``

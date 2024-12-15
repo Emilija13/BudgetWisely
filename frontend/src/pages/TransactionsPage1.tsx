@@ -19,28 +19,23 @@ const TransactionsPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false); // State to toggle form visibility
+  const userId = localStorage.getItem("userId");
 
   const fetchTransactions = async () => {
     try {
-      const user = localStorage.getItem("user");
+        setLoading(true);
+        console.log("userid: ", userId);
+        const response = await CategoryService.getAllCategories();
+        setCategories(response.data);
+        if (userId) {
+          const response1 = await TransactionService.getAllTransactionsForUser(+userId);
+          setTransactions(response1.data);
 
-      if (user) {
-        const userId: number = JSON.parse(user).id;
-        const response = await TransactionService.getAllTransactionsForUser(userId);
-        setTransactions(response.data);
+          const response2 = await AccountService.getAllAccountsForUser(+userId);
+          setAccounts(response2.data);
+          console.log("Transactions: ", response1.data);
+        }
 
-        const accountResponse = await AccountService.getAllAccountsForUser(userId);
-        setAccounts(accountResponse.data);
-      } else {
-        const response = await TransactionService.getAllTransactions();
-        setTransactions(response.data);
-
-        const accountResponse = await AccountService.getAllAccounts();
-        setAccounts(accountResponse.data);
-      }
-
-      const categoryResponse = await CategoryService.getAllCategories();
-      setCategories(categoryResponse.data);
     } catch (err) {
       console.error("Error fetching transactions:", err);
       setError("Failed to load transactions:");
@@ -74,9 +69,15 @@ const TransactionsPage = () => {
     fetchTransactions();
   }, []);
 
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
+
   if (error) {
     return <div>{error}</div>;
   }
+
 
   return (
     <section className="w-full">
