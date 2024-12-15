@@ -1,11 +1,14 @@
-import axios from "axios";
 import { Budget } from "../models/Budget";
+import axiosInstance from "../auth/axiosInstance";
 
 export const BudgetService = {
   url: "http://localhost:8080/api/budgets",
 
   getAllBudgets: async () => {
-    return await axios.get<Budget[]>(BudgetService.url);
+    return await axiosInstance.get<Budget[]>(BudgetService.url);
+  },
+  getAllBudgetsForUser: async (user: number) => {
+    return await axiosInstance.get<Budget[]>(`${BudgetService.url}/${user}`);
   },
   addBudget: async (budgetData: {
     spendingLimit : number;
@@ -13,6 +16,6 @@ export const BudgetService = {
     category : number;
     user : number;
   }) => {
-    return await axios.post(BudgetService.url + "/add", budgetData);
+    return await axiosInstance.post(BudgetService.url + "/add", budgetData);
   },
 };

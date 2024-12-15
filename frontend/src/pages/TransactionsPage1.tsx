@@ -1,12 +1,9 @@
-import { Card, Typography } from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import { Transaction } from "../models/Transaction";
 import { TransactionService } from "../services/TransactionService";
-import Table from "../components/Table";
-import AddButton from "../components/AddButton";
 import { Category } from "../models/Category";
 import { CategoryService } from "../services/CategoryService";
-import AddForm from "../components/AddForm";
 import { Account } from "../models/Account";
 import { AccountService } from "../services/AccountService";
 import TransactionsTable from "../components/TransactionsTable";
@@ -20,28 +17,39 @@ const TransactionsPage = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const userId = localStorage.getItem("userId");
 
   const fetchTransactions = async () => {
     try {
-      const user = localStorage.getItem("user");
+        setLoading(true);
+        console.log("userid: ", userId);
+        const response = await CategoryService.getAllCategories();
+        setCategories(response.data);
+        if (userId) {
+          const response1 = await TransactionService.getAllTransactionsForUser(+userId);
+          setTransactions(response1.data);
+          console.log("Transactions: ", response1.data);
+        }
 
-      if (user) {
-        const userId: number = JSON.parse(user).id;
+    //   const user = localStorage.getItem("user");
 
-        const response =
-          await TransactionService.getAllTransactionsForUser(userId);
-        setTransactions(response.data);
-        const response2 = await AccountService.getAllAccountsForUser(userId);
-        setAccounts(response2.data);
-      } else {
-        //TODO treba voopsto da ne se setiraat transactions i accounts
-        const response = await TransactionService.getAllTransactions();
-        setTransactions(response.data);
-        const response2 = await AccountService.getAllAccounts();
-        setAccounts(response2.data);
-      }
-      const response1 = await CategoryService.getAllCategories();
-      setCategories(response1.data);
+    //   if (user) {
+    //     const userId: number = JSON.parse(user).id;
+
+    //     const response =
+    //       await TransactionService.getAllTransactionsForUser(userId);
+    //     setTransactions(response.data);
+    //     const response2 = await AccountService.getAllAccountsForUser(userId);
+    //     setAccounts(response2.data);
+    //   } else {
+    //     //TODO treba voopsto da ne se setiraat transactions i accounts
+    //     const response = await TransactionService.getAllTransactions();
+    //     setTransactions(response.data);
+    //     const response2 = await AccountService.getAllAccounts();
+    //     setAccounts(response2.data);
+    //   }
+    //   const response1 = await CategoryService.getAllCategories();
+    //   setCategories(response1.data);
     } catch (err) {
       console.error("Error fetching transactions:", err);
       setError("Failed to load transactions:");
@@ -54,9 +62,6 @@ const TransactionsPage = () => {
     fetchTransactions();
   }, []);
 
-  const handleAddButtonClick = () => {
-    setIsFormVisible(true);
-  };
 
   // if (loading) {
   //   return <div>Loading...</div>;
@@ -66,7 +71,6 @@ const TransactionsPage = () => {
     return <div>{error}</div>;
   }
 
-  const TABLE_HEAD = ["Name", "Cost", "Type", "Date", "Category", "Account"];
 
   return (
     <section className="w-full purple-light">

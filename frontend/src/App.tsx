@@ -6,33 +6,27 @@ import Sidebar from "./components/Sidebar";
 import TransactionsPage from "./pages/TransactionsPage1";
 import BudgetsPage from "./pages/BudgetsPage";
 import LoginPage from "./pages/LoginPage";
-import './App.css';
+import "./App.css";
+import HomePage from "./pages/HomePage";
+import LoggedInPage from "./pages/LoggedInPage";
 
 function App() {
-
   const user = localStorage.getItem("user");
 
-  //if (!user) 
-    //return <LoginPage/>
+  //if (!user)
+  //return <LoginPage/>
 
   return (
     <BrowserRouter>
-      <div className="flex font-medium rounded-md bg-[rgb(250,250,250)]">
-        <Sidebar>
-        </Sidebar>
-
-        <div className="flex-1 ml-0">
-          <Header /> 
-          <Routes>
-            <Route path="/" element={<OverviewPage />} />
-            <Route path="/transactions" element={<TransactionsPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/overview" element={<OverviewPage />} />
-            <Route path="/budgets" element={<BudgetsPage />} />
-            <Route path="/accounts" element={<AccountsPage />} />
-          </Routes>
-        </div>
-      </div>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        {user ? (
+          <Route path="/*" element={<LoggedInPage />} />
+        ) : (
+          <Route path="/login" element={<LoginPage />} />
+        )}
+      </Routes>
     </BrowserRouter>
   );
 }

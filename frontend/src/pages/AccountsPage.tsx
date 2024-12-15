@@ -15,16 +15,12 @@ const AccountsPage = () => {
   const fetchAccounts = async () => {
     try {
       setLoading(true);
-      const user = localStorage.getItem("user");
-      console.log("User: ", user)
-      if (user) {
-        const userId: number = JSON.parse(user).id; 
-        const response = await AccountService.getAllAccountsForUser(userId);
+      const userId = localStorage.getItem("userId");
+      console.log("userid: ", userId)
+      if(userId)
+      {  const response = await AccountService.getAllAccountsForUser(+userId);
         setAccounts(response.data);
         console.log("Acc: ",response.data)
-      } else {
-        const response = await AccountService.getAllAccounts();
-        setAccounts(response.data);
       }
     } catch (err) {
       console.error("Error fetching accounts:", err);
