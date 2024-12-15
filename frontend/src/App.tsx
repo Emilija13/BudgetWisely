@@ -21,7 +21,7 @@ function App() {
         <Sidebar>
         </Sidebar>
 
-        <div className="flex-1 ml-0">
+        <div className="flex-1 ml-0 bg-[rgb(249,249,251)]">
           <Header /> 
           <Routes>
             <Route path="/" element={<OverviewPage />} />

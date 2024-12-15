@@ -21,7 +21,7 @@ function BudgetsPage() {
 
         const response = await CategoryService.getAllCategories();
         setCategories(response.data);
-        const response1 = await BudgetService.getAllBudgets();
+        const response1 = await BudgetService.getAllCurrentBudgets(userId);
         setBudgets(response1.data);
       }
     } catch (err) {
@@ -32,7 +32,7 @@ function BudgetsPage() {
     }
   };
 
-  const filterCategories = (categories: Category[], budgets: Budget[]) : Category[] => {
+  const filterCategories = (categories: Category[], budgets: Budget[]): Category[] => {
     const budgetCategoryIds = budgets.map((budget) => budget.category.id);
     return categories.filter((category) => !budgetCategoryIds.includes(category.id));
   };
@@ -53,7 +53,7 @@ function BudgetsPage() {
           spendingLimit,
           leftover,
           category: categoryId,
-          user : userId,
+          user: userId,
         };
         const response = await BudgetService.addBudget(newBudget);
         setBudgets([...budgets, response.data]);
@@ -63,36 +63,48 @@ function BudgetsPage() {
       setError("Failed to add budget.");
     }
   };
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+
+  const deleteBudget = async (budgetId: number) => {
+    try {
+      await BudgetService.deleteBudget(budgetId);
+      setBudgets(budgets.filter((budget) => budget.id !== budgetId));
+    } catch (error) {
+      console.error("Error deleting budget:", error);
+      setError("Failed to delete budget.");
+    }
+  };
 
   if (error) {
     return <div>{error}</div>;
   }
 
   return (
-    <section className="w-full bg-white">
-      <div className="p-6">
-        <Typography variant="lead" color="blue-gray" className="font-bold">
-          Budgets List
-        </Typography>
-        <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
-          A list of all your current budgets.
+    <section className="w-full">
+      <div className="p-10">
+        <Typography variant="lead" color="blue-gray" className="font-bold text-lg">
+          Budgets
         </Typography>
       </div>
-      <div className="flex flex-col items-center pb-5 h-[527px] overflow-y-auto">
-        {budgets.map((budget) => {
-          return <CategoryListItem key={budget.category.id} budget={budget} />;
-        })}
-        {filteredCategories.map((category) => {
-          return (
-            <CategoryListItem key={category.id} category={category} onAddBudget={addBudget}/>
-          );
-        })}
+      <div className="mx-20 grid grid-cols-2 gap-4 pb-5 h-auto w-auto overflow-y-auto">
+        {budgets.map((budget) => (
+          <CategoryListItem
+            key={budget.category.id}
+            budget={budget}
+            onDeleteBudget={deleteBudget} 
+          />
+        ))}
+        {filteredCategories.map((category) => (
+          <CategoryListItem
+            key={category.id}
+            category={category}
+            onAddBudget={addBudget}
+          />
+        ))}
       </div>
+
     </section>
   );
 }
 
 export default BudgetsPage;
+``

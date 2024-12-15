@@ -1,5 +1,6 @@
 import { Transaction } from "../models/Transaction";
 import axiosInstance from "../auth/axiosInstance";
+import { FilterDto } from "../models/dto/FilterDto";
 
 export const TransactionService = {
   url: "http://localhost:8080/api/transactions",
@@ -9,6 +10,9 @@ export const TransactionService = {
   },
   getAllTransactionsForUser: async (user: number) => {
     return await axiosInstance.get<Transaction[]>(`${TransactionService.url}/${user}`);
+  },
+  filter: async (filterDto: FilterDto) => {
+    return await axiosInstance.post((TransactionService.url + "/filter"), filterDto);
   },
   addTransaction: async (transactionData: {
     name: string;

@@ -1,22 +1,39 @@
 .purple-light{
   background-color: #F6F6FE;
 }
+.main-color{
+  /* background-color: rgb(90,53,245); */
+  background-color: #475ee1;
+  /* background-color: white; */
+  /* 71, 94, 225 */
+  color: white;
+}
+
+.secondary-color{
+  /* 107, 73, 246 */
+
+  background-color: rgb(105, 123, 225);
+  /* background-color: rgb(107, 73, 246); */
+}
+
+
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #ffffff; 
+  background: #F6F6FE; 
   border-radius: 10px;
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #eaeafe; 
+  background: #ebebf1; 
   border-radius: 8px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(228, 228, 255); 
+  background: #e2e2e9; 
 }
+

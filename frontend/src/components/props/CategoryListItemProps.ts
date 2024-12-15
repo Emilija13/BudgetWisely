@@ -5,4 +5,5 @@ export interface CategoryListItemProps{
     category? : Category;
     budget? : Budget;
     onAddBudget? : (categoryId: number, spendingLimit: number) => void; 
+    onDeleteBudget? : (budegtId: number) => void
 }

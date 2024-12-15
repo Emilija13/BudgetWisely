@@ -22,15 +22,15 @@ const TransactionsPage = () => {
     try {
       const user = localStorage.getItem("user");
 
-      if(user){
-        const userId: number = JSON.parse(user).id; 
+      if (user) {
+        const userId: number = JSON.parse(user).id;
 
         const response = await TransactionService.getAllTransactionsForUser(userId);
         setTransactions(response.data);
         const response2 = await AccountService.getAllAccountsForUser(userId);
         setAccounts(response2.data);
       }
-      else{
+      else {
         //TODO treba voopsto da ne se setiraat transactions i accounts
         const response = await TransactionService.getAllTransactions();
         setTransactions(response.data);
@@ -72,7 +72,7 @@ const TransactionsPage = () => {
   const TABLE_HEAD = ["Name", "Cost", "Type", "Date", "Category", "Account"];
 
   return (
-    <section className="w-full bg-white">
+    <section className="w-full">
       {isFormVisible ? (
         <AddForm
           pageName="transaction"

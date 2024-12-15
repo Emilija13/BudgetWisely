@@ -16,9 +16,8 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-[rgb(64,49,139)] text-white p-4 flex justify-between items-center">
-      <h1 className="text-2xl">Budget Wisely</h1>
-      <nav className="flex items-center space-x-4">
+    <header className="bg-white flex justify-end items-center">
+      {/* <nav className="flex items-center space-x-4">
         {isLoggedIn ? (
           <>
             <span className="text-lg">{`Hello, ${user.email}`}</span>
@@ -33,7 +32,7 @@ const Header = () => {
             Login
           </Link>
         )}
-      </nav>
+      </nav> */}
     </header>
   );
 };

@@ -25,7 +25,7 @@ public class BudgetController {
     }
 
     @GetMapping("/{user}")
-    private List<Budget> findAll(@PathVariable Long user) {
+    private List<Budget> findAllCurrent(@PathVariable Long user) {
         return this.budgetService.findAllCurrent(user);
     }
 

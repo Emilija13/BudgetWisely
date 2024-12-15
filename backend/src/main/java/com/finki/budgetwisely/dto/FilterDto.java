@@ -10,8 +10,11 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 public class FilterDto {
+    Long userId;
     Long accountId;
     Long categoryId;
     String type;
-    LocalDate yearMonth;
+//    LocalDate yearMonth;
+    String start;
+    String end;
 }

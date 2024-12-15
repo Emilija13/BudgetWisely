@@ -28,7 +28,7 @@ public class TransactionController {
         return this.transactionService.findAll(user);
     }
 
-    @GetMapping("/filter")
+    @PostMapping("/filter")
     private List<Transaction> filter(@RequestBody FilterDto filterDto) {
         return this.transactionService.filter(filterDto);
     }

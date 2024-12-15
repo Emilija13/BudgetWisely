@@ -57,6 +57,13 @@ public class TransactionServiceImpl implements TransactionService {
 
         List<Predicate> predicates = new ArrayList<>();
 
+        if(filterDto.getUserId() == null){
+            throw new IllegalArgumentException();
+        }
+        else{
+            predicates.add(cb.equal(transaction.get("account").get("user").get("id"), filterDto.getUserId()));
+        }
+
         if (filterDto.getAccountId() != null) {
             predicates.add(cb.equal(transaction.get("account").get("id"), filterDto.getAccountId()));
         }
@@ -69,13 +76,24 @@ public class TransactionServiceImpl implements TransactionService {
             predicates.add(cb.equal(transaction.get("type"), filterDto.getType()));
         }
 
-        if (filterDto.getYearMonth() != null) {
-            LocalDate startOfMonth = filterDto.getYearMonth().withDayOfMonth(1);
-            LocalDate endOfMonth = filterDto.getYearMonth().withDayOfMonth(filterDto.getYearMonth().lengthOfMonth());
+        if (filterDto.getStart() != null && filterDto.getEnd() !=null) {
+//            LocalDate start = filterDto.getStart();
+//            LocalDate end = filterDto.getEnd();
 
-            predicates.add(cb.greaterThanOrEqualTo(transaction.get("date"), startOfMonth.atStartOfDay()));
-            predicates.add(cb.lessThanOrEqualTo(transaction.get("date"), endOfMonth.atTime(23, 59, 59)));
+            LocalDate start = LocalDate.parse(filterDto.getStart());
+            LocalDate end = LocalDate.parse(filterDto.getEnd());
+
+            predicates.add(cb.greaterThanOrEqualTo(transaction.get("date"), start.atStartOfDay()));
+            predicates.add(cb.lessThanOrEqualTo(transaction.get("date"), end.atTime(23, 59, 59)));
         }
+
+//        if (filterDto.getYearMonth() != null) {
+//            LocalDate startOfMonth = filterDto.getYearMonth().withDayOfMonth(1);
+//            LocalDate endOfMonth = filterDto.getYearMonth().withDayOfMonth(filterDto.getYearMonth().lengthOfMonth());
+//
+//            predicates.add(cb.greaterThanOrEqualTo(transaction.get("date"), startOfMonth.atStartOfDay()));
+//            predicates.add(cb.lessThanOrEqualTo(transaction.get("date"), endOfMonth.atTime(23, 59, 59)));
+//        }
 
         query.where(cb.and(predicates.toArray(new Predicate[0])));
 
