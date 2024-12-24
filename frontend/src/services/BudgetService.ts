@@ -12,7 +12,7 @@ export const BudgetService = {
   },
 
   getAllCurrentBudgets: async (user: number) => {
-    return await axios.get<Budget[]>(`${BudgetService.url}/${user}`);
+    return await axiosInstance.get<Budget[]>(`${BudgetService.url}/${user}`);
   },
 
   addBudget: async (budgetData: {
@@ -26,6 +26,6 @@ export const BudgetService = {
 
   deleteBudget: async (budgetId: number) => {
     console.log("BudgetId: ", budgetId)
-    return await axios.delete<Budget[]>(`${BudgetService.url}/delete/${budgetId}`);
+    return await axiosInstance.delete<Budget[]>(`${BudgetService.url}/delete/${budgetId}`);
   },
 };

@@ -1,8 +1,21 @@
 import React from "react";
 import { TableProps } from "./props/TableProps";
 import { TransactionType } from "../models/enum/TransactionType";
+import { Transaction } from "../models/Transaction";
 
-const TransactionsTable: React.FC<TableProps> = ({ transactions = [] }) => {
+const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete,onEdit }) => {
+   
+    const handleDeleteClick = (id : number) => {
+        const isConfirmed = window.confirm("Are you sure you want to delete this item?");
+        if (isConfirmed) {
+          onDelete(id); 
+        }
+    }
+    const handleEditClick = (transaction: Transaction) => {
+        // Pass the transaction object to the parent or directly open the form with the transaction details
+        onEdit(transaction);
+    }
+
   return (
     <div className="overflow-hidden rounded-lg shadow-lg">
       {/* Wrapper with a fixed height for the scrollable container */}
@@ -72,7 +85,7 @@ const TransactionsTable: React.FC<TableProps> = ({ transactions = [] }) => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      <a x-data="{ tooltip: 'Edit' }" href="#">
+                      <a x-data="{ tooltip: 'Edit' }"  onClick={() => handleEditClick(transaction)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -89,7 +102,7 @@ const TransactionsTable: React.FC<TableProps> = ({ transactions = [] }) => {
                           />
                         </svg>
                       </a>
-                      <a x-data="{ tooltip: 'Delete' }" href="#">
+                      <a x-data="{ tooltip: 'Delete' }" href="#" onClick={() => handleDeleteClick(transaction.id)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"

@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     Optional<Transaction> findById(Long id);
 
-    @Query("SELECT t FROM Transaction t WHERE t.account.user.id = :userId")
+    @Query("SELECT t FROM Transaction t WHERE t.account.user.id = :userId ORDER BY t.date DESC")
     List<Transaction> findAllByUserId(@Param("userId") Long userId);
 }

@@ -103,11 +103,11 @@ function BudgetsPage() {
           />
         ))}
         {filteredCategories.map((category) => (
-          <CategoryListItem
+          category.name!="Income"?(<CategoryListItem
             key={category.id}
             category={category}
             onAddBudget={addBudget}
-          />
+          />):(<span></span>)
         ))}
       </div>
     </section>

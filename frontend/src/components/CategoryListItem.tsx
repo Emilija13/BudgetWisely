@@ -18,7 +18,10 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
         setIsAdding(false);
       }
     };
@@ -29,8 +32,6 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-
 
   const handleAddClick = () => {
     setIsAdding(true);
@@ -56,13 +57,15 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
     }
   };
 
-  const spent = budget?.spendingLimit!! - budget?.leftover!! || 0;
-  const limit = budget?.spendingLimit || null;
-  const percentage = Math.min((spent / limit!!) * 100, 100);
+  const spent = (budget?.spendingLimit ?? 0) - (budget?.leftover ?? 0);
+  const limit = budget?.spendingLimit ?? null;
+  const percentage = limit ? Math.min((spent / limit) * 100, 100) : 0;
 
   return (
-    <div className="flex justify-between items-center rounded-lg pl-7 pr-0 py-6 bg-white relative group"
-      style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+    <div
+      className="flex justify-between items-center rounded-lg pl-7 pr-0 py-6 bg-white relative group"
+      style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
+    >
       <div className="flex items-center">
         <img
           src={category?.image || budget?.category.image}
@@ -92,7 +95,7 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
             ref={inputRef}
             type="text"
             placeholder="Enter amount"
-            className="py-1 px-3 border rounded-lg font-light text-gray-700 focus:ring-2 focus:ring-indigo-300 w-28"
+            className="py-1 px-1 border rounded-lg font-light text-gray-700 focus:ring-2 focus:ring-indigo-300 w-28"
             value={spendingLimit || ""}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
@@ -101,8 +104,10 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
       ) : (
         <div className="pr-4 mr-2">
           {spendingLimit !== null ? (
-            <button className="w-7 h-7 rounded-full hover:bg-gray-100 p-0.7 group-hover:block hidden hover:text-gray-400"
-              onClick={handleDeleteClick}>
+            <button
+              className="w-7 h-7 rounded-full hover:bg-gray-100 p-0.7 group-hover:block hidden hover:text-gray-400"
+              onClick={handleDeleteClick}
+            >
               <span className="text-xl font-light text-gray-300">×</span>
             </button>
           ) : (
@@ -118,7 +123,6 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
         </div>
       )}
     </div>
-
   );
 };
 
