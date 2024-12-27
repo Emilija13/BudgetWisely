@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import OverviewPage from './OverviewPage'
-import TransactionsPage from './TransactionsPage1'
+import TransactionsPage from './TransactionsPage'
 import BudgetsPage from './BudgetsPage'
 import AccountsPage from './AccountsPage'
 import UserDetails from './UserDetails'

@@ -3,6 +3,7 @@ import { Account } from "../../models/Account";
 import { TransactionType } from "../../models/enum/TransactionType";
 
 export interface FormProps{
+    userId: number;
     name? : string;
     balance? : number;
     cost? : number;
@@ -10,6 +11,6 @@ export interface FormProps{
     type?: TransactionType;
     categories? : Category[];
     accounts? : Account[];
-    pageName? : string;
-    onFormSubmitSuccess : () => void; 
+    onFormSubmitSuccess?: () => void; 
+    onClose?: () => void;
 }

@@ -6,6 +6,7 @@ import { TransactionService } from "../services/TransactionService";
 const TransactionForm: React.FC<FormProps> = ({
   categories = [],
   accounts = [],
+  userId,
   onFormSubmitSuccess,
 }) => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ const TransactionForm: React.FC<FormProps> = ({
     cost: 0,
     date: "",
     category: 6,
-    user: 1,
+    user: userId,
     account: -1,
     type: "",
   });

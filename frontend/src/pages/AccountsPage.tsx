@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
 import { AccountService } from "../services/AccountService";
 import { Account } from "../models/Account";
-import { Card, Typography } from "@material-tailwind/react";
-import Table from "../components/Table";
+import { Typography } from "@material-tailwind/react";
 import AddButton from "../components/AddButton";
-import AddForm from "../components/AddForm";
 import AccountsList from "../components/AccountsList";
+import AccountForm from "../components/AccountForm";
 
 const AccountsPage = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
+  const userId = localStorage.getItem("userId");
+
 
   const fetchAccounts = async () => {
     try {
       setLoading(true);
-      const userId = localStorage.getItem("userId");
       console.log("userid: ", userId)
       if(userId)
       {  const response = await AccountService.getAllAccountsForUser(+userId);
@@ -52,12 +52,10 @@ const AccountsPage = () => {
     return <div>{error}</div>;
   }
 
-  const TABLE_HEAD = ["Name", "Balance"];
-
   return (
     <section className=" mx-10">
       {isFormVisible ? (
-        <AddForm pageName="account" onClose={handleCloseForm} />
+        <AccountForm onClose={handleCloseForm} userId={+userId!} />
       ) : (
         <div>
           <div className="flex justify-between p-6">
@@ -77,13 +75,6 @@ const AccountsPage = () => {
             <AddButton text="+" onClick={handleAddButtonClick} />
           </div>
           <AccountsList accounts={accounts}></AccountsList>
-          {/* <Card className="h-full w-full border border-gray-300 px-6 overflow-hidden">
-            {accounts.length > 0 ? (
-              <Table TABLE_HEAD={TABLE_HEAD} accounts={accounts} />
-            ) : (
-              <Typography>No accounts available.</Typography>
-            )}
-          </Card> */}
         </div>
       )}
     </section>
