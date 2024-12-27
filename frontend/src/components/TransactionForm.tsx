@@ -13,7 +13,7 @@ const TransactionForm: React.FC<FormProps> = ({
     name: "",
     cost: 0,
     date: "",
-    category: 6,
+    category: -1,
     user: userId,
     account: -1,
     type: "",
@@ -23,31 +23,67 @@ const TransactionForm: React.FC<FormProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, [name]: value };
+  
+      // Dynamically update the category based on the transaction type
+      if (name === "type") {
+        updatedData.category = value === TransactionType.INCOME ? 17 : -1;
+      }
+  
+      return updatedData;
+    });
+  };
+
+  const validate = (): boolean => {
+    if (formData.name === "") {
+      alert("Set a name.");
+      return false;
+    }
+    if (formData.cost <= 0) {
+      alert("Amount must be greater than 0.");
+      return false;
+    }
+    if (formData.account == -1) {
+      alert("Select an account.");
+      return false;
+    }
+    if (formData.type === "") {
+      alert("Select an type of transaction.");
+      return false;
+    }
+    if (formData.date === "") {
+      alert("Select a date.");
+      return false;
+    }
+    if (formData.category == -1) {
+      alert("Select a category.");
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const newTransaction = {
-        name: formData.name,
-        cost: formData.cost,
-        date: formData.date,
-        category: formData.category,
-        account: formData.account,
-        type: formData.type,
-      };
+    if (validate()) {
+      try {
+        const newTransaction = {
+          name: formData.name,
+          cost: formData.cost,
+          date: formData.date,
+          category: formData.category,
+          account: formData.account,
+          type: formData.type,
+        };
 
-      console.log(newTransaction);
-      await TransactionService.addTransaction(newTransaction);
-      alert("Transaction added successfully");
-      onFormSubmitSuccess(); 
-    } catch (error) {
-      console.error(`Error adding transaction:`, error);
-      alert(`Failed to add transaction`);
+        console.log(newTransaction);
+        await TransactionService.addTransaction(newTransaction);
+        alert("Transaction added successfully");
+        onFormSubmitSuccess();
+      } catch (error) {
+        console.error(`Error adding transaction:`, error);
+        alert(`Failed to add transaction`);
+      }
     }
   };
 
@@ -99,7 +135,7 @@ const TransactionForm: React.FC<FormProps> = ({
                 onChange={handleChange}
                 className="w-full p-2 text-sm purple-light text-gray-600 rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
-                <option value="">Select an account</option>
+                <option value={-1}>Select an account</option>
                 {accounts.map((account) => (
                   <option key={account.id} value={account.id}>
                     {account.name}
@@ -162,15 +198,14 @@ const TransactionForm: React.FC<FormProps> = ({
                 onChange={handleChange}
                 className="w-full p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
-                <option value="">Select a category</option>
+                <option value={-1}>Select a category</option>
                 {categories
-                  .filter((category) => category.name !== "Income") 
+                  .filter((category) => category.name !== "Income")
                   .map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.name}
                     </option>
                   ))}
-
               </select>
             )}
           </div>
