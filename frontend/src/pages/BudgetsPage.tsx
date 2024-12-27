@@ -1,6 +1,6 @@
 import { Typography } from "@material-tailwind/react";
 import { CategoryService } from "../services/CategoryService";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Category } from "../models/Category";
 import CategoryListItem from "../components/CategoryListItem";
 import { BudgetService } from "../services/BudgetService";
@@ -13,7 +13,7 @@ function BudgetsPage() {
   const [error, setError] = useState<string | null>(null);
   const userId = localStorage.getItem("userId");
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       setLoading(true);
       console.log("userid: ", userId);
@@ -30,29 +30,27 @@ function BudgetsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
 
-  const filterCategories = (
-    categories: Category[],
-    budgets: Budget[]
-  ): Category[] => {
-    const budgetCategoryIds = budgets.map((budget) => budget.category.id);
-    return categories.filter(
-      (category) => !budgetCategoryIds.includes(category.id)
-    );
-  };
+  const filterCategories = useCallback(
+    (categories: Category[], budgets: Budget[]): Category[] => {
+      const budgetCategoryIds = budgets.map((budget) => budget.category.id);
+      return categories.filter(
+        (category) => !budgetCategoryIds.includes(category.id)
+      );
+    },
+    []
+  );
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [fetchCategories]);
 
   const filteredCategories = filterCategories(categories, budgets);
 
   const addBudget = async (categoryId: number, spendingLimit: number) => {
     try {
-      //const user = localStorage.getItem("user");
       if (userId) {
-        //const userId: number = JSON.parse(user).id;
         const leftover = spendingLimit;
         const newBudget = {
           spendingLimit,
@@ -69,7 +67,6 @@ function BudgetsPage() {
     }
   };
 
-
   const deleteBudget = async (budgetId: number) => {
     try {
       await BudgetService.deleteBudget(budgetId);
@@ -83,14 +80,18 @@ function BudgetsPage() {
   if (error) {
     return <div>{error}</div>;
   }
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <section className="w-full">
       <div className="p-10">
-        <Typography variant="lead" color="blue-gray" className="font-bold text-lg">
+        <Typography
+          variant="lead"
+          color="blue-gray"
+          className="font-bold text-lg"
+        >
           Budgets
         </Typography>
       </div>
@@ -102,13 +103,17 @@ function BudgetsPage() {
             onDeleteBudget={deleteBudget}
           />
         ))}
-        {filteredCategories.map((category) => (
-          category.name!="Income"?(<CategoryListItem
-            key={category.id}
-            category={category}
-            onAddBudget={addBudget}
-          />):(<span></span>)
-        ))}
+        {filteredCategories.map((category) =>
+          category.name != "Income" ? (
+            <CategoryListItem
+              key={category.id}
+              category={category}
+              onAddBudget={addBudget}
+            />
+          ) : (
+            <span></span>
+          )
+        )}
       </div>
     </section>
   );

@@ -3,7 +3,9 @@ import { Bar } from 'react-chartjs-2';
 import { Transaction } from '../../models/Transaction';
 import { TransactionService } from '../../services/TransactionService';
 import { BarChartTransactionsProps } from '../props/BarChartTransactionsProps';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, TooltipItem } from 'chart.js';
+import { ChartOptions } from 'chart.js';
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -69,7 +71,7 @@ const BarChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
     ],
   };
 
-  const options = {
+  const options: ChartOptions<"bar"> = {
     responsive: true,
     animation: false,
     devicePixelRatio: 4,
@@ -84,7 +86,7 @@ const BarChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
       },
       tooltip: {
         callbacks: {
-            label: (tooltipItem: any) => {
+            label: (tooltipItem: TooltipItem<'bar'>) => {
               const datasetIndex = tooltipItem.datasetIndex;
               const date = tooltipItem.label; 
               
@@ -117,8 +119,8 @@ const BarChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
         },
         grid: {
             display: true, 
-            borderColor: '#ddd', 
-            borderWidth: 1,
+            // borderColor: '#ddd', 
+            // borderWidth: 1,
             lineWidth: 1,
             color: 'rgba(0, 0, 0, 0.1)', 
           },

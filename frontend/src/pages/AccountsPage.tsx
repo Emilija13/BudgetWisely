@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AccountService } from "../services/AccountService";
 import { Account } from "../models/Account";
 import { Typography } from "@material-tailwind/react";
@@ -14,7 +14,7 @@ const AccountsPage = () => {
   const userId = localStorage.getItem("userId");
 
 
-  const fetchAccounts = async () => {
+  const fetchAccounts = useCallback(async () => {
     try {
       setLoading(true);
       console.log("userid: ", userId)
@@ -29,11 +29,11 @@ const AccountsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  },[userId]);
 
   useEffect(() => {
     fetchAccounts();
-  }, []);
+  }, [fetchAccounts]);
 
   const handleAddButtonClick = () => {
     setIsFormVisible(true);
@@ -44,9 +44,9 @@ const AccountsPage = () => {
     setIsFormVisible(false);
   };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (error) {
     return <div>{error}</div>;
@@ -55,7 +55,7 @@ const AccountsPage = () => {
   return (
     <section className=" mx-10">
       {isFormVisible ? (
-        <AccountForm onClose={handleCloseForm} userId={+userId!} />
+        <AccountForm onClose={handleCloseForm} userId={+userId!} onFormSubmitSuccess={handleCloseForm}/>
       ) : (
         <div>
           <div className="flex justify-between p-6">

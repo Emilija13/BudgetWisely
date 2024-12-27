@@ -3,7 +3,8 @@ import { Doughnut } from 'react-chartjs-2';
 import { Transaction } from '../../models/Transaction';
 import { TransactionService } from '../../services/TransactionService';
 import { BarChartTransactionsProps } from '../props/BarChartTransactionsProps';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, TooltipItem } from 'chart.js';
+import { ChartOptions } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -65,33 +66,33 @@ const DonutChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
     ],
   };
 
-  const options = {
+  const options: ChartOptions<"doughnut"> = {
     responsive: true,
     aspectRatio: 1.4,
-    cutout: '92%',
-    devicePixelRatio: 4,
+    cutout: "92%", // Ensures a large center cutout
+    devicePixelRatio: 4, // High pixel density for sharper rendering
     plugins: {
       legend: {
-        position: 'bottom',
+        position: "bottom", // Valid value for legend position
         labels: {
-          usePointStyle: true, 
-          pointStyle: 'rect', 
+          usePointStyle: true,
+          pointStyle: "rect", // Use rectangular point style
           padding: 20,
           boxWidth: 30,
         },
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: any) => {
+          label: (tooltipItem: TooltipItem<'doughnut'>) => {
             const category = tooltipItem.label;
             const expense = categoryData[category] || 0;
-
-            return `${category}: ${expense.toFixed(2)} MKD`;
+            return `${category}: ${expense.toFixed(2)} MKD`; 
           },
         },
       },
     },
   };
+  
 
   return (
     <div className='relative h-70 flex justify-center items-center pt-10  w-full max-w-full'>

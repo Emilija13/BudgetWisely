@@ -9,10 +9,12 @@ import {
   Title,
   Tooltip,
   Legend,
+  TooltipItem,
 } from "chart.js";
 import { AccountService } from "../../services/AccountService";
 import { FilterDto } from "../../models/dto/FilterDto";
 import { BalanceDto } from "../../models/dto/BalanceDto";
+import { ChartOptions } from 'chart.js';
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -96,7 +98,7 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
     ],
   };
 
-  const options = {
+  const options: ChartOptions<"line"> = {
     devicePixelRatio: 4,
     responsive: true,
     plugins: {
@@ -110,8 +112,8 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: any) => {
-            const value = tooltipItem.raw;
+          label: (tooltipItem: TooltipItem<'line'>) => {
+            const value = tooltipItem.raw as number;
             return `Balance: ${value.toFixed(2)} MKD`;
           },
         },
@@ -138,8 +140,8 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
           display: false,
         },
         ticks: {
-          maxTicksLimit: 4, // Limit the maximum number of ticks to 4
-          callback: (value: number) => value.toFixed(0), // Display numbers without decimals
+          maxTicksLimit: 4,
+          // callback: (value: number) => value.toFixed(0),
         },
       },
     },

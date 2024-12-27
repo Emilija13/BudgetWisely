@@ -12,12 +12,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, spent, limit }) =
                 ? "bg-[rgb(255,148,87)]"
                 : "bg-[rgb(255,97,97)]"
             }`}
-          // className={`absolute top-0 left-0 h-2 rounded-full ${percentage < 50
-          //   ? "main-color"
-          //   : percentage < 85
-          //     ? "main-color"
-          //     : "main-color"
-          // }`}
+         
           style={{ width: `${percentage}%` }}
         ></div>
       </div>

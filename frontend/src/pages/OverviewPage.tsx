@@ -1,5 +1,4 @@
 import { Typography } from "@material-tailwind/react";
-import DonutChart from "../components/charts/DonutChart";
 import BarChartTransactions from "../components/charts/BarChartTransactions";
 import { FilterDto } from "../models/dto/FilterDto";
 import DonutChartTransactions from "../components/charts/DountChartTransactions";
@@ -55,6 +54,14 @@ function OverviewPage() {
     ...filterDto,
     type: "EXPENSE", 
   };
+
+  
+  if (error) {
+    return <div>{error}</div>;
+  }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
     return (
         <section className="w-full">

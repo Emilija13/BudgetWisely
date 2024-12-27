@@ -44,7 +44,7 @@ const TransactionForm: React.FC<FormProps> = ({
       console.log(newTransaction);
       await TransactionService.addTransaction(newTransaction);
       alert("Transaction added successfully");
-      onFormSubmitSuccess(); // Close the form after success
+      onFormSubmitSuccess(); 
     } catch (error) {
       console.error(`Error adding transaction:`, error);
       alert(`Failed to add transaction`);
