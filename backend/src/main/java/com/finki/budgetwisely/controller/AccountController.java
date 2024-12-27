@@ -1,7 +1,11 @@
 package com.finki.budgetwisely.controller;
 
+import com.finki.budgetwisely.dto.AccountBalanceDto;
 import com.finki.budgetwisely.dto.AccountRequestDto;
+import com.finki.budgetwisely.dto.FilterDto;
 import com.finki.budgetwisely.model.Account;
+import com.finki.budgetwisely.model.Transaction;
+import com.finki.budgetwisely.service.AccountHistoryService;
 import com.finki.budgetwisely.service.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +16,11 @@ import java.util.List;
 @RequestMapping("/api/accounts")
 public class AccountController {
     private final AccountService accountService;
+    private final AccountHistoryService accountHistoryService;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, AccountHistoryService accountHistoryService) {
         this.accountService = accountService;
+        this.accountHistoryService = accountHistoryService;
     }
 
     @GetMapping
@@ -46,5 +52,10 @@ public class AccountController {
         this.accountService.deleteById(id);
         if (this.accountService.findById(id).isEmpty()) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/balance-history")
+    private List<AccountBalanceDto> filter(@RequestBody FilterDto filterDto) {
+        return this.accountHistoryService.filter(filterDto);
     }
 }

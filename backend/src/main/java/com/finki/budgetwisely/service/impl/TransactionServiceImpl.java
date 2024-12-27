@@ -14,9 +14,12 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,10 @@ public class TransactionServiceImpl implements TransactionService {
     private final AccountRepository accountRepository;
     private final BudgetRepository budgetRepository;
     private final UserRepository userRepository;
+    private final AccountHistoryRepository accountHistoryRepository;
+    private final AccountHistoryServiceImpl accountHistoryService;
+
+    private static final Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -36,12 +43,14 @@ public class TransactionServiceImpl implements TransactionService {
                                   CategoryRepository categoryRepository,
                                   AccountRepository accountRepository,
                                   BudgetRepository budgetRepository,
-                                  UserRepository userRepository) {
+                                  UserRepository userRepository, AccountHistoryRepository accountHistoryRepository, AccountHistoryServiceImpl accountHistoryService) {
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
         this.accountRepository = accountRepository;
         this.budgetRepository = budgetRepository;
         this.userRepository = userRepository;
+        this.accountHistoryRepository = accountHistoryRepository;
+        this.accountHistoryService = accountHistoryService;
     }
 
     @Override
@@ -77,8 +86,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         if (filterDto.getStart() != null && filterDto.getEnd() !=null) {
-//            LocalDate start = filterDto.getStart();
-//            LocalDate end = filterDto.getEnd();
 
             LocalDate start = LocalDate.parse(filterDto.getStart());
             LocalDate end = LocalDate.parse(filterDto.getEnd());
@@ -86,14 +93,6 @@ public class TransactionServiceImpl implements TransactionService {
             predicates.add(cb.greaterThanOrEqualTo(transaction.get("date"), start.atStartOfDay()));
             predicates.add(cb.lessThanOrEqualTo(transaction.get("date"), end.atTime(23, 59, 59)));
         }
-
-//        if (filterDto.getYearMonth() != null) {
-//            LocalDate startOfMonth = filterDto.getYearMonth().withDayOfMonth(1);
-//            LocalDate endOfMonth = filterDto.getYearMonth().withDayOfMonth(filterDto.getYearMonth().lengthOfMonth());
-//
-//            predicates.add(cb.greaterThanOrEqualTo(transaction.get("date"), startOfMonth.atStartOfDay()));
-//            predicates.add(cb.lessThanOrEqualTo(transaction.get("date"), endOfMonth.atTime(23, 59, 59)));
-//        }
 
         query.where(cb.and(predicates.toArray(new Predicate[0])));
 
@@ -145,11 +144,13 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         this.accountRepository.save(account);
+        accountHistoryService.updateHistoryOnAddTransaction(transaction);
 
         return Optional.of(transaction);
     }
 
     @Override
+    @Transactional
     public Optional<Transaction> edit(Long id, TransactionRequestDto transactionDto) {
         Transaction transaction = this.transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
 
@@ -172,7 +173,39 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        this.transactionRepository.deleteById(id);
+        try {
+            // Find the transaction by ID
+            Transaction transaction = transactionRepository.findById(id)
+                    .orElseThrow(() -> new TransactionNotFoundException(id));
+
+            // Find the associated account
+            Account account = accountRepository.findById(transaction.getAccount().getId())
+                    .orElseThrow(() -> new AccountNotFoundException(transaction.getAccount().getId()));
+
+            // Log the transaction to be deleted
+            logger.info("Deleting transaction with ID: " + transaction.getId());
+
+            // Step 1: Update the account balance by reversing the transaction cost
+            account.setBalance(account.getBalance() + (transaction.getType() == TransactionType.INCOME ?
+                    -transaction.getCost() : transaction.getCost()));
+
+            // Step 2: Update the account history before deleting the transaction
+            accountHistoryService.updateHistoryOnDeleteTransaction(transaction);
+            transactionRepository.flush();
+
+            // Step 3: Delete the transaction after account history is updated
+            this.transactionRepository.deleteById(id);
+
+            // Log successful deletion
+            logger.info("Successfully deleted transaction with ID: " + transaction.getId());
+
+        } catch (Exception e) {
+            // Log the exception if any error occurs
+            logger.error("Error occurred while deleting transaction with ID: " + id, e);
+            throw e;  // Re-throw exception to let Spring handle rollback
+        }
     }
+
 }

@@ -23,6 +23,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, spent, limit }) =
       </div>
       <div className="flex justify-between text-sm mt-1 font-light">
         <span className="text-gray-600">{spent} MKD</span>
+        <span className="text-gray-500">Remaining: {limit-spent} MKD</span>
         <span className="text-gray-600">{limit} MKD</span>
       </div>
     </div>

@@ -109,6 +109,7 @@ const TransactionsPage = () => {
               <Filter
                 categories={categories}
                 accounts={accounts}
+                userId={+userId!}
                 onFilterChange={handleFilterChange}
               />
               <div className="mb-5 mr-6">

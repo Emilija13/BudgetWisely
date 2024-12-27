@@ -5,15 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class FilterDto {
-    Long userId;
-    Long accountId;
-    Long categoryId;
-    String type;
-    String start;
-    String end;
+public class AccountBalanceDto{
+
+    Long totalBalance;
+    LocalDateTime timestamp;
+    LocalDateTime createdAt;
 }

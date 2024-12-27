@@ -5,6 +5,7 @@ import { Card, Typography } from "@material-tailwind/react";
 import Table from "../components/Table";
 import AddButton from "../components/AddButton";
 import AddForm from "../components/AddForm";
+import AccountsList from "../components/AccountsList";
 
 const AccountsPage = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -54,7 +55,7 @@ const AccountsPage = () => {
   const TABLE_HEAD = ["Name", "Balance"];
 
   return (
-    <section className="w-full bg-white">
+    <section className=" mx-10">
       {isFormVisible ? (
         <AddForm pageName="account" onClose={handleCloseForm} />
       ) : (
@@ -75,13 +76,14 @@ const AccountsPage = () => {
 
             <AddButton text="+" onClick={handleAddButtonClick} />
           </div>
-          <Card className="h-full w-full border border-gray-300 px-6 overflow-hidden">
+          <AccountsList accounts={accounts}></AccountsList>
+          {/* <Card className="h-full w-full border border-gray-300 px-6 overflow-hidden">
             {accounts.length > 0 ? (
               <Table TABLE_HEAD={TABLE_HEAD} accounts={accounts} />
             ) : (
               <Typography>No accounts available.</Typography>
             )}
-          </Card>
+          </Card> */}
         </div>
       )}
     </section>

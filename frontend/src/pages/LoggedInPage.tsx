@@ -8,7 +8,7 @@ import UserDetails from './UserDetails'
 
 const LoggedInPage = () => {
   return (
-      <div className="flex font-medium rounded-md bg-[rgb(250,250,250)]">
+      <div className="flex font-medium rounded-md bg-[rgb(249,249,251)]">
         <Sidebar>
         </Sidebar>
 

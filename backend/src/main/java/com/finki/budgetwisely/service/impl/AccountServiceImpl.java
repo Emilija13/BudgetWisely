@@ -4,11 +4,15 @@ import com.finki.budgetwisely.dto.AccountRequestDto;
 import com.finki.budgetwisely.exceptions.AccountNotFoundException;
 import com.finki.budgetwisely.exceptions.UserNotFoundException;
 import com.finki.budgetwisely.model.Account;
+import com.finki.budgetwisely.model.AccountHistory;
 import com.finki.budgetwisely.model.User;
+import com.finki.budgetwisely.repository.AccountHistoryRepository;
 import com.finki.budgetwisely.repository.AccountRepository;
 import com.finki.budgetwisely.repository.UserRepository;
 import com.finki.budgetwisely.service.AccountService;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,9 +21,12 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
 
-    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository) {
+    private final AccountHistoryRepository accountHistoryRepository;
+
+    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, AccountHistoryRepository accountHistoryRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.accountHistoryRepository = accountHistoryRepository;
     }
 
     @Override
@@ -47,6 +54,9 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account(accountDto.getName(), accountDto.getBalance(), user);
         this.accountRepository.save(account);
 
+        AccountHistory accountHistory = new AccountHistory(account, account.getBalance(), accountRepository.getTotalBalanceByUserId(user.getId()), LocalDateTime.now());
+        accountHistoryRepository.save(accountHistory);
+
         return Optional.of(account);
     }
 
@@ -63,12 +73,25 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new UserNotFoundException(accountDto.getUser()));
         account.setUser(user);
 
+
         this.accountRepository.save(account);
+
+
+        AccountHistory accountHistory = new AccountHistory(account, account.getBalance(), user.getId(), LocalDateTime.now());
+        accountHistoryRepository.save(accountHistory);
+
         return Optional.of(account);
     }
 
     @Override
     public void deleteById(Long id) {
+        Account account = accountRepository.findById(id).orElseThrow(() ->new AccountNotFoundException(id));
+        Long userId = account.getUser().getId();
+
         this.accountRepository.deleteById(id);
+
+
+        AccountHistory accountHistory = new AccountHistory(null, null, accountRepository.getTotalBalanceByUserId(userId), LocalDateTime.now());
+        accountHistoryRepository.save(accountHistory);
     }
 }

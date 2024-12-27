@@ -5,5 +5,6 @@ import { FilterDto } from "../../models/dto/FilterDto";
 export interface FilterProps {
   categories: Category[];
   accounts: Account[];
+  userId: number;
   onFilterChange?: (filters: FilterDto) => void;
 }

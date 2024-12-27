@@ -4,7 +4,7 @@ import { TransactionType } from "../models/enum/TransactionType";
 import { FilterDto } from "../models/dto/FilterDto";
 import { format } from 'date-fns';
 
-const Filter: React.FC<FilterProps> = ({ categories = [], accounts = [], onFilterChange }) => {
+const Filter: React.FC<FilterProps> = ({ categories = [], accounts = [], userId, onFilterChange }) => {
   const today = new Date();
   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -19,7 +19,7 @@ const Filter: React.FC<FilterProps> = ({ categories = [], accounts = [], onFilte
   const handleFilterChange = () => {
     if (onFilterChange) {
       const filter: FilterDto = {
-        userId: 1, 
+        userId: userId, 
         accountId: selectedAccount,
         categoryId: selectedCategory,
         type: selectedType,
@@ -64,7 +64,7 @@ const Filter: React.FC<FilterProps> = ({ categories = [], accounts = [], onFilte
           {/* Account Filter */}
           <div className="flex justify-between items-center mr-3">
             <select
-              className="w-[8rem] p-[6px] text-sm font-light rounded-md main-color text-white"
+              className="w-[8rem] p-[6px] text-sm font-light rounded-md main-color text-white "
               value={selectedAccount || ""}
               onChange={(e) => {
                 const value = e.target.value ? parseInt(e.target.value, 10) : undefined;

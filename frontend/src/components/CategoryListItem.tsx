@@ -30,8 +30,6 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
     };
   }, []);
 
-
-
   const handleAddClick = () => {
     setIsAdding(true);
   };
@@ -61,8 +59,10 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
   const percentage = Math.min((spent / limit!!) * 100, 100);
 
   return (
-    <div className="flex justify-between items-center rounded-lg pl-7 pr-0 py-6 bg-white relative group"
-      style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+    <div
+      className="flex justify-between items-center rounded-lg pl-7 pr-0 py-6 bg-white relative group"
+      style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
+    >
       <div className="flex items-center">
         <img
           src={category?.image || budget?.category.image}
@@ -72,13 +72,29 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
       </div>
 
       <div className="flex-1 mx-4">
-        <Typography
-          variant="lead"
-          color="blue-gray"
-          className="font-semibold ml-1 mb-0.5 text-base"
-        >
-          {category?.name || budget?.category.name}
-        </Typography>
+        <div className="flex justify-between items-center">
+          <Typography
+            variant="lead"
+            color="blue-gray"
+            className="font-semibold ml-1 mb-0.5 text-base"
+          >
+            {category?.name || budget?.category.name}
+          </Typography>
+
+
+          {/* {limit !== null ? (
+
+          <Typography
+            variant="small"
+            className="text-sm font-thin mr-3 text-gray-500"
+          >
+            {`Left: ${budget?.leftover} MKD`}
+          </Typography>
+        ) : (
+          <Typography> </Typography>
+        )} */}
+        </div>
+
         {limit !== null ? (
           <ProgressBar percentage={percentage} spent={spent} limit={limit} />
         ) : (
@@ -101,8 +117,10 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
       ) : (
         <div className="pr-4 mr-2">
           {spendingLimit !== null ? (
-            <button className="w-7 h-7 rounded-full hover:bg-gray-100 p-0.7 group-hover:block hidden hover:text-gray-400"
-              onClick={handleDeleteClick}>
+            <button
+              className="w-7 h-7 rounded-full hover:bg-gray-100 p-0.7 group-hover:block hidden hover:text-gray-400"
+              onClick={handleDeleteClick}
+            >
               <span className="text-xl font-light text-gray-300">×</span>
             </button>
           ) : (
@@ -118,7 +136,6 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
         </div>
       )}
     </div>
-
   );
 };
 

@@ -6,6 +6,8 @@ import { TransactionService } from "../services/TransactionService";
 import { TransactionType } from "../models/enum/TransactionType";
 
 const AddForm: React.FC<FormProps> = ({ pageName, categories, accounts, onClose }) => {
+  
+  
   const [formData, setFormData] = useState({
     name: "",
     balance: 0,

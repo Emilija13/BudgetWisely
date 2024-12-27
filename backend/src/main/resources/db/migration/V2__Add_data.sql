@@ -6,6 +6,13 @@ VALUES
     ('Wallet', 2500, (SELECT id FROM users WHERE email = 'user@gmail.com')),
     ('Visa 5452', 1800, (SELECT id FROM users WHERE email = 'user@gmail.com'));
 
+
+INSERT INTO accounts_history (balance, total_balance, timestamp, created_at, account_id)
+VALUES
+    (2500, 2500, '2024-12-01T00:00:00', '2024-12-01T00:00:00', (SELECT id FROM accounts WHERE name = 'Wallet')),
+    (1800, 4300, '2024-12-02T00:00:00', '2024-12-02T00:00:00', (SELECT id FROM accounts WHERE name = 'Visa 5452'));
+
+
 INSERT INTO categories(name, image)
 VALUES
     ('Groceries', 'https://cdn-icons-png.flaticon.com/512/291/291893.png'),

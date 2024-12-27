@@ -47,3 +47,16 @@ CREATE TABLE transactions
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
     FOREIGN KEY (account_id) REFERENCES accounts (id) ON DELETE CASCADE
 );
+
+CREATE TABLE accounts_history
+(
+    id             BIGSERIAL PRIMARY KEY,
+    balance        BIGINT ,
+    total_balance BIGINT       NOT NULL,
+    timestamp    TIMESTAMP   NOT NULL,
+    created_at    TIMESTAMP   NOT NULL,
+    account_id BIGINT  ,
+    transaction_id BIGINT,
+    FOREIGN KEY (account_id) REFERENCES accounts (id) ON DELETE SET NULL,
+    FOREIGN KEY (transaction_id) REFERENCES transactions (id) ON DELETE SET NULL
+);
