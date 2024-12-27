@@ -18,7 +18,10 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
         setIsAdding(false);
       }
     };
@@ -54,9 +57,9 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
     }
   };
 
-  const spent = budget?.spendingLimit!! - budget?.leftover!! || 0;
-  const limit = budget?.spendingLimit || null;
-  const percentage = Math.min((spent / limit!!) * 100, 100);
+  const spent = (budget?.spendingLimit ?? 0) - (budget?.leftover ?? 0);
+  const limit = budget?.spendingLimit ?? null;
+  const percentage = limit ? Math.min((spent / limit) * 100, 100) : 0;
 
   return (
     <div
@@ -108,7 +111,7 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
             ref={inputRef}
             type="text"
             placeholder="Enter amount"
-            className="py-1 px-3 border rounded-lg font-light text-gray-700 focus:ring-2 focus:ring-indigo-300 w-28"
+            className="py-1 px-1 border rounded-lg font-light text-gray-700 focus:ring-2 focus:ring-indigo-300 w-28"
             value={spendingLimit || ""}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}

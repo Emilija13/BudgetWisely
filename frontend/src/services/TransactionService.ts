@@ -24,4 +24,18 @@ export const TransactionService = {
   }) => {
     return await axiosInstance.post((TransactionService.url + "/add"), transactionData);
   },
+  editTransaction: async (id: number,transactionData: {
+    name: string;
+    cost: number;
+    date: string;
+    type: string;
+    account: number;
+    category: number;
+  }) => {
+    return await axiosInstance.put<Transaction[]>(`${TransactionService.url}/edit/${id}`,transactionData);
+  },
+  deleteTransaction: async (id: number) => {
+    return await axiosInstance.delete<Transaction[]>(`${TransactionService.url}/delete/${id}`);
+  },
+
 };

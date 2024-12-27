@@ -19,23 +19,25 @@ const TransactionsPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false); // State to toggle form visibility
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const userId = localStorage.getItem("userId");
 
   const fetchTransactions = async () => {
     try {
-        setLoading(true);
-        console.log("userid: ", userId);
-        const response = await CategoryService.getAllCategories();
-        setCategories(response.data);
-        if (userId) {
-          const response1 = await TransactionService.getAllTransactionsForUser(+userId);
-          setTransactions(response1.data);
+      setLoading(true);
+      console.log("userid: ", userId);
+      const response = await CategoryService.getAllCategories();
+      setCategories(response.data);
+      if (userId) {
+        const response1 =
+          await TransactionService.getAllTransactionsForUser(+userId);
+        setTransactions(response1.data);
 
-          const response2 = await AccountService.getAllAccountsForUser(+userId);
-          setAccounts(response2.data);
-          console.log("Transactions: ", response1.data);
-        }
-
+        const response2 = await AccountService.getAllAccountsForUser(+userId);
+        setAccounts(response2.data);
+        console.log("Transactions: ", response1.data);
+      }
     } catch (err) {
       console.error("Error fetching transactions:", err);
       setError("Failed to load transactions:");
@@ -58,17 +60,35 @@ const TransactionsPage = () => {
   };
 
   const handleAddButtonClick = () => {
+    setSelectedTransaction(null);
     setIsFormVisible(true);
   };
 
   const handleCloseForm = () => {
     setIsFormVisible(false);
+    fetchTransactions();
+  };
+
+  const handleEdit = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await TransactionService.deleteTransaction(id);
+      console.log(response);
+    } catch (err) {
+      console.error("Error deleting transaction:", err);
+      setError("Failed to delete transaction:");
+    } finally {
+      setLoading(false);
+      fetchTransactions();
+    }
   };
 
   useEffect(() => {
     fetchTransactions();
   }, []);
-
 
   // if (loading) {
   //   return <div>Loading...</div>;
@@ -77,7 +97,6 @@ const TransactionsPage = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
 
   return (
     <section className="w-full">
@@ -91,7 +110,11 @@ const TransactionsPage = () => {
             >
               ✕
             </button>
-            <TransactionForm onFormSubmitSuccess={handleCloseForm} categories={categories} accounts={accounts} />
+            <TransactionForm
+              onFormSubmitSuccess={handleCloseForm}
+              categories={categories}
+              accounts={accounts}
+            />
           </div>
         </div>
       )}
@@ -99,7 +122,11 @@ const TransactionsPage = () => {
       {/* Main Content */}
       <div>
         <div className="p-10">
-          <Typography variant="lead" color="blue-gray" className="font-bold text-lg">
+          <Typography
+            variant="lead"
+            color="blue-gray"
+            className="font-bold text-lg"
+          >
             Transactions
           </Typography>
         </div>
@@ -119,7 +146,11 @@ const TransactionsPage = () => {
                 />
               </div>
             </div>
-            <TransactionsTable transactions={transactions} />
+            <TransactionsTable
+              transactions={transactions}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           </div>
         </div>
       </div>

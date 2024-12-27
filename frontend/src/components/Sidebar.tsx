@@ -1,4 +1,3 @@
-import { ChevronLast, ChevronFirst } from "lucide-react";
 import React, { createContext, useContext, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 

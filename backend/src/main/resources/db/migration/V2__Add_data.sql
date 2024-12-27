@@ -19,7 +19,8 @@ VALUES
     ('Pets', 'https://cdn-icons-png.flaticon.com/512/8409/8409707.png'),
     ('Clothes', 'https://cdn-icons-png.flaticon.com/512/1856/1856030.png'),
     ('Gas', 'https://cdn-icons-png.freepik.com/512/316/316377.png'),
-    ('Going Out', 'https://cdn-icons-png.flaticon.com/512/5444/5444053.png');
+    ('Going Out', 'https://cdn-icons-png.flaticon.com/512/5444/5444053.png'),
+    ('Income', 'https://cdn-icons-png.flaticon.com/512/7921/7921493.png');
 
 INSERT INTO budgets(spending_limit, leftover, year_month, category_id, user_id)
 VALUES

@@ -3,13 +3,16 @@ import { FormProps } from "./props/FormProps";
 import { TransactionType } from "../models/enum/TransactionType";
 import { TransactionService } from "../services/TransactionService";
 
-
-const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], onFormSubmitSuccess }) => {
+const TransactionForm: React.FC<FormProps> = ({
+  categories = [],
+  accounts = [],
+  onFormSubmitSuccess,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     cost: 0,
     date: "",
-    category: -1,
+    category: 6,
     user: 1,
     account: -1,
     type: "",
@@ -36,10 +39,11 @@ const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], 
         account: formData.account,
         type: formData.type,
       };
-      console.log(newTransaction);
-      await TransactionService.addTransaction(newTransaction);
-      alert('Transaction added successfully');
-      onFormSubmitSuccess(); // Close the form after success
+
+        console.log(newTransaction);
+        await TransactionService.addTransaction(newTransaction);
+        alert("Transaction added successfully");
+        onFormSubmitSuccess(); // Close the form after success
     } catch (error) {
       console.error(`Error adding transaction:`, error);
       alert(`Failed to add transaction`);
@@ -50,13 +54,17 @@ const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], 
     <div className="my-4 w-full">
       <div className="relative px-3 pt-6 pb-4 bg-white rounded-xl">
         {/* Title */}
-        <h3 className="text-md font-semibold text-gray-600 mb-10">New Transaction</h3>
+        <h3 className="text-md font-semibold text-gray-600 mb-10">
+          New Transaction
+        </h3>
 
         {/* Form Fields */}
         <form className="space-y-3" onSubmit={handleSubmit}>
           {/* Name */}
           <div>
-            <label className="block text-sm font-light text-gray-600 mb-1">Name</label>
+            <label className="block text-sm font-light text-gray-600 mb-1">
+              Name
+            </label>
             <input
               type="text"
               name="name"
@@ -69,7 +77,9 @@ const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], 
           {/* Amount and Account */}
           <div className="grid grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-light text-gray-600 mb-1">Amount</label>
+              <label className="block text-sm font-light text-gray-600 mb-1">
+                Amount
+              </label>
               <input
                 type="number"
                 name="cost"
@@ -79,7 +89,9 @@ const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], 
               />
             </div>
             <div>
-              <label className="block text-sm font-light text-gray-600 mb-1">Account</label>
+              <label className="block text-sm font-light text-gray-600 mb-1">
+                Account
+              </label>
               <select
                 name="account"
                 value={formData.account}
@@ -99,7 +111,9 @@ const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], 
           {/* Type and Date */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-light text-gray-600 mb-1">Type</label>
+              <label className="block text-sm font-light text-gray-600 mb-1">
+                Type
+              </label>
               <select
                 name="type"
                 value={formData.type}
@@ -112,7 +126,9 @@ const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], 
               </select>
             </div>
             <div>
-              <label className="block text-sm font-light text-gray-600 mb-1">Date</label>
+              <label className="block text-sm font-light text-gray-600 mb-1">
+                Date
+              </label>
               <input
                 type="datetime-local"
                 name="date"
@@ -125,20 +141,34 @@ const TransactionForm: React.FC<FormProps> = ({ categories = [], accounts = [], 
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-light text-gray-600 mb-1">Category</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            >
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+            <label className="block text-sm font-light text-gray-600 mb-1">
+              Category
+            </label>
+            {formData.type == TransactionType.INCOME ? (
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                disabled
+                className="w-full p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              >
+                <option value={TransactionType.INCOME}>Income</option>
+              </select>
+            ) : (
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           {/* Submit Button */}
