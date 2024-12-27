@@ -1,7 +1,7 @@
 import { Typography } from "@material-tailwind/react";
 import BarChartTransactions from "../components/charts/BarChartTransactions";
 import { FilterDto } from "../models/dto/FilterDto";
-import DonutChartTransactions from "../components/charts/DountChartTransactions";
+import DonutChartTransactions from "../components/charts/DonutChartTransactions";
 import LineChartAccountBalance from "../components/charts/LineChartAccounts";
 import { AccountService } from "../services/AccountService";
 import { Account } from "../models/Account";
@@ -65,7 +65,7 @@ function OverviewPage() {
 
     return (
         <section className="w-full">
-            <div className="p-10">
+            <div className="p-10 mx-10">
                 <Typography variant="lead" color="blue-gray" className="font-bold text-lg">
                     Overview
                 </Typography>

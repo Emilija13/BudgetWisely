@@ -15,12 +15,24 @@ VALUES
 
 INSERT INTO categories(name, image)
 VALUES
-    ('Groceries', 'https://cdn-icons-png.flaticon.com/512/291/291893.png'),
-    ('Pets', 'https://cdn-icons-png.flaticon.com/512/8409/8409707.png'),
     ('Clothes', 'https://cdn-icons-png.flaticon.com/512/1856/1856030.png'),
+    ('Debt Payments', 'https://cdn-icons-png.flaticon.com/512/5200/5200544.png'),
+    ('Eating Out', 'https://cdn-icons-png.flaticon.com/512/242/242452.png'),
     ('Gas', 'https://cdn-icons-png.freepik.com/512/316/316377.png'),
     ('Going Out', 'https://cdn-icons-png.flaticon.com/512/5444/5444053.png'),
+    ('Groceries', 'https://cdn-icons-png.flaticon.com/512/291/291893.png'),
+    ('Health', 'https://cdn-icons-png.freepik.com/512/5247/5247609.png'),
+    ('Home Goods', 'https://cdn-icons-png.freepik.com/512/3558/3558797.png'),
+    ('Housing', 'https://cdn-icons-png.flaticon.com/512/1594/1594383.png'),
+    ('Insurance', 'https://cdn-icons-png.flaticon.com/512/4960/4960792.png'),
+    ('Personal Care', 'https://cdn-icons-png.freepik.com/512/1592/1592024.png'),
+    ('Pets', 'https://cdn-icons-png.flaticon.com/512/8409/8409707.png'),
+    ('Subscriptions', 'https://cdn-icons-png.flaticon.com/512/7411/7411948.png'),
+    ('Transport', 'https://cdn-icons-png.flaticon.com/512/7723/7723192.png'),
+    ('Utilities', 'https://cdn-icons-png.flaticon.com/512/9894/9894471.png'),
+    ('Other', 'https://cdn-icons-png.flaticon.com/512/2550/2550282.png'),
     ('Income', 'https://cdn-icons-png.flaticon.com/512/7921/7921493.png');
+
 
 INSERT INTO budgets(spending_limit, leftover, year_month, category_id, user_id)
 VALUES

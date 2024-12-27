@@ -18,10 +18,10 @@ const AccountsPage = () => {
     try {
       setLoading(true);
       console.log("userid: ", userId)
-      if(userId)
-      {  const response = await AccountService.getAllAccountsForUser(+userId);
+      if (userId) {
+        const response = await AccountService.getAllAccountsForUser(+userId);
         setAccounts(response.data);
-        console.log("Acc: ",response.data)
+        console.log("Acc: ", response.data)
       }
     } catch (err) {
       console.error("Error fetching accounts:", err);
@@ -29,7 +29,7 @@ const AccountsPage = () => {
     } finally {
       setLoading(false);
     }
-  },[userId]);
+  }, [userId]);
 
   useEffect(() => {
     fetchAccounts();
@@ -53,17 +53,17 @@ const AccountsPage = () => {
   }
 
   return (
-    <section className=" mx-10">
+    <section className="p-10 mx-10">
       {isFormVisible ? (
-        <AccountForm onClose={handleCloseForm} userId={+userId!} onFormSubmitSuccess={handleCloseForm}/>
+        <AccountForm onClose={handleCloseForm} userId={+userId!} onFormSubmitSuccess={handleCloseForm} />
       ) : (
         <div>
-          <div className="flex justify-between p-6">
+          <div className="flex justify-between">
             <div>
               <Typography
                 variant="lead"
                 color="blue-gray"
-                className="font-bold"
+                className="font-bold text-lg"
               >
                 Accounts List
               </Typography>

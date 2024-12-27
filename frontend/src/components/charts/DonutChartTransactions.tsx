@@ -54,10 +54,21 @@ const DonutChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
         data: expenseData,
         backgroundColor: [
           '#475EE1', // Blue
-          '#FF9304', // Yellow
           '#FF6161', // Red
           '#00B58D', // Green
+          '#FF9304', // Orange
+          '#19CFFC', // Cyan
+          '#FFC3D2', // LightPink
+          '#EA132F', // BrightRed
+          '#273B7A', // DarkPurple
+          '#FFE370', // Yellow
+          '#9076FB', // Purple
+          '#00EC9D', // LightGreen
           '#F741DF', // Pink
+          '#79BAFF', // LightBlue
+          '#96FF26', // Lime
+          '#D050C7', // Lilac
+          '#FFC550', // Honey
         ],
         borderRadius: 0,
         borderWidth: 0,

@@ -86,13 +86,16 @@ function BudgetsPage() {
 
   return (
     <section className="w-full">
-      <div className="p-10">
+      <div className="p-10 mx-10">
         <Typography
           variant="lead"
           color="blue-gray"
           className="font-bold text-lg"
         >
           Budgets
+        </Typography>
+        <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
+          A list of all your monthly budgets.
         </Typography>
       </div>
       <div className="mx-20 grid grid-cols-2 gap-4 pb-5 h-auto w-auto overflow-y-auto">
