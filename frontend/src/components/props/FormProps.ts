@@ -11,6 +11,6 @@ export interface FormProps{
     type?: TransactionType;
     categories? : Category[];
     accounts? : Account[];
-    onFormSubmitSuccess?: () => void; 
+    onFormSubmitSuccess: () => void; 
     onClose?: () => void;
 }

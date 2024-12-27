@@ -41,10 +41,10 @@ const TransactionForm: React.FC<FormProps> = ({
         type: formData.type,
       };
 
-        console.log(newTransaction);
-        await TransactionService.addTransaction(newTransaction);
-        alert("Transaction added successfully");
-        onFormSubmitSuccess(); // Close the form after success
+      console.log(newTransaction);
+      await TransactionService.addTransaction(newTransaction);
+      alert("Transaction added successfully");
+      onFormSubmitSuccess(); // Close the form after success
     } catch (error) {
       console.error(`Error adding transaction:`, error);
       alert(`Failed to add transaction`);
@@ -163,11 +163,14 @@ const TransactionForm: React.FC<FormProps> = ({
                 className="w-full p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
                 <option value="">Select a category</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
+                {categories
+                  .filter((category) => category.name !== "Income") 
+                  .map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+
               </select>
             )}
           </div>

@@ -18,6 +18,8 @@ const TransactionsPage = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<FilterDto | null>(null);
+
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false); // State to toggle form visibility
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
@@ -47,6 +49,7 @@ const TransactionsPage = () => {
   };
 
   const handleFilterChange = async (newFilters: FilterDto) => {
+    setFilters(filters);
     try {
       setLoading(true);
       const response = await TransactionService.filter(newFilters);
@@ -66,7 +69,10 @@ const TransactionsPage = () => {
 
   const handleCloseForm = () => {
     setIsFormVisible(false);
-    fetchTransactions();
+
+    if(filters)
+      handleFilterChange(filters);
+    
   };
 
   const handleEdit = (transaction: Transaction) => {
