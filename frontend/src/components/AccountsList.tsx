@@ -15,11 +15,12 @@ const AccountsList: React.FC<{ accounts: Account[] }> = ({ accounts }) => {
 const styles: { [key: string]: React.CSSProperties } = {
   listContainer: {
     display: "flex",
-    gap: "16px", // Spacing between cards
+    flexWrap: "wrap", // Enable flex wrapping
+    gap: "16px", 
     padding: "16px",
-    overflowX: "auto", // Horizontal scrolling for overflow
-    scrollbarWidth: "thin", // For modern browsers (optional)
-    scrollBehavior: "smooth", // Smooth scrolling (optional)
+    overflowX: "hidden", // Adjust this if wrapping is used
+    scrollbarWidth: "thin", 
+    scrollBehavior: "smooth",
   },
 };
 

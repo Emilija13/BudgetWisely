@@ -1,61 +1,74 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import { LoginRequest } from '../models/dto/LoginRequest';
-import AuthService from '../services/AuthService';
+import { useNavigate, useLocation } from 'react-router-dom';
+import LoginForm from '../components/LoginForm';
+import RegisterForm from '../components/RegisterForm';
+import { Typography } from '@material-tailwind/react';
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const location = useLocation();  // Get current location (route)
   const [error, setError] = useState<string | null>(null);
 
-  async function handleLogin(event: React.FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
+  const handleLoginSuccess = (token: string, userId: string) => {
+    setError(null);
+    localStorage.setItem("user", token);
+    localStorage.setItem("userId", userId);
+    navigate('/overview');
+  };
 
-    const request: LoginRequest = { email, password };
+  const handleLoginError = (error: string) => {
+    setError(error);
+  };
 
-    try {
-        const response = await AuthService.login(request)
-
-      const token = response.token;
-      if (token) {
-        setError(null);
-        console.log(response)
-        localStorage.setItem("user", token);
-        localStorage.setItem("userId", response.user.id);
-        navigate('/overview');  
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      setError('Invalid email or password');
-    }
-  }
+  // Determine which form to display based on the route
+  const isLoginRoute = location.pathname === '/login';
+  const isRegisterRoute = location.pathname === '/register';
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+    <div className="flex w-full h-screen">
+
+      {/* Left Side */}
+      <div className="flex-1 bg-white p-8 flex justify-center items-center">
+        <div className="w-full max-w-sm">
+
+          <div className='mb-10'>
+            <Typography
+              variant="lead"
+              color="blue-gray"
+              className="font-bold text-3xl"
+            >
+              {isLoginRoute ? 'Log in' : 'Sign up'}
+            </Typography>
+            <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
+              {isLoginRoute ? 'Welcome back! Please enter your details.' : 'Create an account to get started.'}
+            </Typography>
+          </div>
+
+          {/* Conditionally render LoginForm or RegisterForm */}
+          {isLoginRoute && (
+            <LoginForm onLoginSuccess={handleLoginSuccess} onLoginError={handleLoginError} />
+          )}
+          {isRegisterRoute && (
+            <RegisterForm onRegisterError={handleLoginError} />
+          )}
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+
+          <div className='mt-2 text-center'>
+            <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
+              {isLoginRoute ? "Don't have an account?" : "Already have an account?"}{' '}
+              <a className='main-color-text' href={isLoginRoute ? '/register' : '/login'}>
+                {isLoginRoute ? 'Sign up' : 'Log in'}
+              </a>
+            </Typography>
+          </div>
+        </div>
       </div>
-      <div>
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+
+      {/* Right Side */}
+      <div className="flex-1 main-color p-4">
+        {/* Optionally add additional content here */}
       </div>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button type="submit">Login</button>
-    </form>
+    </div>
   );
 }
 

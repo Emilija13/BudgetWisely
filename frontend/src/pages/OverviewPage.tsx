@@ -80,7 +80,7 @@ function OverviewPage() {
 
             <div className="mx-[6rem]">
                 <div className="flex h-25 " >
-                    <div className="flex w-[70%] h-[25rem] bg-white rounded-lg mr-8 p-7" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+                    <div className="flex w-[65%] h-[25rem] bg-white rounded-lg mr-8 p-7" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
                         <div className="w-[45%] mr-1 ">
                             Balance
                         </div>
@@ -89,17 +89,10 @@ function OverviewPage() {
                         </div>
                     </div>
                     
-                    <div className="w-[30%] rounded-lg p-7 bg-white " style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+                    <div className="w-[35%] rounded-lg p-7 bg-white " style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
                     <span>Analytics</span>
                     <DonutChartTransactions filterDto={donutChartDto}></DonutChartTransactions>
 
-                        {/* <div className="h-[8rem] bg-green-300 rounded-lg mb-8">
-                            hello
-                        </div>
-                        <span>Transactions this month</span>
-                        <div className="h-[12rem] bg-green-300 rounded-lg">
-                            hello
-                        </div> */}
                     </div>
                 </div>
 

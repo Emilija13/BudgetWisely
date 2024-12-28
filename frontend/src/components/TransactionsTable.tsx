@@ -19,7 +19,7 @@ const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete,o
   return (
     <div className="overflow-hidden rounded-lg shadow-lg">
       {/* Wrapper with a fixed height for the scrollable container */}
-      <div className="h-[500px] overflow-auto">
+      <div className="max-h-[500px] overflow-auto ">
         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
           <thead className="bg-white">
             <tr>

@@ -23,7 +23,7 @@ const AccountListItem: React.FC<{ account: Account }> = ({ account }) => {
       color: "#ffffff", // White text
       borderRadius: "12px", // Rounded corners
       padding: "16px", // Internal spacing
-      width: "240px", // Fixed width
+      width: "230px", // Fixed width
       height: "140px", // Fixed height
       display: "flex",
       flexDirection: "column",
