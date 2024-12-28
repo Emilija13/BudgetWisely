@@ -80,14 +80,14 @@ const DonutChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
   const options: ChartOptions<"doughnut"> = {
     responsive: true,
     aspectRatio: 1.4,
-    cutout: "92%", // Ensures a large center cutout
-    devicePixelRatio: 4, // High pixel density for sharper rendering
+    cutout: "92%", 
+    devicePixelRatio: 4, 
     plugins: {
       legend: {
-        position: "right", // Valid value for legend position
+        position: "right",
         labels: {
           usePointStyle: true,
-          pointStyle: "rect", // Use rectangular point style
+          pointStyle: "rect",
           padding: 20,
           boxWidth: 30,
         },

@@ -20,6 +20,10 @@ function LoginPage() {
     setError(error);
   };
 
+  const goToPage = () => {
+    isLoginRoute ? navigate('/register') : navigate('/login');
+  }
+
   // Determine which form to display based on the route
   const isLoginRoute = location.pathname === '/login';
   const isRegisterRoute = location.pathname === '/register';
@@ -56,9 +60,9 @@ function LoginPage() {
           <div className='mt-2 text-center'>
             <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
               {isLoginRoute ? "Don't have an account?" : "Already have an account?"}{' '}
-              <a className='main-color-text' href={isLoginRoute ? '/register' : '/login'}>
+              <button className='main-color-text' onClick={goToPage}>
                 {isLoginRoute ? 'Sign up' : 'Log in'}
-              </a>
+              </button>
             </Typography>
           </div>
         </div>
