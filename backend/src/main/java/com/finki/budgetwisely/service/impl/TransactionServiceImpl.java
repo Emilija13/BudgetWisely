@@ -149,28 +149,164 @@ public class TransactionServiceImpl implements TransactionService {
         return Optional.of(transaction);
     }
 
+
     @Override
     @Transactional
     public Optional<Transaction> edit(Long id, TransactionRequestDto transactionDto) {
-        Transaction transaction = this.transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
+        Transaction oldTransaction = this.transactionRepository.findById(id)
+                .orElseThrow(() -> new TransactionNotFoundException(id));
 
-        Category category = this.categoryRepository.findById(transactionDto.getCategory())
+        // Retrieve related entities
+        Account oldAccount = this.accountRepository.findById(oldTransaction.getAccount().getId())
+                .orElseThrow(() -> new AccountNotFoundException(oldTransaction.getAccount().getId()));
+        Category oldCategory = this.categoryRepository.findById(oldTransaction.getCategory().getId())
+                .orElseThrow(() -> new CategoryNotFoundException(oldTransaction.getCategory().getId()));
+
+        Account newAccount = this.accountRepository.findById(transactionDto.getAccount())
+                .orElseThrow(() -> new AccountNotFoundException(transactionDto.getAccount()));
+        Category newCategory = this.categoryRepository.findById(transactionDto.getCategory())
                 .orElseThrow(() -> new CategoryNotFoundException(transactionDto.getCategory()));
 
-        Account account = this.accountRepository.findById(transactionDto.getAccount())
-                .orElseThrow(() -> new AccountNotFoundException(transactionDto.getAccount()));
+        boolean isCostChanged = !oldTransaction.getCost().equals(transactionDto.getCost());
+        boolean isTypeChanged = !oldTransaction.getType().equals(transactionDto.getType());
+        boolean isAccountChanged = !oldTransaction.getAccount().getId().equals(transactionDto.getAccount());
+        boolean isCategoryChanged = !oldTransaction.getCategory().getId().equals(transactionDto.getCategory()) && !transactionDto.getType().equals(TransactionType.INCOME);
 
-        transaction.setName(transactionDto.getName());
-        transaction.setCost(transactionDto.getCost());
-        transaction.setDate(transactionDto.getDate());
-        transaction.setType(transactionDto.getType());
-        transaction.setCategory(category);
-        transaction.setAccount(account);
+        // Handle cost changes
+        if (isCostChanged) {
+            adjustAccountBalanceOnCostChange(oldTransaction, oldAccount, transactionDto.getCost());
+            adjustBudgetOnCostChange(oldTransaction, oldCategory, transactionDto.getCost());
+        }
 
-        this.transactionRepository.save(transaction);
-        return Optional.of(transaction);
+        // Handle type changes
+        if (isTypeChanged) {
+            adjustAccountBalanceOnTypeChange(oldTransaction, oldAccount, transactionDto.getType());
+            adjustBudgetOnTypeChange(oldTransaction, oldCategory, transactionDto.getType(),newCategory);
+        }
 
+        // Handle account changes
+        if (isAccountChanged) {
+            adjustAccountBalanceOnAccountChange(oldTransaction, oldAccount, newAccount);
+        }
+
+        if (isCategoryChanged) {
+            adjustBudgetOnCategoryChange(oldTransaction, oldCategory, newCategory);
+        }
+
+        // Update the transaction
+        oldTransaction.setName(transactionDto.getName());
+        oldTransaction.setCost(transactionDto.getCost());
+        oldTransaction.setDate(transactionDto.getDate());
+        oldTransaction.setType(transactionDto.getType());
+        oldTransaction.setAccount(newAccount);
+        oldTransaction.setCategory(newCategory);
+
+        this.transactionRepository.save(oldTransaction);
+
+        return Optional.of(oldTransaction);
     }
+
+    private void adjustAccountBalanceOnCostChange(Transaction oldTransaction, Account oldAccount, Long newCost) {
+        Long difference = newCost - oldTransaction.getCost();
+        if (oldTransaction.getType().equals(TransactionType.INCOME)) {
+            oldAccount.setBalance(oldAccount.getBalance() + difference);
+        } else {
+            oldAccount.setBalance(oldAccount.getBalance() - difference);
+        }
+        this.accountRepository.save(oldAccount);
+    }
+
+    private void adjustBudgetOnCostChange(Transaction oldTransaction, Category oldCategory, Long newCost) {
+        User user = userRepository.findById(oldTransaction.getAccount().getUser().getId())
+                .orElseThrow(() -> new UserNotFoundException(oldTransaction.getAccount().getUser().getId()));
+
+        LocalDate yearMonth = oldTransaction.getDate().toLocalDate().withDayOfMonth(1);
+        Budget budget = budgetRepository.findByUserAndCategoryAndYearMonth(user.getId(), oldCategory.getId(), yearMonth)
+                .orElse(null);
+
+        if (budget != null) {
+            Long difference = oldTransaction.getCost() - newCost;
+            budget.setLeftover(budget.getLeftover() + difference);
+            budgetRepository.save(budget);
+        }
+    }
+
+    private void adjustAccountBalanceOnTypeChange(Transaction oldTransaction, Account oldAccount, TransactionType newType) {
+        if (newType.equals(TransactionType.INCOME)) {
+            oldAccount.setBalance(oldAccount.getBalance() + 2 * oldTransaction.getCost());
+        } else {
+            oldAccount.setBalance(oldAccount.getBalance() - 2 * oldTransaction.getCost());
+        }
+        this.accountRepository.save(oldAccount);
+    }
+
+    private void adjustBudgetOnTypeChange(Transaction oldTransaction, Category oldCategory, TransactionType newType, Category newCategory) {
+        User user = userRepository.findById(oldTransaction.getAccount().getUser().getId())
+                .orElseThrow(() -> new UserNotFoundException(oldTransaction.getAccount().getUser().getId()));
+
+        LocalDate yearMonth = oldTransaction.getDate().toLocalDate().withDayOfMonth(1);
+
+        if (oldTransaction.getType().equals(TransactionType.EXPENSE)) {
+            // If the old transaction was an expense, undo its impact on the old category budget
+            Budget oldBudget = budgetRepository.findByUserAndCategoryAndYearMonth(user.getId(), oldCategory.getId(), yearMonth)
+                    .orElse(null);
+            if (oldBudget != null) {
+                oldBudget.setLeftover(oldBudget.getLeftover() + oldTransaction.getCost());
+                budgetRepository.save(oldBudget);
+            }
+        }
+
+        if (newType.equals(TransactionType.EXPENSE)) {
+            // If the new transaction is an expense, apply its impact on the new category budget
+            Budget newBudget = budgetRepository.findByUserAndCategoryAndYearMonth(user.getId(), newCategory.getId(), yearMonth)
+                    .orElse(null);
+            if (newBudget != null && newBudget.getLeftover()!=newBudget.getSpendingLimit()) {
+                newBudget.setLeftover(newBudget.getLeftover() - oldTransaction.getCost());
+                budgetRepository.save(newBudget);
+            }
+        }
+    }
+
+    private void adjustAccountBalanceOnAccountChange(Transaction oldTransaction, Account oldAccount, Account newAccount) {
+        if (oldTransaction.getType().equals(TransactionType.INCOME)) {
+            oldAccount.setBalance(oldAccount.getBalance() - oldTransaction.getCost());
+            newAccount.setBalance(newAccount.getBalance() + oldTransaction.getCost());
+        } else {
+            oldAccount.setBalance(oldAccount.getBalance() + oldTransaction.getCost());
+            newAccount.setBalance(newAccount.getBalance() - oldTransaction.getCost());
+        }
+        this.accountRepository.save(oldAccount);
+        this.accountRepository.save(newAccount);
+    }
+    private void adjustBudgetOnCategoryChange(Transaction oldTransaction, Category oldCategory, Category newCategory) {
+        User user = userRepository.findById(oldTransaction.getAccount().getUser().getId())
+                .orElseThrow(() -> new UserNotFoundException(oldTransaction.getAccount().getUser().getId()));
+
+        LocalDate yearMonth = oldTransaction.getDate().toLocalDate().withDayOfMonth(1);
+
+        // Restore the cost to the old category's budget
+        if (oldTransaction.getType().equals(TransactionType.EXPENSE)) {
+            Budget oldBudget = budgetRepository.findByUserAndCategoryAndYearMonth(user.getId(), oldCategory.getId(), yearMonth)
+                    .orElse(null);
+            if (oldBudget != null) {
+                oldBudget.setLeftover(oldBudget.getLeftover() + oldTransaction.getCost());
+                budgetRepository.save(oldBudget);
+            }
+        }
+
+        // Deduct the cost from the new category's budget
+        if (oldTransaction.getType().equals(TransactionType.EXPENSE)) {
+            Budget newBudget = budgetRepository.findByUserAndCategoryAndYearMonth(user.getId(), newCategory.getId(), yearMonth)
+                    .orElse(null);
+            if (newBudget != null) {
+                newBudget.setLeftover(newBudget.getLeftover() - oldTransaction.getCost());
+                budgetRepository.save(newBudget);
+            }
+        }
+    }
+
+
+
 
     @Override
     @Transactional

@@ -1,6 +1,7 @@
 import { Category } from "../../models/Category";
 import { Account } from "../../models/Account";
 import { TransactionType } from "../../models/enum/TransactionType";
+import { Transaction } from "../../models/Transaction";
 
 export interface FormProps{
     userId: number;
@@ -11,6 +12,7 @@ export interface FormProps{
     type?: TransactionType;
     categories? : Category[];
     accounts? : Account[];
+    transaction? : Transaction;
     onFormSubmitSuccess: () => void; 
     onClose?: () => void;
 }
