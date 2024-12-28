@@ -3,10 +3,14 @@
 }
 .main-color{
   /* background-color: rgb(90,53,245); */
-  background-color: #475ee1;
+  background-color: rgb(71, 94, 225);
   /* background-color: white; */
   /* 71, 94, 225 */
   color: white;
+}
+
+.main-color-text{
+  color: rgb(71, 94, 225);
 }
 
 .secondary-color{
@@ -36,4 +40,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #e2e2e9; 
 }
+
+
 
