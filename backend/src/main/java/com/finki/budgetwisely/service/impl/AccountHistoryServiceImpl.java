@@ -24,6 +24,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         this.accountHistoryRepository = accountHistoryRepository;
     }
 
+    @Override
     public void updateHistoryOnAddTransaction(Transaction transaction) {
         Long amount = (transaction.getType() == TransactionType.INCOME ?
                 transaction.getCost() : -transaction.getCost());
@@ -73,8 +74,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
         }
     }
 
-
-
+    @Override
     public void updateHistoryOnDeleteTransaction(Transaction transaction){
         AccountHistory toDelete = accountHistoryRepository.findByTransactionId(transaction.getId())
                 .orElseThrow();
