@@ -10,19 +10,21 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
   onDeleteBudget,
 }) => {
   const [isAdding, setIsAdding] = useState(false);
-  const [spendingLimit, setSpendingLimit] = useState<number | null>(
-    budget?.spendingLimit || null
-  );
+  const [spendingLimit, setSpendingLimit] = useState<number | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = async (event: MouseEvent) => {
       if (
         inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
+        if (category && spendingLimit && onAddBudget) {
+          await onAddBudget(category.id, spendingLimit);
+        }
         setIsAdding(false);
+        setSpendingLimit(null);
       }
     };
 
@@ -31,10 +33,17 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [spendingLimit, category, onAddBudget]);
+
+  useEffect(() => {
+    if (isAdding && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isAdding]);
 
   const handleAddClick = () => {
     setIsAdding(true);
+    setSpendingLimit(null);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,11 +52,11 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
 
   const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setIsAdding(false);
       if (category && spendingLimit && onAddBudget) {
         await onAddBudget(category.id, spendingLimit);
-        setSpendingLimit(null);
       }
+      setIsAdding(false);
+      setSpendingLimit(null);
     }
   };
 
@@ -83,19 +92,6 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
           >
             {category?.name || budget?.category.name}
           </Typography>
-
-
-          {/* {limit !== null ? (
-
-          <Typography
-            variant="small"
-            className="text-sm font-thin mr-3 text-gray-500"
-          >
-            {`Left: ${budget?.leftover} MKD`}
-          </Typography>
-        ) : (
-          <Typography> </Typography>
-        )} */}
         </div>
 
         {limit !== null ? (
@@ -119,7 +115,7 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
         </div>
       ) : (
         <div className="pr-4 mr-2">
-          {spendingLimit !== null ? (
+          {budget ? (
             <button
               className="w-7 h-7 rounded-full hover:bg-gray-100 p-0.7 group-hover:block hidden hover:text-gray-400"
               onClick={handleDeleteClick}
