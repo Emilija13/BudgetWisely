@@ -3,20 +3,21 @@ import { FormProps } from "./props/FormProps";
 import { TransactionType } from "../models/enum/TransactionType";
 import { TransactionService } from "../services/TransactionService";
 
-const TransactionForm: React.FC<FormProps> = ({
+const TransactionEditForm: React.FC<FormProps> = ({
   categories = [],
   accounts = [],
   userId,
+  transaction,
   onFormSubmitSuccess,
 }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    cost: 0,
-    date: "",
-    category: -1,
+    name: transaction?.name || "",
+    cost: transaction?.cost || 0,
+    date: transaction?.date || "",
+    category: transaction?.category.id || -1,
     user: userId,
-    account: -1,
-    type: "",
+    account: transaction?.account.id || -1,
+    type: transaction?.type || "",
   });
 
   const handleChange = (
@@ -26,7 +27,6 @@ const TransactionForm: React.FC<FormProps> = ({
     setFormData((prevData) => {
       const updatedData = { ...prevData, [name]: value };
   
-      // Dynamically update the category based on the transaction type
       if (name === "type") {
         updatedData.category = value === TransactionType.INCOME ? 17 : -1;
       }
@@ -70,14 +70,15 @@ const TransactionForm: React.FC<FormProps> = ({
         const newTransaction = {
           name: formData.name,
           cost: formData.cost,
-          date: formData.date,
+          date: new Date(formData.date).toISOString(),
           category: formData.category,
           account: formData.account,
           type: formData.type,
         };
 
         console.log(newTransaction);
-        await TransactionService.addTransaction(newTransaction);
+        if(transaction)
+        await TransactionService.editTransaction(transaction?.id, newTransaction);
         alert("Transaction added successfully");
         onFormSubmitSuccess();
       } catch (error) {
@@ -92,7 +93,7 @@ const TransactionForm: React.FC<FormProps> = ({
       <div className="relative px-3 pt-6 pb-4 bg-white rounded-xl">
         {/* Title */}
         <h3 className="text-md font-semibold text-gray-600 mb-10">
-          New Transaction
+          Edit Transaction
         </h3>
 
         {/* Form Fields */}
@@ -225,4 +226,4 @@ const TransactionForm: React.FC<FormProps> = ({
   );
 };
 
-export default TransactionForm;
+export default TransactionEditForm;

@@ -11,6 +11,7 @@ import { AccountService } from "../services/AccountService";
 import TransactionForm from "../components/TransactionForm";
 import Filter from "../components/Filter";
 import { FilterDto } from "../models/dto/FilterDto";
+import TransactionEditForm from "../components/TransactionEditForm";
 
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -30,8 +31,9 @@ const TransactionsPage = () => {
       const response = await CategoryService.getAllCategories();
       setCategories(response.data);
       if (userId) {
-        const response1 =
-          await TransactionService.getAllTransactionsForUser(+userId);
+        const response1 = await TransactionService.getAllTransactionsForUser(
+          +userId
+        );
         setTransactions(response1.data);
 
         const response2 = await AccountService.getAllAccountsForUser(+userId);
@@ -71,10 +73,14 @@ const TransactionsPage = () => {
 
   const handleEdit = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
+    
+    setIsFormVisible(true);
+    console.log("transaction", selectedTransaction)
   };
 
   const handleDelete = async (id: number) => {
     try {
+      console.log("id",id)
       const response = await TransactionService.deleteTransaction(id);
       console.log(response);
     } catch (err) {
@@ -93,7 +99,6 @@ const TransactionsPage = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
   return (
     <section className="w-full">
       {/* Transaction Form Modal */}
@@ -106,12 +111,22 @@ const TransactionsPage = () => {
             >
               ✕
             </button>
-            <TransactionForm
-              onFormSubmitSuccess={handleCloseForm}
-              userId={+userId!}
-              categories={categories}
-              accounts={accounts}
-            />
+            {selectedTransaction ? (
+              <TransactionEditForm
+                onFormSubmitSuccess={handleCloseForm}
+                userId={+userId!}
+                categories={categories}
+                accounts={accounts}
+                transaction={selectedTransaction}
+              />
+            ) : (
+              <TransactionForm
+                onFormSubmitSuccess={handleCloseForm}
+                userId={+userId!}
+                categories={categories}
+                accounts={accounts}
+              />
+            )}
           </div>
         </div>
       )}
