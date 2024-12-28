@@ -90,10 +90,6 @@ const TransactionsPage = () => {
     fetchTransactions();
   }, []);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
   if (error) {
     return <div>{error}</div>;
   }
@@ -133,7 +129,16 @@ const TransactionsPage = () => {
         </div>
         <div className="flex justify-center">
           <div className="w-[92%] h-210 px-6 py-4 overflow-hidden">
-            <div className="flex justify-between">
+            
+
+            {/* Conditional rendering based on accounts length */}
+            {accounts.length === 0 ? (
+              <div className="text-center text-lg font-light text-gray-500">
+                Add an account to start adding transactions.
+              </div>
+            ) : (
+              <div>
+              <div className="flex justify-between">
               <Filter
                 categories={categories}
                 accounts={accounts}
@@ -147,11 +152,13 @@ const TransactionsPage = () => {
                 />
               </div>
             </div>
-            <TransactionsTable
-              transactions={transactions}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+              <TransactionsTable
+                transactions={transactions}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+              </div>
+            )}
           </div>
         </div>
       </div>

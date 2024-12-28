@@ -84,7 +84,7 @@ const DonutChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
     devicePixelRatio: 4, // High pixel density for sharper rendering
     plugins: {
       legend: {
-        position: "bottom", // Valid value for legend position
+        position: "right", // Valid value for legend position
         labels: {
           usePointStyle: true,
           pointStyle: "rect", // Use rectangular point style

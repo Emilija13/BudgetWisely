@@ -10,14 +10,15 @@ import {
   Tooltip,
   Legend,
   TooltipItem,
+  Filler
 } from "chart.js";
 import { AccountService } from "../../services/AccountService";
 import { FilterDto } from "../../models/dto/FilterDto";
 import { BalanceDto } from "../../models/dto/BalanceDto";
-import { ChartOptions } from 'chart.js';
+import { ChartOptions } from "chart.js";
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Title, Tooltip, Legend);
 
 const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
   const [processedData, setProcessedData] = useState<{ labels: string[]; dataPoints: number[] }>({
@@ -28,47 +29,54 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Ensure filterDto.start and filterDto.end are Date objects
+        const startDate = new Date(filterDto.start!);
+        const endDate = new Date(filterDto.end!);
+
+        // Check if the start and end dates are on the same day
+        const isSameDay =
+          startDate.toDateString() === endDate.toDateString();
+
         // Fetch balance history using the provided filterDto
         const response = await AccountService.getBalanceHistory(filterDto);
-        const balanceHistory: BalanceDto[] = response.data; // Ensure response data matches BalanceDto[]
+        const balanceHistory: BalanceDto[] = response.data;
 
-        // Group data by date
         const groupedData = new Map<string, BalanceDto>();
 
         balanceHistory.forEach((item) => {
-          const dateKey = new Date(item.timestamp).toISOString().split("T")[0]; // Extract the date part (yyyy-MM-dd)
+          const timestamp = new Date(item.timestamp);
+
+          const dateKey = isSameDay
+            ? timestamp.toISOString().slice(0, 13) // Format: yyyy-MM-ddTHH
+            : timestamp.toISOString().split("T")[0]; // Format: yyyy-MM-dd
+
           const existing = groupedData.get(dateKey);
 
-          // Determine whether to replace the existing entry
           if (
-            !existing || 
-            new Date(item.timestamp).getTime() > new Date(existing.timestamp).getTime() ||
-            (new Date(item.timestamp).getTime() === new Date(existing.timestamp).getTime() &&
+            !existing ||
+            timestamp.getTime() > new Date(existing.timestamp).getTime() ||
+            (timestamp.getTime() === new Date(existing.timestamp).getTime() &&
               new Date(item.createdAt).getTime() > new Date(existing.createdAt).getTime())
           ) {
             groupedData.set(dateKey, item);
           }
         });
 
-        // Sort grouped data by date
         const sortedData = Array.from(groupedData.values()).sort(
           (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
         );
 
-        // Prepare data points
         const dateLabels: string[] = [];
         const dataPoints: number[] = [];
 
         sortedData.forEach((item) => {
           const timestamp = new Date(item.timestamp);
 
-          // Format the label as "MMM DD" (e.g., "Dec 19")
-          const dateLabel = timestamp.toLocaleString("en-US", {
-            month: "short",
-            day: "numeric",
-          });
+          const label = isSameDay
+            ? timestamp.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }) // e.g., 13:00
+            : timestamp.toLocaleDateString("en-US", { month: "short", day: "numeric" }); // e.g., Dec 19
 
-          dateLabels.push(dateLabel);
+          dateLabels.push(label);
           dataPoints.push(item.totalBalance);
         });
 
@@ -82,18 +90,20 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
   }, [filterDto]);
 
   const data = {
-    labels: processedData.labels, // X-axis labels (dates)
+    labels: processedData.labels,
     datasets: [
       {
         label: "Account Balance (MKD)",
-        data: processedData.dataPoints, // Y-axis data (balances)
-        backgroundColor: "rgba(0, 181, 141, 0.2)", // Light green fill
-        borderColor: "#475EE1", // Green line
-        pointBackgroundColor: "#475EE1",
-        pointBorderColor: "#475EE1",
+        data: processedData.dataPoints,
+        fill: true,
+        backgroundColor: "rgba(0, 181, 141, 0.2)",
+        borderColor: "#00B58D",
+        pointBackgroundColor: "#00B58D",
+        pointBorderColor: "#00B58D",
         borderWidth: 2,
-        tension: 0.4, // Smooth curve
-        pointRadius: 4,
+        tension: 0,
+        pointRadius: 1, // Reduced point size
+        pointHoverRadius: 4, // Point size on hover
       },
     ],
   };
@@ -112,7 +122,7 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: TooltipItem<'line'>) => {
+          label: (tooltipItem: TooltipItem<"line">) => {
             const value = tooltipItem.raw as number;
             return `Balance: ${value.toFixed(2)} MKD`;
           },
@@ -125,7 +135,7 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
       x: {
         title: {
           display: true,
-          text: "Date",
+          text: processedData.labels.length > 0 && processedData.labels[0].includes(":") ? "Hour" : "Date",
         },
         grid: {
           display: false,
@@ -141,16 +151,13 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
         },
         ticks: {
           maxTicksLimit: 4,
-          // callback: (value: number) => value.toFixed(0),
         },
       },
     },
   };
-  
-  
 
   return (
-    <div className="mt-4">
+    <div>
       <Line data={data} options={options} height={300} width={500} />
     </div>
   );
