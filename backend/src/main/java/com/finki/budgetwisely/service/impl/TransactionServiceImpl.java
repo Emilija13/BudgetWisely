@@ -159,8 +159,6 @@ public class TransactionServiceImpl implements TransactionService {
         this.transactionRepository.save(updateTransaction);
         updateAccountAndBudget(newAccount, newCategory, updateTransaction, transactionDto.getDate(), true);
 
-//        accountHistoryService.updateHistoryOnEditTransaction(updateTransaction, oldTransaction);
-
         this.accountHistoryService.updateHistoryOnAddTransaction(updateTransaction);
 
         return Optional.of(updateTransaction);

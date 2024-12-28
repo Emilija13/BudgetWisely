@@ -182,6 +182,7 @@ function SidebarItem({ icon, text, active, to }: SidebarItemProps) {
   const { expanded } = context;
 
   return (
+    <Link to={to} className="">
     <li
       className={`relative flex items-center py-2 px-3 my-1
         transition-colors group
@@ -189,9 +190,9 @@ function SidebarItem({ icon, text, active, to }: SidebarItemProps) {
           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 rounded-lg text-indigo-800"
           : "hover:bg-indigo-50 rounded-lg text-gray-600"
         }
-    `}
+      `}
     >
-      <Link to={to} className="flex items-center w-full">
+      
         {icon}
         <span
           className={`overflow-hidden transition-all ${expanded ? "w-40 ml-3" : "w-0"
@@ -199,7 +200,6 @@ function SidebarItem({ icon, text, active, to }: SidebarItemProps) {
         >
           {text}
         </span>
-      </Link>
 
       {active && (
         <div
@@ -220,5 +220,7 @@ function SidebarItem({ icon, text, active, to }: SidebarItemProps) {
         </div>
       )}
     </li>
+    
+    </Link>
   );
 }

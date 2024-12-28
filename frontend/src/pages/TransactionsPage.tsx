@@ -12,6 +12,7 @@ import TransactionForm from "../components/TransactionForm";
 import Filter from "../components/Filter";
 import { FilterDto } from "../models/dto/FilterDto";
 import TransactionEditForm from "../components/TransactionEditForm";
+import { useNavigate } from "react-router-dom";
 
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -19,6 +20,7 @@ const TransactionsPage = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false); // State to toggle form visibility
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
@@ -77,6 +79,10 @@ const TransactionsPage = () => {
     setIsFormVisible(true);
     console.log("transaction", selectedTransaction)
   };
+
+  const goToAccountsPage = () => {
+    navigate("/accounts");
+  }
 
   const handleDelete = async (id: number) => {
     try {
@@ -149,7 +155,10 @@ const TransactionsPage = () => {
             {/* Conditional rendering based on accounts length */}
             {accounts.length === 0 ? (
               <div className="text-center text-lg font-light text-gray-500">
-                Add an account to start adding transactions.
+                Looks like you don’t have any accounts yet! 😊 Let’s fix that so you can start adding transactions.
+                <div>
+                  <button className="main-color-text" onClick={goToAccountsPage}> Add an account now.</button>
+                </div>
               </div>
             ) : (
               <div>
