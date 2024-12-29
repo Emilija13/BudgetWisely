@@ -203,9 +203,9 @@ function OverviewPage() {
                     This Month
                 </Typography>
             </div> */}
-            <div className="mx-[6rem]">
+            <div className="mx-[5rem]">
                 <div className="flex h-25 " >
-                    <div className="flex w-[73%] h-[25rem] bg-white mr-[3rem] rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }} >
+                    <div className="flex w-[75%] h-[25rem] bg-white mr-[3rem] rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }} >
 
                         <div className="flex-1 rounded-lg" >
                             <div className="text-md font-semibold dark-blue-text mt-6 ml-6">Total Balance</div>
@@ -218,9 +218,9 @@ function OverviewPage() {
                             </div>
 
                             {/* Accounts*/}
-                            <div className="mt-4 mx-6 ml-10">
+                            <div className="mt-4 mx-4 ml-10">
                                 <div className="font-thin text-gray-600 text-md mb-2">Accounts:</div>
-                                <div className="mx-6 overflow-auto h-40 pr-6">
+                                <div className="mx-3 overflow-auto h-40 pr-6">
                                     {accounts.map((account) => (
                                         <div key={account.id} className="flex justify-between py-2 spacing-3  dark-blue-text">
                                             <span className="font-light inter">{account.name}</span>
@@ -231,7 +231,7 @@ function OverviewPage() {
                             </div>
                         </div>
 
-                        <div className="w-[500px] bg-white rounded-lg py-7 pl-1">
+                        <div className="w-[550px] bg-white rounded-lg py-7 pl-1">
                             <div className="flex justify-between items-center px-7">
                                 <div className="text-md font-semibold dark-blue-text">Analytics</div>
                                 <select
@@ -248,14 +248,14 @@ function OverviewPage() {
 
                             
 
-                            <div className="px-[2rem] pb-[4rem] pt-[1rem]">
+                            <div className="px-[2rem] pt-[2.5rem]">
 
                                 <DonutChartTransactions filteredTransactionsDto={FilteredTransactions!}></DonutChartTransactions>
                             </div>
                         </div>
                     </div>
 
-                    <div className="w-[27%]">
+                    <div className="w-[25%]">
                         {/* <div className="text-xl font-bold mb-6 spacing-3 dark-blue-text">Last transactions</div> */}
 
                         <LastTransactionsTable transactions={transactions}></LastTransactionsTable>

@@ -69,7 +69,8 @@ const DonutChartTransactions = ({ filteredTransactionsDto }: { filteredTransacti
 
   const options: ChartOptions<'doughnut'> = {
     responsive: true,
-    aspectRatio: 1.4,
+    aspectRatio: 1.9,
+    maintainAspectRatio: true,
     cutout: '94%',
     devicePixelRatio: 4,
     plugins: {

@@ -90,7 +90,6 @@ public class AccountServiceImpl implements AccountService {
 
         this.accountRepository.deleteById(id);
 
-
         AccountHistory accountHistory = new AccountHistory(null, null, accountRepository.getTotalBalanceByUserId(userId), LocalDateTime.now());
         accountHistoryRepository.save(accountHistory);
     }
