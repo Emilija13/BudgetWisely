@@ -20,4 +20,6 @@ public interface BudgetService {
     Optional<Budget> edit(Long id, BudgetRequestDto budgetDto);
 
     void deleteById(Long id);
+
+    List<Budget> getLastCurrentBudgets(Long user);
 }

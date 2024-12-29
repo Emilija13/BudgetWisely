@@ -1,117 +1,127 @@
-import { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Transaction } from '../../models/Transaction';
-import { TransactionService } from '../../services/TransactionService';
-import { BarChartTransactionsProps } from '../props/BarChartTransactionsProps';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, TooltipItem } from 'chart.js';
+import { FilteredTransactionsDto } from '../../models/dto/FilteredTransactionsDto'; // Import the interface
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { ChartOptions } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DonutChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      const response = await TransactionService.filter(filterDto);
-      setTransactions(response.data);
-    };
-
-    fetchTransactions();
-  }, [filterDto]);
+const DonutChartTransactions = ({ filteredTransactionsDto }: { filteredTransactionsDto?: FilteredTransactionsDto }) => {
+  // Check if filteredTransactionsDto is undefined or not
+  const transactions = filteredTransactionsDto?.transactions || [];
+  const totalAmount = filteredTransactionsDto?.totalAmount ?? 0;
 
   const getCategoryData = () => {
-    const categoryData: { [category: string]: number } = {};
+    const transactionData: { [category: string]: number } = {};
 
-    transactions.forEach((transaction) => {
+    transactions.forEach((transaction: Transaction) => {
       const category = transaction.category.name || 'Other';
 
-      if (!categoryData[category]) {
-        categoryData[category] = 0;
+      if (!transactionData[category]) {
+        transactionData[category] = 0;
       }
 
       if (transaction.type === 'EXPENSE') {
-        categoryData[category] += transaction.cost;
+        transactionData[category] += transaction.cost;
       }
     });
 
-    return categoryData;
+    return transactionData;
   };
 
-  const categoryData = getCategoryData();
+  const transactionData = getCategoryData();
+  const labels = Object.keys(transactionData);
+  const expenseData = labels.map((category) => transactionData[category]);
 
-  const labels = Object.keys(categoryData);
-  const expenseData = labels.map((category) => categoryData[category]);
+  // Add a default "No Expenses" case when there are no transactions
+  const chartLabels = transactions.length > 0 ? labels : ['No Expenses'];
+  const chartData = transactions.length > 0 ? expenseData : [1]; // Placeholder value to render the chart
 
-  const totalExpense = expenseData.reduce((acc, val) => acc + val, 0);
-
-  const formattedTotal = new Intl.NumberFormat().format(totalExpense);
+  const backgroundColors = [
+    '#475EE1', '#FF6161', '#00B58D', '#FF9304', '#19CFFC', '#FFC3D2', '#EA132F', '#273B7A', '#FFE370',
+    '#9076FB', '#00EC9D', '#F741DF', '#79BAFF', '#96FF26', '#D050C7', '#FFC550',
+  ];
 
   const data = {
-    labels,
+    labels: chartLabels,
     datasets: [
       {
-        data: expenseData,
-        backgroundColor: [
-          '#475EE1', // Blue
-          '#FF6161', // Red
-          '#00B58D', // Green
-          '#FF9304', // Orange
-          '#19CFFC', // Cyan
-          '#FFC3D2', // LightPink
-          '#EA132F', // BrightRed
-          '#273B7A', // DarkPurple
-          '#FFE370', // Yellow
-          '#9076FB', // Purple
-          '#00EC9D', // LightGreen
-          '#F741DF', // Pink
-          '#79BAFF', // LightBlue
-          '#96FF26', // Lime
-          '#D050C7', // Lilac
-          '#FFC550', // Honey
-        ],
+        data: chartData,
+        backgroundColor: transactions.length > 0 ? backgroundColors.slice(0, chartLabels.length) : ['#D3D3D3'], // Gray for "No Expenses"
         borderRadius: 0,
         borderWidth: 0,
         spacing: 0,
+        totalAmount, // Pass the totalAmount here
       },
     ],
   };
 
-  const options: ChartOptions<"doughnut"> = {
+  const legendMargin = {
+    id: 'legendMargin',
+    beforeInit: function (chart: any) {
+      const fitValue = chart.legend.fit;
+      chart.legend.fit = function fit() {
+        fitValue.bind(chart.legend)();
+        return (this.height += 40);
+      };
+    },
+  };
+
+  const options: ChartOptions<'doughnut'> = {
     responsive: true,
     aspectRatio: 1.4,
-    cutout: "92%", 
-    devicePixelRatio: 4, 
+    cutout: '94%',
+    devicePixelRatio: 4,
     plugins: {
       legend: {
-        position: "right",
+        maxHeight: 1,
+        position: 'right',
         labels: {
           usePointStyle: true,
-          pointStyle: "rect",
+          pointStyle: 'rect',
           padding: 20,
           boxWidth: 30,
         },
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: TooltipItem<'doughnut'>) => {
+          label: (tooltipItem) => {
             const category = tooltipItem.label;
-            const expense = categoryData[category] || 0;
-            return `${category}: ${expense.toFixed(2)} MKD`; 
+            const value = transactions.length > 0 ? transactionData[category] || 0 : 0;
+            return `${category}: ${value.toFixed(2)} MKD`;
           },
         },
       },
     },
   };
-  
+
+  const doughnutLabel = {
+    id: 'doughnutLabel',
+    beforeDatasetsDraw(chart: any, args: any, pluginOptions: any) {
+      const { ctx } = chart;
+      ctx.save();
+
+      const xCoor = chart.getDatasetMeta(0).data[0].x;
+      const yCoor = chart.getDatasetMeta(0).data[0].y;
+
+      ctx.font = '600 38px inter';
+      ctx.fillStyle = '#2E2B5C';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Ensure totalAmount is always defined and set it to 0 if not provided
+      const totalAmount = chart.data.datasets[0].totalAmount ?? 0;
+
+      // Ensure that totalAmount is a valid number before drawing
+      ctx.fillText(`${totalAmount}`, xCoor, yCoor - 5);
+      ctx.font = '500 22px inter';
+      ctx.fillText(`MKD`, xCoor, yCoor + 25);
+    },
+  };
 
   return (
-    <div className='relative h-70 flex justify-center items-center pt-10  w-full max-w-full'>
-      <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-4xl font-md'>
-        <div>{formattedTotal}</div>
-        <div className='text-md font-normal text-2xl'>MKD</div>
-      </div>
-      <Doughnut data={data} options={options} height={100} width={30} />
+    <div>
+      <Doughnut className='' data={data} options={options} plugins={[legendMargin, doughnutLabel]} height={100} width={30} style={{ width: '300px', height: '300px' }} />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import com.finki.budgetwisely.dto.AccountRequestDto;
 import com.finki.budgetwisely.dto.BudgetRequestDto;
 import com.finki.budgetwisely.model.Account;
 import com.finki.budgetwisely.model.Budget;
+import com.finki.budgetwisely.model.Transaction;
 import com.finki.budgetwisely.service.BudgetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,11 @@ public class BudgetController {
     @GetMapping("/{user}")
     private List<Budget> findAllCurrent(@PathVariable Long user) {
         return this.budgetService.findAllCurrent(user);
+    }
+
+    @GetMapping("/last/{user}")
+    private List<Budget> findLasCurrentBudgets(@PathVariable Long user){
+        return this.budgetService.getLastCurrentBudgets(user);
     }
 
     @PostMapping("/add")

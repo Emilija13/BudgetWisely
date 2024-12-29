@@ -94,4 +94,9 @@ public class AccountServiceImpl implements AccountService {
         AccountHistory accountHistory = new AccountHistory(null, null, accountRepository.getTotalBalanceByUserId(userId), LocalDateTime.now());
         accountHistoryRepository.save(accountHistory);
     }
+
+    @Override
+    public Long getTotalBalance(Long id) {
+        return accountRepository.getTotalBalanceByUserId(id);
+    }
 }

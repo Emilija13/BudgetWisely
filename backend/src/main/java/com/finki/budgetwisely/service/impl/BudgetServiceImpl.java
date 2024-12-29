@@ -116,5 +116,12 @@ public class BudgetServiceImpl implements BudgetService {
         this.budgetRepository.deleteById(id);
     }
 
+    @Override
+    public List<Budget> getLastCurrentBudgets(Long user) {
+        LocalDate yearMonth = LocalDate.now().withDayOfMonth(1);
+
+        return budgetRepository.findByUserAndYearMonthLast(user, yearMonth);
+    }
+
 
 }

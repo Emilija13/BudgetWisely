@@ -195,7 +195,7 @@ function SidebarItem({ icon, text, active, to }: SidebarItemProps) {
       
         {icon}
         <span
-          className={`overflow-hidden transition-all ${expanded ? "w-40 ml-3" : "w-0"
+          className={`overflow-hidden transition-all ${expanded ? "w-[8rem] ml-3" : "w-0"
             }`}
         >
           {text}

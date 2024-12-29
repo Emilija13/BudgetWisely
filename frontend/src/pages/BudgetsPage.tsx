@@ -86,11 +86,11 @@ function BudgetsPage() {
 
   return (
     <section className="w-full">
-      <div className="p-10 mx-10">
+      <div className="p-10 mx-10 pt-[4rem] pb-3">
         <Typography
           variant="lead"
           color="blue-gray"
-          className="font-bold text-lg"
+          className="font-bold text-lg dark-blue-text"
         >
           Budgets
         </Typography>

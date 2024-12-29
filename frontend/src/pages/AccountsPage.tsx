@@ -110,7 +110,7 @@ const AccountsPage = () => {
   }
 
   return (
-    <section className="p-10 mx-10">
+    <section className="p-10 mx-10 pt-[4rem]">
       {isFormVisible ? (
         <AccountForm
           onClose={handleCloseForm}
@@ -124,7 +124,7 @@ const AccountsPage = () => {
               <Typography
                 variant="lead"
                 color="blue-gray"
-                className="font-bold text-lg"
+                className="font-bold text-lg dark-blue-text"
               >
                 Accounts List
               </Typography>

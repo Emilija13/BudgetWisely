@@ -8,16 +8,16 @@ const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete,o
     const handleDeleteClick = (id : number) => {
         const isConfirmed = window.confirm("Are you sure you want to delete this item?");
         if (isConfirmed) {
-          onDelete(id); 
+          onDelete!(id); 
         }
     }
     const handleEditClick = (transaction: Transaction) => {
         // Pass the transaction object to the parent or directly open the form with the transaction details
-        onEdit(transaction);
+        onEdit!(transaction);
     }
 
   return (
-    <div className="overflow-hidden rounded-lg shadow-lg">
+    <div className="overflow-hidden rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
       {/* Wrapper with a fixed height for the scrollable container */}
       <div className="max-h-[500px] overflow-auto ">
         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">

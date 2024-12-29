@@ -3,6 +3,7 @@ package com.finki.budgetwisely.repository;
 import com.finki.budgetwisely.model.Budget;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,4 +26,11 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     List<Budget> findAllByUserId(Long user);
 
     List<Budget> findByYearMonth(LocalDate yearMonth);
+
+    @Query("SELECT b FROM Budget b " +
+            "WHERE b.user.id = :userId " +
+            "AND b.yearMonth = :yearMonth " +
+            "ORDER BY b.leftover ASC " +
+            "LIMIT 3")
+    List<Budget> findByUserAndYearMonthLast(@Param("userId")Long userId, @Param("yearMonth")LocalDate yearMonth);
 }

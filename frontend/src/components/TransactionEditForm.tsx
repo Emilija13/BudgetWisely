@@ -215,7 +215,7 @@ const TransactionEditForm: React.FC<FormProps> = ({
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-3 bg-[rgb(90,53,245)] font-sm font-light text-white p-2 rounded-xl shadow-md hover:bg-[rgb(80,43,235)] transition"
+              className="px-3 main-color font-sm font-light text-white p-2 rounded-xl shadow-md hover:bg-[rgb(81, 103, 233)]; transition"
             >
               Add +
             </button>

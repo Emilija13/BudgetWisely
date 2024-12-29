@@ -1,7 +1,7 @@
 import React from "react";
 import { ProgressBarProps } from "./props/ProgressBarProps";
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, spent, limit }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, spent, limit, overview }) => {
   return (
     <div className="flex-1 mx-4 ml-1">
       <div className="relative w-full bg-gray-200 h-2 rounded-full">

@@ -54,7 +54,7 @@ const TransactionsPage = () => {
     try {
       setLoading(true);
       const response = await TransactionService.filter(newFilters);
-      setTransactions(response.data);
+      setTransactions(response.data.transactions);
     } catch (err) {
       console.error("Error fetching filtered transactions:", err);
       setError("Failed to apply filters:");
@@ -110,7 +110,7 @@ const TransactionsPage = () => {
       {/* Transaction Form Modal */}
       {isFormVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg shadow-lg relative">
+          <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg  relative">
             <button
               onClick={handleCloseForm}
               className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
@@ -139,11 +139,11 @@ const TransactionsPage = () => {
 
       {/* Main Content */}
       <div>
-        <div className="p-10 mx-10">
+        <div className="p-10 mx-10 pt-[4rem]">
           <Typography
             variant="lead"
             color="blue-gray"
-            className="font-bold text-lg"
+            className="font-bold text-lg dark-blue-text"
           >
             Transactions
           </Typography>

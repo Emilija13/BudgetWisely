@@ -1,6 +1,7 @@
 package com.finki.budgetwisely.service.impl;
 
 import com.finki.budgetwisely.dto.FilterDto;
+import com.finki.budgetwisely.dto.FilteredTransactionsDto;
 import com.finki.budgetwisely.dto.TransactionRequestDto;
 import com.finki.budgetwisely.exceptions.*;
 import com.finki.budgetwisely.model.*;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -57,7 +59,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> filter(FilterDto filterDto) {
+    public FilteredTransactionsDto filter(FilterDto filterDto) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Transaction> query = cb.createQuery(Transaction.class);
         Root<Transaction> transaction = query.from(Transaction.class);
@@ -94,7 +96,16 @@ public class TransactionServiceImpl implements TransactionService {
 
         query.where(cb.and(predicates.toArray(new Predicate[0])));
 
-        return entityManager.createQuery(query).getResultList();
+        List<Transaction> transactions = entityManager.createQuery(query).getResultList();
+
+        List<Long> transactionIds = transactions.stream().map(Transaction::getId).toList();
+        Double totalAmount = transactionRepository.getTotalCostByIds(transactionIds);
+
+        if (totalAmount == null){
+            totalAmount = 0.0;
+        }
+
+        return new FilteredTransactionsDto(totalAmount, transactions) ;
     }
 
     @Override
@@ -214,6 +225,11 @@ public class TransactionServiceImpl implements TransactionService {
             logger.error("Error occurred while deleting transaction with ID: " + id, e);
             throw e;
         }
+    }
+
+    @Override
+    public List<Transaction> getLastTransactions(Long user) {
+        return this.transactionRepository.getLastTransactions(user);
     }
 
 }

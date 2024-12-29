@@ -11,6 +11,11 @@ export const BudgetService = {
     return await axiosInstance.get<Budget[]>(`${BudgetService.url}/${user}`);
   },
 
+  getLastBudgetsForUser: async (user: number) => {
+    return await axiosInstance.get<Budget[]>(`${BudgetService.url}/last/${user}`);
+  },
+
+
   getAllCurrentBudgets: async (user: number) => {
     return await axiosInstance.get<Budget[]>(`${BudgetService.url}/${user}`);
   },

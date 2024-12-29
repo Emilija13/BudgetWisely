@@ -14,6 +14,9 @@ export const AccountService = {
   getBalanceHistory: async (filterDto: FilterDto) => {
     return await axiosInstance.post((AccountService.url + "/balance-history"), filterDto);
   },
+  getTotalBalanceForUser: async (user: number) => {
+    return await axiosInstance.get<number>(`${AccountService.url}/total-balance/${user}`);
+  },
   addAccount: async (accountData: { name: string; balance: number; user: number; }) => {
     return await axiosInstance.post(AccountService.url+"/add", accountData);
   },

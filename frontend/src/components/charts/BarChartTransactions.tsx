@@ -16,7 +16,7 @@ const BarChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
   useEffect(() => {
     const fetchTransactions = async () => {
       const response = await TransactionService.filter(filterDto);
-      setTransactions(response.data);
+      setTransactions(response.data.transactions);
     };
 
     fetchTransactions();

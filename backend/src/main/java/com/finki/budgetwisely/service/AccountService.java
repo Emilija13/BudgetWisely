@@ -17,4 +17,6 @@ public interface AccountService {
     Optional<Account> edit(Long id, AccountRequestDto accountDto);
 
     void deleteById(Long id);
+
+    Long getTotalBalance(Long id);
 }

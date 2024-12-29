@@ -1,6 +1,7 @@
 import { Transaction } from "../models/Transaction";
 import axiosInstance from "../auth/axiosInstance";
 import { FilterDto } from "../models/dto/FilterDto";
+import { FilteredTransactionsDto } from "../models/dto/FilteredTransactionsDto";
 
 export const TransactionService = {
   url: "http://localhost:8080/api/transactions",
@@ -11,8 +12,11 @@ export const TransactionService = {
   getAllTransactionsForUser: async (user: number) => {
     return await axiosInstance.get<Transaction[]>(`${TransactionService.url}/${user}`);
   },
+  getLastTransactionsForUser: async (user: number) => {
+    return await axiosInstance.get<Transaction[]>(`${TransactionService.url}/last/${user}`);
+  },
   filter: async (filterDto: FilterDto) => {
-    return await axiosInstance.post((TransactionService.url + "/filter"), filterDto);
+    return await axiosInstance.post<FilteredTransactionsDto>((TransactionService.url + "/filter"), filterDto);
   },
   addTransaction: async (transactionData: {
     name: string;

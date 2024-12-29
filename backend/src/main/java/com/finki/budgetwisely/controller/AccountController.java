@@ -55,7 +55,12 @@ public class AccountController {
     }
 
     @PostMapping("/balance-history")
-    private List<AccountBalanceDto> filter(@RequestBody FilterDto filterDto) {
+    private List<AccountBalanceDto> getBalanceHistory(@RequestBody FilterDto filterDto) {
         return this.accountHistoryService.filter(filterDto);
+    }
+
+    @GetMapping("/total-balance/{id}")
+    private Long getTotalBalance(@PathVariable Long id) {
+        return this.accountService.getTotalBalance(id);
     }
 }

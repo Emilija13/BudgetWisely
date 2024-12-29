@@ -88,7 +88,7 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({
           <Typography
             variant="lead"
             color="blue-gray"
-            className="font-semibold ml-1 mb-0.5 text-base"
+            className="font-semibold ml-1 mb-0.5 text-base dark-blue-text"
           >
             {category?.name || budget?.category.name}
           </Typography>

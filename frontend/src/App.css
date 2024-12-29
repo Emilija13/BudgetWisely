@@ -3,7 +3,7 @@
 }
 .main-color{
   /* background-color: rgb(90,53,245); */
-  background-color: rgb(71, 94, 225);
+  background-color: #475ee1;
   /* background-color: white; */
   /* 71, 94, 225 */
   color: white;
@@ -11,6 +11,22 @@
 
 .main-color-text{
   color: rgb(71, 94, 225);
+}
+
+.dark-blue-text{
+  color: #2E2B5C
+}
+
+.inter{
+  font-family: 'Inter', sans-serif;
+}
+
+.spacing-3{
+  letter-spacing: -0.03em;
+}
+
+.spacing-5{
+  letter-spacing: -0.05em;
 }
 
 .secondary-color{
@@ -22,17 +38,17 @@
 
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F6F6FE; 
+  background: #fbfbff; 
   border-radius: 10px;
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #ebebf1; 
+  background: #f0eded; 
   border-radius: 8px;
 }
 
@@ -40,6 +56,9 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #e2e2e9; 
 }
+
+
+
 
 
 
