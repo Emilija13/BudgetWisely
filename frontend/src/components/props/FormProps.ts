@@ -13,6 +13,7 @@ export interface FormProps{
     categories? : Category[];
     accounts? : Account[];
     transaction? : Transaction;
+    account? : Account;
     onFormSubmitSuccess: () => void; 
     onClose?: () => void;
 }
