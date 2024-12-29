@@ -17,4 +17,13 @@ export const AccountService = {
   addAccount: async (accountData: { name: string; balance: number; user: number; }) => {
     return await axiosInstance.post(AccountService.url+"/add", accountData);
   },
+  editAccount: async (id: number,accountData: {
+    name: string;
+    balance: number;
+  }) => {
+    return await axiosInstance.put<Account[]>(`${AccountService.url}/edit/${id}`,accountData);
+  },
+  deleteAccount: async (id: number) => {
+    return await axiosInstance.delete<Account[]>(`${AccountService.url}/delete/${id}`);
+  },
 };
