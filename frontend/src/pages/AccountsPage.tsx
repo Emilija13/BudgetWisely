@@ -18,8 +18,9 @@ const AccountsPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
-   const [selectedAccount, setSelectedAccount] =
-      useState<Account | undefined>(undefined);
+  const [selectedAccount, setSelectedAccount] = useState<Account | undefined>(
+    undefined
+  );
   const userId = localStorage.getItem("userId");
 
   const fetchAccounts = useCallback(async () => {
@@ -52,31 +53,17 @@ const AccountsPage = () => {
       console.log(response);
     } catch (err) {
       console.error("Error deleting transaction:", err);
-    }
-    finally{
+    } finally {
       fetchAccounts();
     }
   };
-  
-  // const handleEditAcc = async (account: Account) => {
-  //   try {
-  //     console.log("id", id);
-  //     const response = await AccountService.deleteAccount(id);
-  //     console.log(response);
-  //   } catch (err) {
-  //     console.error("Error deleting transaction:", err);
-  //   }
-  //   finally{
-  //     fetchAccounts();
-  //   }
-  // };
 
   const handleEditAcc = (account: Account) => {
-      setSelectedAccount(account);
-      
-      setIsFormVisible(true);
-      console.log("acc", selectedAccount)
-    };
+    setSelectedAccount(account);
+
+    setIsFormVisible(true);
+    console.log("acc", selectedAccount);
+  };
 
   const calculateDateRange = (range: string) => {
     const now = new Date();
@@ -175,7 +162,7 @@ const AccountsPage = () => {
             <Typography
               variant="lead"
               color="blue-gray"
-              className="font-bold text-lg"
+              className="font-bold text-lg dark-blue-text"
             >
               Accounts List
             </Typography>
@@ -195,55 +182,62 @@ const AccountsPage = () => {
             />
           </div>
         </div>
-
-        {/* Chart */}
-        <div className="mt-[7rem] bg-white rounded-5 p-10">
+        <div className="pt-[4rem]">
           <Typography
             variant="lead"
             color="blue-gray"
-            className="font-bold text-md"
+            className="font-bold text-lg dark-blue-text"
           >
-            Balance History
+            Budget history
           </Typography>
+          <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
+            A visual journey through your accounts—spot the peaks, plateaus, and
+            progress!
+          </Typography>
+        </div>
 
-          <div className="flex justify-around items-center h-screen">
-            <div className="w-[55%]">
+        {/* Chart */}
+        <div
+          className="m-[3rem] bg-white rounded-lg p-10"
+          style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
+        >
+          <div className="flex  ">
+            <div className="w-[85%]">
               <LineChartAccountBalance filterDto={filterDto} />
             </div>
 
-            <div>
-              {/* Filters */}
-              <div className="my-4 gap-4">
-                {/* Account Dropdown */}
-                <select
-                  className="p-2 border rounded w-64"
-                  onChange={handleAccountChange}
-                  value={selectedAccountId ?? "null"}
-                >
-                  <option value="null">All Accounts</option>
-                  {accounts.map((account) => (
-                    <option key={account.id} value={account.id}>
-                      {account.name}
-                    </option>
-                  ))}
-                </select>
-                <br></br>
+            {/* Filters */}
+            <div className="">
+              {/* Account Dropdown */}
 
-                {/* Time Range Dropdown */}
-                <select
-                  className="p-2 border rounded w-64"
-                  onChange={handleTimeRangeChange}
-                  value={selectedTimeRange}
-                >
-                  <option value="Today">Today</option>
-                  <option value="Yesterday">Yesterday</option>
-                  <option value="Last 7 days">Last 7 days</option>
-                  <option value="Last 30 days">Last 30 days</option>
-                  <option value="Last 90 days">Last 90 days</option>
-                  <option value="Last 6 months">Last 6 months</option>
-                  <option value="Last Year">Last Year</option>
-                </select>
-              </div>
+              <select
+                className="cursor-pointer w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                onChange={handleAccountChange}
+                value={selectedAccountId ?? "null"}
+              >
+                <option value="null">All Accounts</option>
+                {accounts.map((account) => (
+                  <option key={account.id} value={account.id}>
+                    {account.name}
+                  </option>
+                ))}
+              </select>
+              <br></br>
+
+              {/* Time Range Dropdown */}
+              <select
+                className="cursor-pointer w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                onChange={handleTimeRangeChange}
+                value={selectedTimeRange}
+              >
+                <option value="Today">Today</option>
+                <option value="Yesterday">Yesterday</option>
+                <option value="Last 7 days">Last 7 days</option>
+                <option value="Last 30 days">Last 30 days</option>
+                <option value="Last 90 days">Last 90 days</option>
+                <option value="Last 6 months">Last 6 months</option>
+                <option value="Last Year">Last Year</option>
+              </select>
             </div>
           </div>
         </div>
