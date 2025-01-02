@@ -2,6 +2,7 @@ package com.finki.budgetwisely.controller;
 
 import com.finki.budgetwisely.dto.AccountRequestDto;
 import com.finki.budgetwisely.dto.BudgetRequestDto;
+import com.finki.budgetwisely.dto.BudgetsStatsDto;
 import com.finki.budgetwisely.model.Account;
 import com.finki.budgetwisely.model.Budget;
 import com.finki.budgetwisely.model.Transaction;
@@ -31,8 +32,18 @@ public class BudgetController {
     }
 
     @GetMapping("/last/{user}")
-    private List<Budget> findLasCurrentBudgets(@PathVariable Long user){
+    private List<Budget> findLastCurrentBudgets(@PathVariable Long user){
         return this.budgetService.getLastCurrentBudgets(user);
+    }
+
+    @GetMapping("/{user}/saved-last-month")
+    private Long savedLastMonth(@PathVariable Long user){
+        return this.budgetService.findSavedLastMonth(user);
+    }
+
+    @GetMapping("/{user}/stats")
+    public BudgetsStatsDto findCurrentBudgetsProgress(@PathVariable Long user){
+        return this.budgetService.findCurrentBudgetsProgress(user);
     }
 
     @PostMapping("/add")
@@ -55,4 +66,5 @@ public class BudgetController {
         if (this.budgetService.findById(id).isEmpty()) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
+
 }

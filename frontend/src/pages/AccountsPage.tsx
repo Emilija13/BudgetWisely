@@ -18,8 +18,8 @@ const AccountsPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
-   const [selectedAccount, setSelectedAccount] =
-      useState<Account | undefined>(undefined);
+  const [selectedAccount, setSelectedAccount] =
+    useState<Account | undefined>(undefined);
   const userId = localStorage.getItem("userId");
 
   const fetchAccounts = useCallback(async () => {
@@ -53,11 +53,11 @@ const AccountsPage = () => {
     } catch (err) {
       console.error("Error deleting transaction:", err);
     }
-    finally{
+    finally {
       fetchAccounts();
     }
   };
-  
+
   // const handleEditAcc = async (account: Account) => {
   //   try {
   //     console.log("id", id);
@@ -72,11 +72,11 @@ const AccountsPage = () => {
   // };
 
   const handleEditAcc = (account: Account) => {
-      setSelectedAccount(account);
-      
-      setIsFormVisible(true);
-      console.log("acc", selectedAccount)
-    };
+    setSelectedAccount(account);
+
+    setIsFormVisible(true);
+    console.log("acc", selectedAccount)
+  };
 
   const calculateDateRange = (range: string) => {
     const now = new Date();
@@ -150,7 +150,7 @@ const AccountsPage = () => {
   }
 
   return (
-    <section className="p-10 mx-10 w-[95%]">
+    <section className="p-10 mx-10 w-[95%] pt-[4rem]">
       {isFormVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg shadow-lg relative">
@@ -175,16 +175,26 @@ const AccountsPage = () => {
             <Typography
               variant="lead"
               color="blue-gray"
-              className="font-bold text-lg"
+              className="font-bold text-lg dark-blue-text"
             >
               Accounts List
             </Typography>
-            <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
-              A list of all your current accounts.
-            </Typography>
+
+            <div className="flex justify-between w-full">
+
+              <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
+                A list of all your current accounts.
+              </Typography>
+              <div className="mb-5 ml-[50rem]">
+                <AddButton
+                  text="Add +"
+                  onClick={handleAddButtonClick} // Trigger form toggle
+                />
+              </div>
+            </div>
           </div>
 
-          <AddButton text="+" onClick={handleAddButtonClick} />
+
         </div>
         <div className="flex justify-center">
           <div className="overflow-auto w-[1250px]">
@@ -197,7 +207,7 @@ const AccountsPage = () => {
         </div>
 
         {/* Chart */}
-        <div className="mt-[7rem] bg-white rounded-5 p-10">
+        {/* <div className="mt-[7rem] bg-white rounded-5 p-10">
           <Typography
             variant="lead"
             color="blue-gray"
@@ -212,9 +222,7 @@ const AccountsPage = () => {
             </div>
 
             <div>
-              {/* Filters */}
               <div className="my-4 gap-4">
-                {/* Account Dropdown */}
                 <select
                   className="p-2 border rounded w-64"
                   onChange={handleAccountChange}
@@ -229,7 +237,6 @@ const AccountsPage = () => {
                 </select>
                 <br></br>
 
-                {/* Time Range Dropdown */}
                 <select
                   className="p-2 border rounded w-64"
                   onChange={handleTimeRangeChange}
@@ -246,7 +253,7 @@ const AccountsPage = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

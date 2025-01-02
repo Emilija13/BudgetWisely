@@ -10,7 +10,11 @@
 }
 
 .main-color-text{
-  color: rgb(71, 94, 225);
+  color: #475ee1;
+}
+
+.main-color-text-darker{
+  color: #394dbf;
 }
 
 .dark-blue-text{
@@ -59,5 +63,13 @@
   background: #e2e2e9; 
 }
 
+.arial{
+  font-family: Arial;
+}
 
+/* The container must be positioned relative: */
+.custom-select {
+  position: relative;
+  font-family: Arial;
+}
 

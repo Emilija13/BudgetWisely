@@ -9,12 +9,16 @@ import { TransactionService } from "../services/TransactionService";
 import { Transaction } from "../models/Transaction";
 import LastTransactionsTable from "../components/LastTransactions";
 import { useNavigate } from "react-router-dom";
-import PieChartTransactions from "../components/charts/PieChartTransactions";
 import { FilteredTransactionsDto } from "../models/dto/FilteredTransactionsDto";
 import { User } from "../models/User";
 import BudgetsOverview from "../components/BudgetsOverview";
 import { Budget } from "../models/Budget";
 import { BudgetService } from "../services/BudgetService";
+import NoAccountsPage from "./NoAccountsPage";
+import NoBudgetsOverview from "../components/NoBudgetsOverview";
+import DonutChartBudgetProgress from "../components/charts/DonutChartBudgetProgress";
+import { BudgetStatsDto } from "../models/dto/BudgetStatsDto";
+import LastMonthSaved from "../components/SavedLastMonth";
 
 
 function OverviewPage() {
@@ -29,18 +33,24 @@ function OverviewPage() {
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
     const [budgets, setBudgets] = useState<Budget[]>([]);
+    const [budgetStats, setBudgetStats] = useState<BudgetStatsDto>();
+    const [savedLastMonth, setSavedLastMonth] = useState<number>();
 
     const fetchBudgets = useCallback(async () => {
         try {
             setLoading(true);
             if (userId) {
                 const response1 = await BudgetService.getLastBudgetsForUser(+userId);
+                const response2 = await BudgetService.getCurrentBudgetsStats(+userId);
+                const response3 = await BudgetService.getLastMonthSaved(+userId);
                 setBudgets(response1.data);
+                setBudgetStats(response2.data)
+                setSavedLastMonth(response3.data)
                 console.log("Budgets: ", response1.data);
             }
         } catch (err) {
-            console.error("Error fetching categories:", err);
-            setError("Failed to load categories:");
+            console.error("Error fetching budgets:", err);
+            setError("Failed to load budgets:");
         } finally {
             setLoading(false);
         }
@@ -179,16 +189,10 @@ function OverviewPage() {
         return <div>Loading...</div>;
     }
 
+
     return (
         <section className="w-full">
-
-
-            {/* <div className="pr-[7rem] pt[-5rem] text-end mt-10 mr-9">
-                <Typography variant="lead" className="font-semibold dark-blue-text text-3xl">
-                    Welcome, Mila! 👋
-                </Typography>
-            </div> */}
-
+            {/* Header */}
             <div className="p-10 mx-10 pt-[4rem] flex justify-between">
                 <Typography variant="lead" color="blue-gray" className="font-bold text-lg dark-blue-text">
                     Overview
@@ -198,91 +202,113 @@ function OverviewPage() {
                 </Typography>
             </div>
 
-            {/* <div className="mx-[6rem] mb-3 mt-5">
-                <Typography variant="lead" color="blue-gray" className="font-bold text-md">
-                    This Month
-                </Typography>
-            </div> */}
-            <div className="mx-[5rem]">
-                <div className="flex h-25 " >
-                    <div className="flex w-[75%] h-[25rem] bg-white mr-[3rem] rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }} >
+            {/* Conditional Rendering: Check if accounts exist */}
+            {accounts.length === 0 ? (
+                <NoAccountsPage />
+            ) : (
+                <div className="mx-[4rem]">
+                    <div className="flex h-25">
+                        <div className="flex w-[77%] h-[25rem] bg-white mr-[2.5rem] rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+                            <div className="flex-1 rounded-lg" >
+                                <div className="text-md font-semibold dark-blue-text mt-8 ml-8">Total Balance</div>
 
-                        <div className="flex-1 rounded-lg" >
-                            <div className="text-md font-semibold dark-blue-text mt-6 ml-6">Total Balance</div>
+                                {/* Total Balance */}
+                                <div className="flex justify-center my-10 mt-[40px]">
+                                    <div className="text-[37px] ml-2 font-semibold main-color-text">
+                                        {totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                        <span className="text-[20px] font-light ml-1 dark-blue-text" >MKD</span>
+                                    </div>
+                                </div>
 
-                            {/* Total Balance */}
-                            <div className="flex justify-center my-10 mt-[40px]">
-                                <div className="text-[36px] ml-10 font-semibold dark-blue-text">{totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })} MKD
-                                    {/* <span className="text-[25px] text-black ml-1 font-light">MKD</span> */}
+                                {/* Accounts */}
+                                <div className="mt-4 mx-4 ml-10">
+                                    <div className="font-thin text-gray-600 text-md mb-2">Accounts:</div>
+                                    <div className="mx-3 overflow-auto h-40 pr-6">
+                                        {accounts.map((account) => (
+                                            <div>
+                                                <div key={account.id} className="flex justify-between py-2 spacing-3 dark-blue-text">
+                                                    <span className="font-light">{account.name}</span>
+                                                    <span className="text-right">
+                                                        {account.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })} MKD
+                                                    </span>
+                                                </div>
+                                                <hr></hr>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Accounts*/}
-                            <div className="mt-4 mx-4 ml-10">
-                                <div className="font-thin text-gray-600 text-md mb-2">Accounts:</div>
-                                <div className="mx-3 overflow-auto h-40 pr-6">
-                                    {accounts.map((account) => (
-                                        <div key={account.id} className="flex justify-between py-2 spacing-3  dark-blue-text">
-                                            <span className="font-light inter">{account.name}</span>
-                                            <span className="text-right">{account.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })} MKD</span>
+                            <div className="w-[550px] bg-white rounded-lg py-7 pl-1" >
+                                <div className="flex justify-between items-center px-7">
+                                    <div className="text-md font-semibold dark-blue-text">Expenses Analytics</div>
+                                    <div className="custom-select">
+                                        <select
+                                            value={selectedRange}
+                                            onChange={(e) => setSelectedRange(e.target.value)}
+                                            className="cursor-pointer text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                                        >
+                                            <option value="This month">This month</option>
+                                            <option value="Last month">Last month</option>
+                                            <option value="Last 3 months">Last 3 months</option>
+                                            <option value="Last 6 months">Last 6 months</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="px-[2rem] pt-[2.5rem]">
+                                    <DonutChartTransactions filteredTransactionsDto={FilteredTransactions!}></DonutChartTransactions>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="w-[23%]">
+                            <LastTransactionsTable transactions={transactions}></LastTransactionsTable>
+                        </div>
+                    </div>
+
+                    <div className="my-[2.5rem] rounded-lg">
+                        <div className="w-[100%] h-[25rem]">
+                            {budgets.length === 0 ? (
+                                <div>
+                                    <NoBudgetsOverview></NoBudgetsOverview>
+                                </div>
+                            ) : (
+                                <div className="flex">
+                                    <div className="w-[27%] h-[22.6rem] rounded-lg mr-[2.5rem]">
+                                        <div className="h-[40%]">
+                                            <LastMonthSaved savedAmount={savedLastMonth!}></LastMonthSaved>
                                         </div>
-                                    ))}
+                                    </div>
+
+                                    <div className="flex flex-grow rounded-lg h-[22.6rem]" >
+
+                                        <div className="flex-1 mr-[2.5rem]">
+                                            <BudgetsOverview budgets={budgets}></BudgetsOverview>
+                                        </div>
+                                        <div className="w-[320px] bg-white rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+                                            <div className="text-md font-semibold dark-blue-text mt-8 ml-8 mb-6">Total budget expenditures</div>
+                                            <div className="px-9">
+                                                <div className="text-sm font-thin text-gray-700 custom-select mb-3">This month</div>
+                                                <DonutChartBudgetProgress totalAmount={budgetStats?.totalAmount!} spent={budgetStats?.spent!}></DonutChartBudgetProgress>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            )}
 
-                        <div className="w-[550px] bg-white rounded-lg py-7 pl-1">
-                            <div className="flex justify-between items-center px-7">
-                                <div className="text-md font-semibold dark-blue-text">Analytics</div>
-                                <select
-                                    value={selectedRange}
-                                    onChange={(e) => setSelectedRange(e.target.value)}
-                                    className="border border-gray-200 text-gray-500 rounded-md px-3 py-2 text-sm"
-                                >
-                                    <option value="This month">This month</option>
-                                    <option value="Last month">Last month</option>
-                                    <option value="Last 3 months">Last 3 months</option>
-                                    <option value="Last 6 months">Last 6 months</option>
-                                </select>
-                            </div>
-
-                            
-
-                            <div className="px-[2rem] pt-[2.5rem]">
-
-                                <DonutChartTransactions filteredTransactionsDto={FilteredTransactions!}></DonutChartTransactions>
-                            </div>
                         </div>
                     </div>
 
-                    <div className="w-[25%]">
-                        {/* <div className="text-xl font-bold mb-6 spacing-3 dark-blue-text">Last transactions</div> */}
-
-                        <LastTransactionsTable transactions={transactions}></LastTransactionsTable>
-                    </div>
+                    {/* <div className="flex my-[5rem] h-25 bg-white rounded-lg p-7" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+                        <BarChartTransactions filterDto={filterDto}></BarChartTransactions>
+                    </div> */}
                 </div>
-
-                <div className="flex my-[3rem] h-[25rem] rounded-lg " >
-                    {/* <div className="w-[30%] bg-white rounded-lg mr-[3rem] p-6" > */}
-                    <div className="w-[50%]  mr-[3rem]" >
-                        <BudgetsOverview budgets={budgets}></BudgetsOverview>
-                    </div>
-                </div>
-
-
-
-                <div className="flex my-[5rem] h-25 bg-white rounded-lg p-7" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
-
-                    <BarChartTransactions filterDto={filterDto}></BarChartTransactions>
-                </div>
-            </div>
-
-            <div className="">
-            </div>
-
-
+            )}
         </section>
     );
+
+
 }
 
 export default OverviewPage

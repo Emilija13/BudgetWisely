@@ -1,5 +1,6 @@
 import { Budget } from "../models/Budget";
 import axiosInstance from "../auth/axiosInstance";
+import { BudgetStatsDto } from "../models/dto/BudgetStatsDto";
 
 export const BudgetService = {
   url: "http://localhost:8080/api/budgets",
@@ -15,9 +16,16 @@ export const BudgetService = {
     return await axiosInstance.get<Budget[]>(`${BudgetService.url}/last/${user}`);
   },
 
-
   getAllCurrentBudgets: async (user: number) => {
     return await axiosInstance.get<Budget[]>(`${BudgetService.url}/${user}`);
+  },
+
+  getCurrentBudgetsStats: async (user: number) => {
+    return await axiosInstance.get<BudgetStatsDto>(`${BudgetService.url}/${user}/stats`);
+  },
+
+  getLastMonthSaved: async (user: number) => {
+    return await axiosInstance.get<number>(`${BudgetService.url}/${user}/saved-last-month`);
   },
 
   addBudget: async (budgetData: {

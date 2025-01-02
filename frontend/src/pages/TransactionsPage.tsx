@@ -13,6 +13,7 @@ import Filter from "../components/Filter";
 import { FilterDto } from "../models/dto/FilterDto";
 import TransactionEditForm from "../components/TransactionEditForm";
 import { useNavigate } from "react-router-dom";
+import NoAccountsPage from "./NoAccountsPage";
 
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -75,18 +76,17 @@ const TransactionsPage = () => {
 
   const handleEdit = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
-    
     setIsFormVisible(true);
-    console.log("transaction", selectedTransaction)
+    console.log("transaction", selectedTransaction);
   };
 
   const goToAccountsPage = () => {
     navigate("/accounts");
-  }
+  };
 
   const handleDelete = async (id: number) => {
     try {
-      console.log("id",id)
+      console.log("id", id);
       const response = await TransactionService.deleteTransaction(id);
       console.log(response);
     } catch (err) {
@@ -105,12 +105,13 @@ const TransactionsPage = () => {
   if (error) {
     return <div>{error}</div>;
   }
+
   return (
     <section className="w-full">
       {/* Transaction Form Modal */}
       {isFormVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg  relative">
+          <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg relative">
             <button
               onClick={handleCloseForm}
               className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
@@ -148,43 +149,35 @@ const TransactionsPage = () => {
             Transactions
           </Typography>
         </div>
-        <div className="flex justify-center">
-          <div className="w-[92%] h-210 px-6 py-4 overflow-hidden">
-            
 
-            {/* Conditional rendering based on accounts length */}
-            {accounts.length === 0 ? (
-              <div className="text-center text-lg font-light text-gray-500">
-                Looks like you don’t have any accounts yet! 😊 Let’s fix that so you can start adding transactions.
-                <div>
-                  <button className="main-color-text" onClick={goToAccountsPage}> Add an account now.</button>
+        {/* Conditional rendering based on accounts length */}
+        {accounts.length === 0 ? (
+          <NoAccountsPage></NoAccountsPage>
+        ) : (
+          <div className="flex justify-center">
+            <div className="w-[92%] h-210 px-6 py-4 overflow-hidden">
+              <div className="flex justify-between">
+                <Filter
+                  categories={categories}
+                  accounts={accounts}
+                  userId={+userId!}
+                  onFilterChange={handleFilterChange}
+                />
+                <div className="mb-5 mr-6">
+                  <AddButton
+                    text="Add +"
+                    onClick={handleAddButtonClick} // Trigger form toggle
+                  />
                 </div>
               </div>
-            ) : (
-              <div>
-              <div className="flex justify-between">
-              <Filter
-                categories={categories}
-                accounts={accounts}
-                userId={+userId!}
-                onFilterChange={handleFilterChange}
-              />
-              <div className="mb-5 mr-6">
-                <AddButton
-                  text="Add +"
-                  onClick={handleAddButtonClick} // Trigger form toggle
-                />
-              </div>
-            </div>
               <TransactionsTable
                 transactions={transactions}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
               />
-              </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

@@ -211,8 +211,8 @@ public class TransactionServiceImpl implements TransactionService {
 
             logger.info("Deleting transaction with ID: " + transaction.getId());
 
-            account.setBalance(account.getBalance() + (transaction.getType() == TransactionType.INCOME ?
-                    -transaction.getCost() : transaction.getCost()));
+            // Call updateAccountAndBudget to handle account and budget updates
+            updateAccountAndBudget(account, transaction.getCategory(), transaction, transaction.getDate(), false);
 
             accountHistoryService.updateHistoryOnDeleteTransaction(transaction);
             transactionRepository.flush();
@@ -226,6 +226,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw e;
         }
     }
+
 
     @Override
     public List<Transaction> getLastTransactions(Long user) {

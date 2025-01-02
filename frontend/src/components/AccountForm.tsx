@@ -49,7 +49,7 @@ const AccountForm: React.FC<FormProps> = ({
     <div className="my-4 w-full">
       <div className="relative px-3 pt-6 pb-4 bg-white rounded-xl">
         <h3 className="text-md font-semibold text-gray-600 mb-10">
-          New Transaction
+          Account Form
         </h3>
         <form className="space-y-3" onSubmit={handleSubmit}>
           <div>
@@ -80,7 +80,7 @@ const AccountForm: React.FC<FormProps> = ({
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-3 bg-[rgb(90,53,245)] font-sm font-light text-white p-2 rounded-xl shadow-md hover:bg-[rgb(80,43,235)] transition"
+              className="px-3 main-color font-sm font-light text-white p-2 rounded-xl shadow-md transition"
             >
               Add +
             </button>

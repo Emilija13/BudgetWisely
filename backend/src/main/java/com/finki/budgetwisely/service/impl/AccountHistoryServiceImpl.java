@@ -89,8 +89,10 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 
         for (AccountHistory history : subsequentHistories) {
             history.setTotalBalance(history.getTotalBalance() + amount);
-            if(history.getAccount().getId().equals(transaction.getAccount().getId())){
-                history.setBalance(history.getBalance() + amount);
+            if (history.getAccount() != null){
+                if(history.getAccount().getId().equals(transaction.getAccount().getId())){
+                    history.setBalance(history.getBalance() + amount);
+                }
             }
             accountHistoryRepository.save(history);
         }

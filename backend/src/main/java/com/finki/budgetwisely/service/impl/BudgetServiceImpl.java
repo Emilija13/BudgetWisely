@@ -1,6 +1,7 @@
 package com.finki.budgetwisely.service.impl;
 
 import com.finki.budgetwisely.dto.BudgetRequestDto;
+import com.finki.budgetwisely.dto.BudgetsStatsDto;
 import com.finki.budgetwisely.exceptions.BudgetForCategoryAlreadyExistsException;
 import com.finki.budgetwisely.exceptions.BudgetNotFoundException;
 import com.finki.budgetwisely.exceptions.CategoryNotFoundException;
@@ -123,5 +124,24 @@ public class BudgetServiceImpl implements BudgetService {
         return budgetRepository.findByUserAndYearMonthLast(user, yearMonth);
     }
 
+    @Override
+    public BudgetsStatsDto findCurrentBudgetsProgress(Long user) {
+        LocalDate yearMonth = LocalDate.now().withDayOfMonth(1);
+        Long totalAmount = budgetRepository.findTotalSpendingLimitByUserAndYearMonth(user, yearMonth);
+
+        totalAmount = (totalAmount != null) ? totalAmount : 0;
+
+        Long leftover = budgetRepository.findLeftoverByUserAndYearMonth(user, yearMonth);
+        Long spent = totalAmount - (leftover != null ? leftover : 0);
+
+        return new BudgetsStatsDto(totalAmount, spent);
+    }
+
+
+    @Override
+    public Long findSavedLastMonth(Long user) {
+        LocalDate yearMonth = LocalDate.now().minusMonths(1).withDayOfMonth(1);
+        return budgetRepository.findLeftoverByUserAndYearMonth(user, yearMonth);
+    }
 
 }

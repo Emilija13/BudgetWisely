@@ -22,6 +22,16 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
             "AND b.yearMonth = :yearMonth")
     List<Budget> findByUserAndYearMonth(Long user, LocalDate yearMonth);
 
+    @Query("SELECT SUM(b.spendingLimit) FROM Budget b " +
+            "WHERE b.user.id = :user " +
+            "AND b.yearMonth = :yearMonth")
+    Long findTotalSpendingLimitByUserAndYearMonth(@Param("user") Long user, @Param("yearMonth") LocalDate yearMonth);
+
+    @Query("SELECT SUM(b.leftover) FROM Budget b " +
+            "WHERE b.user.id = :user " +
+            "AND b.yearMonth = :yearMonth")
+    Long findLeftoverByUserAndYearMonth(@Param("user") Long user, @Param("yearMonth") LocalDate yearMonth);
+
 
     List<Budget> findAllByUserId(Long user);
 

@@ -1,6 +1,7 @@
 package com.finki.budgetwisely.service;
 
 import com.finki.budgetwisely.dto.BudgetRequestDto;
+import com.finki.budgetwisely.dto.BudgetsStatsDto;
 import com.finki.budgetwisely.dto.TransactionRequestDto;
 import com.finki.budgetwisely.model.Budget;
 import com.finki.budgetwisely.model.Transaction;
@@ -22,4 +23,8 @@ public interface BudgetService {
     void deleteById(Long id);
 
     List<Budget> getLastCurrentBudgets(Long user);
+
+    BudgetsStatsDto findCurrentBudgetsProgress(Long user);
+
+    Long findSavedLastMonth(Long user);
 }
