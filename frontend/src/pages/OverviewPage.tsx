@@ -9,12 +9,12 @@ import { TransactionService } from "../services/TransactionService";
 import { Transaction } from "../models/Transaction";
 import LastTransactionsTable from "../components/LastTransactions";
 import { useNavigate } from "react-router-dom";
-import PieChartTransactions from "../components/charts/PieChartTransactions";
 import { FilteredTransactionsDto } from "../models/dto/FilteredTransactionsDto";
 import { User } from "../models/User";
 import BudgetsOverview from "../components/BudgetsOverview";
 import { Budget } from "../models/Budget";
 import { BudgetService } from "../services/BudgetService";
+import { UserService } from "../services/UserService";
 
 
 function OverviewPage() {
@@ -29,6 +29,16 @@ function OverviewPage() {
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
     const [budgets, setBudgets] = useState<Budget[]>([]);
+
+    const fetchUser = async (userId: number) => {
+        try {
+          const response = await UserService.getUser(userId);
+          setUser(response.data);
+        } catch (error) {
+          console.error("Error fetching user:", error);
+          setError("Failed to fetch user.");
+        }
+      };
 
     const fetchBudgets = useCallback(async () => {
         try {
@@ -116,6 +126,8 @@ function OverviewPage() {
         fetchAccounts();
         fetchTransactions();
         fetchBudgets();
+        if(userId)
+            fetchUser(+userId);
     }, []);
 
     const startOfMonth = new Date();
@@ -194,7 +206,7 @@ function OverviewPage() {
                     Overview
                 </Typography>
                 <Typography variant="lead" className="font-semibold dark-blue-text text-3xl">
-                    Welcome, Mila! 👋
+                    Welcome, {user?.userName}! 👋
                 </Typography>
             </div>
 

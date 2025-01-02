@@ -1,5 +1,6 @@
 package com.finki.budgetwisely.service.impl;
 
+import com.finki.budgetwisely.dto.UserDto;
 import com.finki.budgetwisely.model.User;
 import com.finki.budgetwisely.repository.UserRepository;
 import com.finki.budgetwisely.service.UserService;
@@ -21,7 +22,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return this.userRepository.findById(id);
+    public Optional<UserDto> findById(Long id) {
+        User user=this.userRepository.findById(id).get();
+        UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getName(),user.getRole());
+        return Optional.of(userDto);
+
     }
 }
