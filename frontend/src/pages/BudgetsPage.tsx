@@ -95,7 +95,7 @@ function BudgetsPage() {
           Budgets
         </Typography>
         <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
-          A list of all your monthly budgets.
+        Set and manage monthly budgets for each category to stay on top of your spending!
         </Typography>
       </div>
       <div className="mx-20 grid grid-cols-2 gap-4 pb-5 h-auto w-auto overflow-y-auto">

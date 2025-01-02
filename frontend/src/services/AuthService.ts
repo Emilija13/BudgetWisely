@@ -43,7 +43,6 @@ const AuthService = {
     this.setLoginStatus(false);
     this.setCurrentUser(null);
   },
-
   setLoginStatus(status: boolean) {
     this.loginStatus = status;
   },

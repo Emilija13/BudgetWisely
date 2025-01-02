@@ -27,10 +27,6 @@ const DonutChartBudgetProgress = ({ totalAmount, spent }: { totalAmount: number;
         devicePixelRatio: 4,
         cutout: '93%',
         plugins: {
-            title: {
-                display: true,
-                text: 'Custom Chart Title'
-            },
             legend: {
                 position: 'bottom',
                 labels: {

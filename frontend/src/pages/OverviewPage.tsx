@@ -14,6 +14,7 @@ import { User } from "../models/User";
 import BudgetsOverview from "../components/BudgetsOverview";
 import { Budget } from "../models/Budget";
 import { BudgetService } from "../services/BudgetService";
+import { UserService } from "../services/UserService";
 import NoAccountsPage from "./NoAccountsPage";
 import NoBudgetsOverview from "../components/NoBudgetsOverview";
 import DonutChartBudgetProgress from "../components/charts/DonutChartBudgetProgress";
@@ -35,6 +36,16 @@ function OverviewPage() {
     const [budgets, setBudgets] = useState<Budget[]>([]);
     const [budgetStats, setBudgetStats] = useState<BudgetStatsDto>();
     const [savedLastMonth, setSavedLastMonth] = useState<number>();
+
+    const fetchUser = async (userId: number) => {
+        try {
+          const response = await UserService.getUser(userId);
+          setUser(response.data);
+        } catch (error) {
+          console.error("Error fetching user:", error);
+          setError("Failed to fetch user.");
+        }
+      };
 
     const fetchBudgets = useCallback(async () => {
         try {
@@ -126,6 +137,8 @@ function OverviewPage() {
         fetchAccounts();
         fetchTransactions();
         fetchBudgets();
+        if(userId)
+            fetchUser(+userId);
     }, []);
 
     const startOfMonth = new Date();
@@ -198,7 +211,7 @@ function OverviewPage() {
                     Overview
                 </Typography>
                 <Typography variant="lead" className="font-semibold dark-blue-text text-3xl">
-                    Welcome, Mila! 👋
+                    Welcome, {user?.userName}! 👋
                 </Typography>
             </div>
 
