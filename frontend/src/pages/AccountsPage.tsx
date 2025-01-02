@@ -172,13 +172,11 @@ const AccountsPage = () => {
               <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
                 A list of all your current accounts.
               </Typography>
-              <div className="mb-5 ml-[50rem]">
-                <AddButton
-                  text="Add +"
-                  onClick={handleAddButtonClick} // Trigger form toggle
-                />
-              </div>
+            
             </div>
+          </div>
+          <div className="mr-[3rem]">
+          <AddButton text="Add +" onClick={handleAddButtonClick} />
           </div>
 
 
