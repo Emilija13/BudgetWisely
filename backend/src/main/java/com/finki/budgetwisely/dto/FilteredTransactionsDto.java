@@ -12,5 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FilteredTransactionsDto {
     Double totalAmount;
+    Double totalExpense;
+    Double totalIncome;
     List<Transaction> transactions;
 }

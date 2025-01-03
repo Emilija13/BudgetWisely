@@ -18,7 +18,7 @@ const BudgetsOverview = ({ budgets }: BudgetsListProps) => {
     }
 
     return (
-        <div className="bg-white rounded-lg p-5" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+        <div className="bg-white h-[100%] rounded-lg p-5" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
 
             <div>
                 <div className="px-4 py-2 flex justify-between items-center font-light text-gray-800 inter spacing-5 pl-[5px]" >

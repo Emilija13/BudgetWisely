@@ -1,13 +1,13 @@
 import { Doughnut } from 'react-chartjs-2';
 import { Transaction } from '../../models/Transaction';
-import { FilteredTransactionsDto } from '../../models/dto/FilteredTransactionsDto'; // Import the interface
+import { FilteredTransactionsDto } from '../../models/dto/FilteredTransactionsDto'; 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { ChartOptions } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DonutChartTransactions = ({ filteredTransactionsDto }: { filteredTransactionsDto?: FilteredTransactionsDto }) => {
-  // Check if filteredTransactionsDto is undefined or not
+
   const transactions = filteredTransactionsDto?.transactions || [];
   const totalAmount = filteredTransactionsDto?.totalAmount ?? 0;
 
@@ -33,9 +33,8 @@ const DonutChartTransactions = ({ filteredTransactionsDto }: { filteredTransacti
   const labels = Object.keys(transactionData);
   const expenseData = labels.map((category) => transactionData[category]);
 
-  // Add a default "No Expenses" case when there are no transactions
   const chartLabels = transactions.length > 0 ? labels : ['No Expenses'];
-  const chartData = transactions.length > 0 ? expenseData : [1]; // Placeholder value to render the chart
+  const chartData = transactions.length > 0 ? expenseData : [1]; 
 
   const backgroundColors = [
     '#475EE1', '#FF6161', '#00B58D', '#FF9304', '#19CFFC', '#FFC3D2', '#EA132F', '#273B7A', '#FFE370',
@@ -47,11 +46,11 @@ const DonutChartTransactions = ({ filteredTransactionsDto }: { filteredTransacti
     datasets: [
       {
         data: chartData,
-        backgroundColor: transactions.length > 0 ? backgroundColors.slice(0, chartLabels.length) : ['#D3D3D3'], // Gray for "No Expenses"
+        backgroundColor: transactions.length > 0 ? backgroundColors.slice(0, chartLabels.length) : ['#D3D3D3'],
         borderRadius: 0,
         borderWidth: 0,
         spacing: 0,
-        totalAmount, // Pass the totalAmount here
+        totalAmount, 
       },
     ],
   };
@@ -109,11 +108,8 @@ const DonutChartTransactions = ({ filteredTransactionsDto }: { filteredTransacti
       ctx.fillStyle = '#2E2B5C';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-
-      // Ensure totalAmount is always defined and set it to 0 if not provided
       const totalAmount = chart.data.datasets[0].totalAmount ?? 0;
 
-      // Ensure that totalAmount is a valid number before drawing
       ctx.fillText(`${totalAmount}`, xCoor, yCoor - 5);
       ctx.font = '500 22px inter';
       ctx.fillText(`MKD`, xCoor, yCoor + 25);

@@ -157,9 +157,7 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
   };
 
   return (
-    <div>
-      <Line data={data} options={options} height={300} width={500} />
-    </div>
+    <Line data={data} options={options} height={100} width={350} />
   );
 };
 

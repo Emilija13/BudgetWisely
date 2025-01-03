@@ -16,7 +16,7 @@ const LastMonthSaved = ({ savedAmount }: { savedAmount: number }) => {
 
             {/* Saved amount text */}
             <div className="ml-[2rem] text-white inter">
-                <p className="text-lg font-bold mb-1">{savedAmount} MKD</p>
+                <p className="text-lg font-semibold mb-1">{savedAmount} MKD</p>
                 <p className="text-sm font-thin arial">Budget Savings Last Month</p>
             </div>
         </div>

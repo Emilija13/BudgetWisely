@@ -17,6 +17,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT SUM(t.cost) FROM Transaction t WHERE t.id IN :transactionIds")
     Double getTotalCostByIds(@Param("transactionIds") List<Long> transactionIds);
 
+    @Query("SELECT SUM(t.cost) FROM Transaction t WHERE t.id IN :transactionIds AND t.type = 'EXPENSE'")
+    Double getTotalCostOfExpensesByIds(@Param("transactionIds") List<Long> transactionIds);
+
+    @Query("SELECT SUM(t.cost) FROM Transaction t WHERE t.id IN :transactionIds AND t.type = 'INCOME'")
+    Double getTotalCostOfIncomesByIds(@Param("transactionIds") List<Long> transactionIds);
+
+
     @Query("SELECT t " +
             "FROM Transaction t " +
             "WHERE t.account.user.id = :userId " +

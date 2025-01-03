@@ -19,7 +19,8 @@ import NoAccountsPage from "./NoAccountsPage";
 import NoBudgetsOverview from "../components/NoBudgetsOverview";
 import DonutChartBudgetProgress from "../components/charts/DonutChartBudgetProgress";
 import { BudgetStatsDto } from "../models/dto/BudgetStatsDto";
-import LastMonthSaved from "../components/SavedLastMonth";
+import LastMonthSaved from "../components/LastMonthSaved";
+import IncomeExpenseTotal from "../components/IncomeExpenseTotal";
 
 
 function OverviewPage() {
@@ -29,23 +30,33 @@ function OverviewPage() {
     const [totalBalance, setTotalBalance] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [user, setUser] = useState<User>();
-    const [selectedRange, setSelectedRange] = useState<string>("This month"); // New State
+    // const [selectedRange, setSelectedRange] = useState<string>("This month"); // New State
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
     const [budgets, setBudgets] = useState<Budget[]>([]);
     const [budgetStats, setBudgetStats] = useState<BudgetStatsDto>();
     const [savedLastMonth, setSavedLastMonth] = useState<number>();
+    const [donutChartTransactions, setDonutChartTransactions] = useState<FilteredTransactionsDto>();
+    const [barChartTransactions, setBarChartTransactions] = useState<FilteredTransactionsDto>();
+    const [selectedRange, setSelectedRange] = useState<string>("This month"); // For the donut chart
+    const [barChartRange, setBarChartRange] = useState<string>("This month"); // For the bar chart
+    const [totalExpenses, setTotalExpenses] = useState<number>();
+    const [totalIncome, setTotalIncome] = useState<number>();
+    const [showBarChart, setShowBarChart] = useState(false); // State to toggle between sections
+
+
+
 
     const fetchUser = async (userId: number) => {
         try {
-          const response = await UserService.getUser(userId);
-          setUser(response.data);
+            const response = await UserService.getUser(userId);
+            setUser(response.data);
         } catch (error) {
-          console.error("Error fetching user:", error);
-          setError("Failed to fetch user.");
+            console.error("Error fetching user:", error);
+            setError("Failed to fetch user.");
         }
-      };
+    };
 
     const fetchBudgets = useCallback(async () => {
         try {
@@ -102,42 +113,65 @@ function OverviewPage() {
         }
     };
 
-    const fetchFilteredTransactions = useCallback(async () => {
+    const fetchFilteredTransactionsForDonut = useCallback(async () => {
         try {
-            // Prepare the date range filter based on selectedRange
             const dateRange = calculateDateRange(selectedRange);
-
-            // Create the filter DTO
             const filterDto: FilterDto = {
-                userId: +userId!,  // Ensure userId is available
+                userId: +userId!,
                 accountId: null,
                 categoryId: null,
-                type: "EXPENSE",  // Default type for the donut chart
+                type: "EXPENSE", // Only expenses for the donut chart
                 start: dateRange.start,
                 end: dateRange.end,
             };
-
-            // Fetch filtered transactions based on the filter DTO
             const response = await TransactionService.filter(filterDto);
-            setFilteredTransactions(response.data); // Set the filtered data
-            console.log("Fetched filtered transactions:", response.data);
+            setDonutChartTransactions(response.data);
         } catch (err) {
-            console.error("Error fetching filtered transactions:", err);
-            setError("Failed to load filtered transactions.");
+            console.error("Error fetching donut chart transactions:", err);
+            setError("Failed to load donut chart transactions.");
         }
-    }, [selectedRange, userId]); // Re-fetch data when selectedRange or userId changes
+    }, [selectedRange, userId]);
+
+    const fetchFilteredTransactionsForBar = useCallback(async () => {
+        try {
+            const dateRange = calculateDateRange(barChartRange);
+            const filterDto: FilterDto = {
+                userId: +userId!,
+                accountId: null,
+                categoryId: null,
+                type: null, // All types for the bar chart
+                start: dateRange.start,
+                end: dateRange.end,
+            };
+            const response = await TransactionService.filter(filterDto);
+
+            // Set bar chart transactions
+            setBarChartTransactions(response.data);
+
+            // Set totalExpenses and totalIncome only for the first fetch and "This month"
+            if (!totalExpenses && !totalIncome && barChartRange === "This month") {
+                setTotalExpenses(response.data?.totalExpense || 0);
+                setTotalIncome(response.data?.totalIncome || 0);
+            }
+        } catch (err) {
+            console.error("Error fetching bar chart transactions:", err);
+            setError("Failed to load bar chart transactions.");
+        }
+    }, [barChartRange, userId, totalExpenses, totalIncome]);
+
 
 
     useEffect(() => {
-        fetchFilteredTransactions();  // Fetch data when the component mounts or when selectedRange changes
-    }, [fetchFilteredTransactions]);  // This will run on mount and when selectedRange changes
+        fetchFilteredTransactionsForDonut();
+        fetchFilteredTransactionsForBar();
+    }, [fetchFilteredTransactionsForDonut, fetchFilteredTransactionsForBar]);
 
 
     useEffect(() => {
         fetchAccounts();
         fetchTransactions();
         fetchBudgets();
-        if(userId)
+        if (userId)
             fetchUser(+userId);
     }, []);
 
@@ -270,7 +304,7 @@ function OverviewPage() {
                                 </div>
 
                                 <div className="px-[2rem] pt-[2.5rem]">
-                                    <DonutChartTransactions filteredTransactionsDto={FilteredTransactions!}></DonutChartTransactions>
+                                    <DonutChartTransactions filteredTransactionsDto={donutChartTransactions!}></DonutChartTransactions>
                                 </div>
                             </div>
                         </div>
@@ -280,8 +314,8 @@ function OverviewPage() {
                         </div>
                     </div>
 
-                    <div className="my-[2.5rem] rounded-lg">
-                        <div className="w-[100%] h-[25rem]">
+                    <div className="mt-[2.5rem] rounded-lg">
+                        <div className="w-[100%] h-[23rem]">
                             {budgets.length === 0 ? (
                                 <div>
                                     <NoBudgetsOverview></NoBudgetsOverview>
@@ -289,9 +323,28 @@ function OverviewPage() {
                             ) : (
                                 <div className="flex">
                                     <div className="w-[27%] h-[22.6rem] rounded-lg mr-[2.5rem]">
-                                        <div className="h-[40%]">
+                                        <div className="h-[44%] mb-[2.5rem]">
+                                            <div className="mb-1 px-1 py-1 flex justify-between items-center font-light text-gray-800 spacing-5 pl-[5px]">
+                                                <div className="ml-1 font-semibold dark-blue-text text-md">
+                                                    Transactions amount this month
+                                                </div>
+                                                <div className="flex justify-end">
+                                                    {/* <button className="text-end text-sm flex justify-end font-thin text-gray-400  mr-2">
+                                                        View more <svg className="w-5 h-5 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 12H5m14 0-4 4m4-4-4-4" />
+                                                        </svg>
+                                                    </button> */}
+                                                </div>
+                                            </div>
+                                            <IncomeExpenseTotal totalExpenses={totalExpenses!} totalIncome={totalIncome!}>
+
+                                            </IncomeExpenseTotal>
+                                        </div>
+                                        <div className="h-[35%] mt-[4.7rem]">
+
                                             <LastMonthSaved savedAmount={savedLastMonth!}></LastMonthSaved>
                                         </div>
+
                                     </div>
 
                                     <div className="flex flex-grow rounded-lg h-[22.6rem]" >
@@ -299,7 +352,7 @@ function OverviewPage() {
                                         <div className="flex-1 mr-[2.5rem]">
                                             <BudgetsOverview budgets={budgets}></BudgetsOverview>
                                         </div>
-                                        <div className="w-[320px] bg-white rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+                                        <div className="w-[312px] bg-white rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
                                             <div className="text-md font-semibold dark-blue-text mt-8 ml-8 mb-6">Total budget expenditures</div>
                                             <div className="px-9">
                                                 <div className="text-sm font-thin text-gray-700 custom-select mb-3">This month</div>
@@ -313,9 +366,67 @@ function OverviewPage() {
                         </div>
                     </div>
 
-                    {/* <div className="flex my-[5rem] h-25 bg-white rounded-lg p-7" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
-                        <BarChartTransactions filterDto={filterDto}></BarChartTransactions>
+
+
+                    {/* <div className=" mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[2rem] px-[4rem] bg-white rounded-lg " style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
+                        <div className="text-md font-semibold dark-blue-text">Expenses Analytics</div>
+                        <div className="flex justify-end">
+                            <button className="text-end text-sm flex justify-end font-thin text-gray-400  mr-2">
+                                Open Chart <svg className="w-5 h-5 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 12H5m14 0-4 4m4-4-4-4" />
+                                </svg>
+                            </button>
+                        </div>
                     </div> */}
+
+                    <div
+                        className="mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[0.5rem] px-[4rem] bg-white rounded-lg"
+                        style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
+                    >
+                        <div className="flex justify-between mb-[2rem]">
+                            <div className="text-md font-semibold dark-blue-text">Expenses Analytics</div>
+
+                            {showBarChart ? (
+                                <button
+                                    className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
+                                    onClick={() => setShowBarChart(false)}
+                                >
+                                    Close Chart 
+                                </button>
+                            ) : (
+                                <button
+                                    className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
+                                    onClick={() => setShowBarChart(true)}
+                                >
+                                    Open Chart
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Conditional Rendering of Chart */}
+                        {showBarChart && (
+                            <div>
+                                <div className="custom-select flex justify-end mb-2">
+                                    <select
+                                        value={barChartRange}
+                                        onChange={(e) => setBarChartRange(e.target.value)}
+                                        className="cursor-pointer text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                                    >
+                                        <option value="This month">This month</option>
+                                        <option value="Last month">Last month</option>
+                                        <option value="Last 3 months">Last 3 months</option>
+                                        <option value="Last 6 months">Last 6 months</option>
+                                    </select>
+                                </div>
+                                <div className="h-[20rem] w-[100%] flex justify-center mb-[2rem]">
+                                    <BarChartTransactions
+                                        filteredTransactionsDto={barChartTransactions}
+                                    ></BarChartTransactions>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                 </div>
             )}
         </section>

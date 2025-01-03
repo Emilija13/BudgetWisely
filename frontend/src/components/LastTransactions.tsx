@@ -3,7 +3,9 @@ import { TableProps } from "./props/TableProps";
 import { TransactionType } from "../models/enum/TransactionType";
 import { useNavigate } from "react-router-dom";
 
-const LastTransactionsTable: React.FC<TableProps> = ({ transactions = [] }) => {
+
+
+function LastTransactionsTable({ transactions = [] }: TableProps) {    
     const navigate = useNavigate();
 
     const goToTransactionsPage = () => {

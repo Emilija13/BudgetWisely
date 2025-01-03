@@ -182,7 +182,7 @@ const AccountsPage = () => {
 
         </div>
         <div className="flex justify-center">
-          <div className="overflow-auto w-[1250px]">
+          <div className="overflow-auto w-[1250px] pb-5">
             <AccountsList
               accounts={accounts}
               onDeleteAcc={handleDeleteAcc}
@@ -190,7 +190,7 @@ const AccountsPage = () => {
             />
           </div>
         </div>
-        <div className="pt-[4rem]">
+        <div className="pt-[5rem]">
           <Typography
             variant="lead"
             color="blue-gray"
@@ -206,20 +206,18 @@ const AccountsPage = () => {
 
         {/* Chart */}
         <div
-          className="m-[3rem] bg-white rounded-lg p-10"
+          className="m-[3rem] bg-white rounded-lg p-10]"
           style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
         >
-          <div className="flex  ">
+          <div className="flex p-8">
             <div className="w-[85%]">
               <LineChartAccountBalance filterDto={filterDto} />
             </div>
 
-            {/* Filters */}
-            <div className="">
-              {/* Account Dropdown */}
+            <div className=" mt-[6rem]">
 
               <select
-                className="cursor-pointer w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                className="cursor-pointer arial mb-2 w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
                 onChange={handleAccountChange}
                 value={selectedAccountId ?? "null"}
               >
@@ -232,9 +230,8 @@ const AccountsPage = () => {
               </select>
               <br></br>
 
-              {/* Time Range Dropdown */}
               <select
-                className="cursor-pointer w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                className="cursor-pointer arial w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
                 onChange={handleTimeRangeChange}
                 value={selectedTimeRange}
               >

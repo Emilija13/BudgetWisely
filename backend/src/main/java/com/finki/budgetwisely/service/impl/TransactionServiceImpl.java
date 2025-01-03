@@ -101,11 +101,15 @@ public class TransactionServiceImpl implements TransactionService {
         List<Long> transactionIds = transactions.stream().map(Transaction::getId).toList();
         Double totalAmount = transactionRepository.getTotalCostByIds(transactionIds);
 
-        if (totalAmount == null){
-            totalAmount = 0.0;
-        }
+        Double totalExpenses = transactionRepository.getTotalCostOfExpensesByIds(transactionIds);
 
-        return new FilteredTransactionsDto(totalAmount, transactions) ;
+        Double totalIncome = transactionRepository.getTotalCostOfIncomesByIds(transactionIds);
+
+        totalAmount = totalAmount != null ? totalAmount : 0.0;
+        totalExpenses = totalExpenses != null ? totalExpenses : 0.0;
+        totalIncome = totalIncome != null ? totalIncome : 0.0;
+
+        return new FilteredTransactionsDto(totalAmount, totalExpenses, totalIncome, transactions);
     }
 
     @Override
