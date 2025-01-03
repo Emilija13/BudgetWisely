@@ -38,7 +38,7 @@ function LoginPage() {
             <Typography
               variant="lead"
               color="blue-gray"
-              className="font-bold text-3xl"
+              className="font-bold text-3xl dark-blue-text"
             >
               {isLoginRoute ? "Log in" : "Sign up"}
             </Typography>
