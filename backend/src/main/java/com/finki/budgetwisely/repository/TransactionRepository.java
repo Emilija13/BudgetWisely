@@ -14,6 +14,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT t FROM Transaction t WHERE t.account.user.id = :userId ORDER BY t.date DESC")
     List<Transaction> findAllByUserId(@Param("userId") Long userId);
 
+    @Query("SELECT t FROM Transaction t WHERE t.account.id = :accountId")
+    List<Transaction> findAllByAccountId(@Param("accountId") Long accountId);
+
     @Query("SELECT SUM(t.cost) FROM Transaction t WHERE t.id IN :transactionIds")
     Double getTotalCostByIds(@Param("transactionIds") List<Long> transactionIds);
 

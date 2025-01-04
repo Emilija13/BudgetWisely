@@ -3,15 +3,13 @@ package com.finki.budgetwisely.service.impl;
 import com.finki.budgetwisely.dto.AccountRequestDto;
 import com.finki.budgetwisely.exceptions.AccountNotFoundException;
 import com.finki.budgetwisely.exceptions.UserNotFoundException;
-import com.finki.budgetwisely.model.Account;
-import com.finki.budgetwisely.model.AccountHistory;
-import com.finki.budgetwisely.model.User;
-import com.finki.budgetwisely.repository.AccountHistoryRepository;
-import com.finki.budgetwisely.repository.AccountRepository;
-import com.finki.budgetwisely.repository.UserRepository;
+import com.finki.budgetwisely.model.*;
+import com.finki.budgetwisely.repository.*;
 import com.finki.budgetwisely.service.AccountService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +18,15 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
-
+    private final BudgetRepository budgetRepository;
+    private final TransactionRepository transactionRepository;
     private final AccountHistoryRepository accountHistoryRepository;
 
-    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, AccountHistoryRepository accountHistoryRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, BudgetRepository budgetRepository, TransactionRepository transactionRepository, AccountHistoryRepository accountHistoryRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.budgetRepository = budgetRepository;
+        this.transactionRepository = transactionRepository;
         this.accountHistoryRepository = accountHistoryRepository;
     }
 
@@ -83,10 +84,28 @@ public class AccountServiceImpl implements AccountService {
         return Optional.of(account);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
+
+        List<Transaction> transactions = transactionRepository.findAllByAccountId(id);
+
         Account account = accountRepository.findById(id).orElseThrow(() ->new AccountNotFoundException(id));
         Long userId = account.getUser().getId();
+
+        for(Transaction t : transactions){
+            LocalDate yearMonth = t.getDate().toLocalDate().withDayOfMonth(1);
+
+            Budget budget = this.budgetRepository.findByUserAndCategoryAndYearMonth(userId, t.getCategory().getId(), yearMonth)
+                    .orElse(null);
+
+            if (budget != null) {
+                budget.setLeftover(budget.getLeftover() + (t.getCost()));
+                this.budgetRepository.save(budget);
+            }
+            transactionRepository.deleteById(t.getId());
+        }
+
 
         this.accountRepository.deleteById(id);
 

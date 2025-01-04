@@ -13,6 +13,10 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     List<Account> findAllByUserId(Long user);
 
-    @Query("SELECT SUM(a.balance) FROM Account a WHERE a.user.id = :userId")
+//    @Query("SELECT SUM(a.balance) FROM Account a WHERE a.user.id = :userId")
+//    Long getTotalBalanceByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COALESCE(SUM(a.balance), 0) FROM Account a WHERE a.user.id = :userId")
     Long getTotalBalanceByUserId(@Param("userId") Long userId);
+
 }
