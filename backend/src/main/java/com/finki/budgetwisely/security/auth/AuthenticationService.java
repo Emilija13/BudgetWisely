@@ -1,6 +1,7 @@
 package com.finki.budgetwisely.security.auth;
 
 import com.finki.budgetwisely.dto.UserDto;
+import com.finki.budgetwisely.exceptions.EmailAlreadyExistsException;
 import com.finki.budgetwisely.model.User;
 import com.finki.budgetwisely.model.enums.Role;
 import com.finki.budgetwisely.repository.UserRepository;
@@ -23,6 +24,10 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistsException();
+        }
+
         var user = User.builder()
                 .email(request.getEmail())
                 .userName(request.getUserName())

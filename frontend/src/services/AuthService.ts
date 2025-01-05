@@ -32,8 +32,12 @@ const AuthService = {
 
   register(user: any) {  //TODO Add RegisterRequest
     return axiosInstance.post(`${apiUrl}/register`, user)
+      .then((response) => {
+        return response.data;  // Return the successful response data if needed
+      })
       .catch((error) => {
-        throw error.response?.data || error.message;
+        // console.log("Register error: ",error)
+        throw error;  // Only throw the message
       });
   },
 

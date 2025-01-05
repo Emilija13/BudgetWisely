@@ -59,7 +59,6 @@ function LoginPage() {
           {isRegisterRoute && (
             <RegisterForm onRegisterError={handleLoginError} />
           )}
-          {error && <p style={{ color: "red" }}>{error}</p>}
 
           <div className="mt-2 text-center">
             <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
