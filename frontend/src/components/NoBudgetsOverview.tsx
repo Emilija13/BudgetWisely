@@ -11,7 +11,7 @@ function NoBudgetsOverview() {
     }
     return (
         <div className="flex bg-white rounded-lg p-5" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
-        <div className="ml-3 mb-3 font-semibold dark-blue-text text-md w-[50%]">
+        <div className="mt-7 ml-10 font-semibold dark-blue-text text-md w-[50%]">
             Budgets
         </div>
 

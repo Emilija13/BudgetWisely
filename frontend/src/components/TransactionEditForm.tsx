@@ -89,141 +89,156 @@ const TransactionEditForm: React.FC<FormProps> = ({
   };
 
   return (
-    <div className="my-4 w-full">
-      <div className="relative px-3 pt-6 pb-4 bg-white rounded-xl">
-        {/* Title */}
-        <h3 className="text-md font-semibold text-gray-600 mb-10">
-          Edit Transaction
-        </h3>
-
-        {/* Form Fields */}
-        <form className="space-y-3" onSubmit={handleSubmit}>
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-light text-gray-600 mb-1">
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-
-          {/* Amount and Account */}
-          <div className="grid grid-cols-2 gap-5">
-            <div>
+      <div className="my-4 w-full">
+        <div className="relative px-3 pt-1 pb-3 bg-white rounded-xl">
+          {/* Title */}
+          <h3 className="text-md font-semibold text-gray-600 mb-10">
+            New Transaction
+          </h3>
+  
+          {/* Form Fields */}
+          <form className="space-y-3 px-[1.3rem]" onSubmit={handleSubmit}>
+            {/* Name */}
+            <div className="pb-2">
               <label className="block text-sm font-light text-gray-600 mb-1">
-                Amount
+                Name
               </label>
               <input
-                type="number"
-                name="cost"
-                value={formData.cost}
+                type="text"
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
-                className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
               />
             </div>
-            <div>
-              <label className="block text-sm font-light text-gray-600 mb-1">
-                Account
-              </label>
-              <select
-                name="account"
-                value={formData.account}
-                onChange={handleChange}
-                className="w-full p-2 text-sm purple-light text-gray-600 rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              >
-                <option value={-1}>Select an account</option>
-                {accounts.map((account) => (
-                  <option key={account.id} value={account.id}>
-                    {account.name}
-                  </option>
-                ))}
-              </select>
+  
+            {/* Amount and Account */}
+            <div className="flex flex-wrap gap-5 pb-3">
+              <div className="flex-2 mr-4 w-[35%]">
+                <label className="block text-sm font-light text-gray-600 mb-1 ">
+                  Amount
+                </label>
+                <input
+                  type="number"
+                  name="cost"
+                  value={formData.cost}
+                  onChange={handleChange}
+                  className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-light text-gray-600 mb-1">
+                  Account
+                </label>
+                <select
+                  name="account"
+                  value={formData.account}
+                  onChange={handleChange}
+                  className="w-full h-[2.3rem] p-2 text-sm purple-light text-gray-600 rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
+                >
+                  <option value={-1}>Select an account</option>
+                  {accounts.map((account) => (
+                    <option key={account.id} value={account.id}>
+                      {account.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </div>
-
-          {/* Type and Date */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-light text-gray-600 mb-1">
-                Type
-              </label>
-              <select
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className="w-full p-2 text-sm purple-light text-gray-600 rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              >
-                <option value="">Select a type</option>
-                <option value={TransactionType.EXPENSE}>Expense</option>
-                <option value={TransactionType.INCOME}>Income</option>
-              </select>
+  
+            {/* Type */}
+            <div className="flex flex-wrap gap-4 pb-3">
+              <div className="flex items-center space-x-4">
+                <label className="block text-sm font-light text-gray-600 mb-1 mr-[3.5rem]">
+                  Type:
+                </label>
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center space-x-2 pr-4">
+                    <input
+                      type="radio"
+                      name="type"
+                      value={TransactionType.EXPENSE}
+                      checked={formData.type === TransactionType.EXPENSE}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-indigo-400 focus:ring-indigo-500"
+                    />
+                    <span className="text-sm text-gray-600">Expense</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      name="type"
+                      value={TransactionType.INCOME}
+                      checked={formData.type === TransactionType.INCOME}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-indigo-400 focus:ring-indigo-500"
+                    />
+                    <span className="text-sm text-gray-600">Income</span>
+                  </label>
+                </div>
+              </div>
             </div>
-            <div>
+  
+            {/* Category */}
+            <div className="pb-3">
+              <label className="block text-sm font-light text-gray-600 mb-1">
+                Category
+              </label>
+              {formData.type === TransactionType.INCOME ? (
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  disabled
+                  className="w-full h-[2.3rem] p-2 text-sm text-gray-400 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                >
+                  <option value={TransactionType.INCOME}>Income</option>
+                </select>
+              ) : (
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="w-full h-[2.3rem] p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
+                >
+                  <option value={-1}>Select a category</option>
+                  {categories
+                    .filter((category) => category.name !== "Income")
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                </select>
+              )}
+            </div>
+  
+            <div className="pb-3">
               <label className="block text-sm font-light text-gray-600 mb-1">
                 Date
               </label>
               <input
                 type="datetime-local"
                 name="date"
-                value={formData.date}
+                value={formData.date.toLocaleString()}
                 onChange={handleChange}
-                className="purple-light w-full p-2 text-sm text-gray-600 rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="purple-light w-full h-[2.3rem] p-2 text-sm text-gray-600 rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
               />
             </div>
-          </div>
-
-          {/* Category */}
-          <div>
-            <label className="block text-sm font-light text-gray-600 mb-1">
-              Category
-            </label>
-            {formData.type == TransactionType.INCOME ? (
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                disabled
-                className="w-full p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+  
+            {/* Submit Button */}
+            <div className="flex justify-end mt-4">
+              <button
+                type="submit"
+                className="px-3 main-color font-sm font-light text-white p-2 rounded-xl shadow-md hover:bg-[rgb(81, 103, 233)]; transition"
               >
-                <option value={TransactionType.INCOME}>Income</option>
-              </select>
-            ) : (
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              >
-                <option value={-1}>Select a category</option>
-                {categories
-                  .filter((category) => category.name !== "Income")
-                  .map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-              </select>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="px-3 main-color font-sm font-light text-white p-2 rounded-xl shadow-md hover:bg-[rgb(81, 103, 233)]; transition"
-            >
-              Add +
-            </button>
-          </div>
-        </form>
+                Add +
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default TransactionEditForm;

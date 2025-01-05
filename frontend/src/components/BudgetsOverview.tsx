@@ -27,7 +27,7 @@ const BudgetsOverview = ({ budgets }: BudgetsListProps) => {
                     </div>
                     <div className="flex justify-end">
                         <button onClick={goToBudgetsPage} className="text-end text-sm flex justify-end font-thin text-gray-400 mr-2 ">See all <svg className="w-5 h-5 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 12H5m14 0-4 4m4-4-4-4" />
+                            <path stroke="currentColor" stroke-linecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 12H5m14 0-4 4m4-4-4-4" />
                         </svg></button>
                     </div>
                 </div>

@@ -47,21 +47,22 @@ const AccountForm: React.FC<FormProps> = ({
 
   return (
     <div className="my-4 w-full">
-      <div className="relative px-3 pt-6 pb-4 bg-white rounded-xl">
+      <div className="relative px-3 pt-1 pb-1 bg-white rounded-xl">
         <h3 className="text-md font-semibold text-gray-600 mb-10">
           Account Form
         </h3>
         <form className="space-y-3" onSubmit={handleSubmit}>
-          <div>
-            <label className="block text-sm font-light text-gray-600 mb-1">
+          <div className="pb-3">
+            <label className="block text-sm font-light  text-gray-600 mb-1">
               Account name
             </label>
             <input
               type="text"
               name="name"
               value={formData.name}
+              placeholder="ex. Wallet, Visa Card, Savings etc."
               onChange={handleChange}
-              className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
             />
           </div>
           <div>
@@ -73,11 +74,11 @@ const AccountForm: React.FC<FormProps> = ({
               name="balance"
               value={formData.balance}
               onChange={handleChange}
-              className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end pt-3">
             <button
               type="submit"
               className="px-3 main-color font-sm font-light text-white p-2 rounded-xl shadow-md transition"

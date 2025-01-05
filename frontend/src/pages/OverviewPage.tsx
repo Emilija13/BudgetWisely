@@ -315,12 +315,13 @@ function OverviewPage() {
                     </div>
 
                     <div className="mt-[2.5rem] rounded-lg">
-                        <div className="w-[100%] h-[23rem]">
-                            {budgets.length === 0 ? (
-                                <div>
-                                    <NoBudgetsOverview></NoBudgetsOverview>
-                                </div>
-                            ) : (
+                        {budgets.length === 0 ? (
+                            <div>
+                                <NoBudgetsOverview></NoBudgetsOverview>
+                            </div>
+                        ) : (
+                            <div className="w-[100%] h-[23rem]">
+
                                 <div className="flex">
                                     <div className="w-[27%] h-[22.6rem] rounded-lg mr-[2.5rem]">
                                         <div className="h-[44%] mb-[2.5rem]">
@@ -361,9 +362,10 @@ function OverviewPage() {
                                         </div>
                                     </div>
                                 </div>
-                            )}
 
-                        </div>
+
+                            </div>
+                        )}
                     </div>
 
 
@@ -379,53 +381,56 @@ function OverviewPage() {
                         </div>
                     </div> */}
 
-                    <div
-                        className="mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[0.5rem] px-[4rem] bg-white rounded-lg"
-                        style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
+{transactions.length > 0 && (
+    <div
+        className="mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[0.5rem] px-[4rem] bg-white rounded-lg"
+        style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
+    >
+        <div className="flex justify-between mb-[2rem]">
+            <div className="text-md font-semibold dark-blue-text">Expenses Analytics</div>
+
+            {showBarChart ? (
+                <button
+                    className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
+                    onClick={() => setShowBarChart(false)}
+                >
+                    Close Chart
+                </button>
+            ) : (
+                <button
+                    className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
+                    onClick={() => setShowBarChart(true)}
+                >
+                    Open Chart
+                </button>
+            )}
+        </div>
+
+        {/* Conditional Rendering of Chart */}
+        {showBarChart && (
+            <div>
+                <div className="custom-select flex justify-end mb-2">
+                    <select
+                        value={barChartRange}
+                        onChange={(e) => setBarChartRange(e.target.value)}
+                        className="cursor-pointer text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
                     >
-                        <div className="flex justify-between mb-[2rem]">
-                            <div className="text-md font-semibold dark-blue-text">Expenses Analytics</div>
+                        <option value="This month">This month</option>
+                        <option value="Last month">Last month</option>
+                        <option value="Last 3 months">Last 3 months</option>
+                        <option value="Last 6 months">Last 6 months</option>
+                    </select>
+                </div>
+                <div className="h-[20rem] w-[100%] flex justify-center mb-[2rem]">
+                    <BarChartTransactions
+                        filteredTransactionsDto={barChartTransactions}
+                    ></BarChartTransactions>
+                </div>
+            </div>
+        )}
+    </div>
+)}
 
-                            {showBarChart ? (
-                                <button
-                                    className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
-                                    onClick={() => setShowBarChart(false)}
-                                >
-                                    Close Chart 
-                                </button>
-                            ) : (
-                                <button
-                                    className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
-                                    onClick={() => setShowBarChart(true)}
-                                >
-                                    Open Chart
-                                </button>
-                            )}
-                        </div>
-
-                        {/* Conditional Rendering of Chart */}
-                        {showBarChart && (
-                            <div>
-                                <div className="custom-select flex justify-end mb-2">
-                                    <select
-                                        value={barChartRange}
-                                        onChange={(e) => setBarChartRange(e.target.value)}
-                                        className="cursor-pointer text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
-                                    >
-                                        <option value="This month">This month</option>
-                                        <option value="Last month">Last month</option>
-                                        <option value="Last 3 months">Last 3 months</option>
-                                        <option value="Last 6 months">Last 6 months</option>
-                                    </select>
-                                </div>
-                                <div className="h-[20rem] w-[100%] flex justify-center mb-[2rem]">
-                                    <BarChartTransactions
-                                        filteredTransactionsDto={barChartTransactions}
-                                    ></BarChartTransactions>
-                                </div>
-                            </div>
-                        )}
-                    </div>
 
                 </div>
             )}
