@@ -20,7 +20,9 @@
 .dark-blue-text{
   color: #2E2B5C
 }
-
+.dark-blue{
+  background-color: #2E2B5C
+}
 .inter{
   font-family: 'Inter', sans-serif;
 }
