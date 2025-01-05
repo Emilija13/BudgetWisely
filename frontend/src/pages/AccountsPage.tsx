@@ -18,6 +18,7 @@ const AccountsPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
+  const [showBarChart, setShowBarChart] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>(
     undefined
   );
@@ -168,18 +169,14 @@ const AccountsPage = () => {
             </Typography>
 
             <div className="flex justify-between w-full">
-
               <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
                 A list of all your current accounts.
               </Typography>
-            
             </div>
           </div>
           <div className="mr-[3rem]">
-          <AddButton text="Add +" onClick={handleAddButtonClick} />
+            <AddButton text="Add +" onClick={handleAddButtonClick} />
           </div>
-
-
         </div>
         <div className="flex justify-center">
           <div className="overflow-auto w-[1250px] pb-5">
@@ -190,61 +187,83 @@ const AccountsPage = () => {
             />
           </div>
         </div>
-        <div className="pt-[5rem]">
-          <Typography
-            variant="lead"
-            color="blue-gray"
-            className="font-bold text-lg dark-blue-text"
-          >
-            Balance history
-          </Typography>
-          <Typography className="mb-4 w-80 font-normal text-gray-600 pt-2 md:w-full">
-            A visual journey through your accounts—spot the peaks, plateaus, and
-            progress!
-          </Typography>
-        </div>
 
-        {/* Chart */}
+
         <div
-          className="m-[3rem] bg-white rounded-lg p-10]"
+          className="mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[0.5rem] px-[4rem] bg-white rounded-lg"
           style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
         >
-          <div className="flex p-8">
-            <div className="w-[85%]">
-              <LineChartAccountBalance filterDto={filterDto} />
-            </div>
-
-            <div className=" mt-[6rem]">
-
-              <select
-                className="cursor-pointer arial mb-2 w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
-                onChange={handleAccountChange}
-                value={selectedAccountId ?? "null"}
+          <div className="flex justify-between mb-[2rem]">
+            <div>
+              <Typography
+                variant="lead"
+                color="blue-gray"
+                className="font-bold text-lg dark-blue-text"
               >
-                <option value="null">All Accounts</option>
-                {accounts.map((account) => (
-                  <option key={account.id} value={account.id}>
-                    {account.name}
-                  </option>
-                ))}
-              </select>
-              <br></br>
-
-              <select
-                className="cursor-pointer arial w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
-                onChange={handleTimeRangeChange}
-                value={selectedTimeRange}
-              >
-                <option value="Today">Today</option>
-                <option value="Yesterday">Yesterday</option>
-                <option value="Last 7 days">Last 7 days</option>
-                <option value="Last 30 days">Last 30 days</option>
-                <option value="Last 90 days">Last 90 days</option>
-                <option value="Last 6 months">Last 6 months</option>
-                <option value="Last Year">Last Year</option>
-              </select>
+                Balance history
+              </Typography>
+              <Typography className="w-80 font-normal text-gray-600 pt-2 md:w-full">
+                A visual journey through your accounts—spot the peaks, plateaus,
+                and progress!
+              </Typography>
             </div>
+            {showBarChart ? (
+              <button
+                className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
+                onClick={() => setShowBarChart(false)}
+              >
+                Close Chart
+              </button>
+            ) : (
+              <button
+                className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
+                onClick={() => setShowBarChart(true)}
+              >
+                Open Chart
+              </button>
+            )}
           </div>
+
+          {/* Conditional Rendering of Chart */}
+          {showBarChart && (
+            <div>
+              <div className="flex p-8">
+                <div className="w-[85%]">
+                  <LineChartAccountBalance filterDto={filterDto} />
+                </div>
+
+                <div className=" mt-[6rem]">
+                  <select
+                    className="cursor-pointer arial mb-2 w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                    onChange={handleAccountChange}
+                    value={selectedAccountId ?? "null"}
+                  >
+                    <option value="null">All Accounts</option>
+                    {accounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        {account.name}
+                      </option>
+                    ))}
+                  </select>
+                  <br></br>
+
+                  <select
+                    className="cursor-pointer arial w-[150px] text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                    onChange={handleTimeRangeChange}
+                    value={selectedTimeRange}
+                  >
+                    <option value="Today">Today</option>
+                    <option value="Yesterday">Yesterday</option>
+                    <option value="Last 7 days">Last 7 days</option>
+                    <option value="Last 30 days">Last 30 days</option>
+                    <option value="Last 90 days">Last 90 days</option>
+                    <option value="Last 6 months">Last 6 months</option>
+                    <option value="Last Year">Last Year</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
