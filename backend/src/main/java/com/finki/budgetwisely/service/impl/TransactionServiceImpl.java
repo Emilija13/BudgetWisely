@@ -10,10 +10,7 @@ import com.finki.budgetwisely.repository.*;
 import com.finki.budgetwisely.service.TransactionService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,10 +63,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        if(filterDto.getUserId() == null){
+        if (filterDto.getUserId() == null) {
             throw new IllegalArgumentException();
-        }
-        else{
+        } else {
             predicates.add(cb.equal(transaction.get("account").get("user").get("id"), filterDto.getUserId()));
         }
 
@@ -85,8 +81,7 @@ public class TransactionServiceImpl implements TransactionService {
             predicates.add(cb.equal(transaction.get("type"), filterDto.getType()));
         }
 
-        if (filterDto.getStart() != null && filterDto.getEnd() !=null) {
-
+        if (filterDto.getStart() != null && filterDto.getEnd() != null) {
             LocalDate start = LocalDate.parse(filterDto.getStart());
             LocalDate end = LocalDate.parse(filterDto.getEnd());
 
@@ -96,13 +91,21 @@ public class TransactionServiceImpl implements TransactionService {
 
         query.where(cb.and(predicates.toArray(new Predicate[0])));
 
+        // Add sorting
+        if (filterDto.getSortField() != null && filterDto.getSortDirection() != null) {
+            Path<Object> sortPath = transaction.get(filterDto.getSortField());
+            if (filterDto.getSortDirection().equalsIgnoreCase("ASC")) {
+                query.orderBy(cb.asc(sortPath));
+            } else if (filterDto.getSortDirection().equalsIgnoreCase("DESC")) {
+                query.orderBy(cb.desc(sortPath));
+            }
+        }
+
         List<Transaction> transactions = entityManager.createQuery(query).getResultList();
 
         List<Long> transactionIds = transactions.stream().map(Transaction::getId).toList();
         Double totalAmount = transactionRepository.getTotalCostByIds(transactionIds);
-
         Double totalExpenses = transactionRepository.getTotalCostOfExpensesByIds(transactionIds);
-
         Double totalIncome = transactionRepository.getTotalCostOfIncomesByIds(transactionIds);
 
         totalAmount = totalAmount != null ? totalAmount : 0.0;
@@ -111,6 +114,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         return new FilteredTransactionsDto(totalAmount, totalExpenses, totalIncome, transactions);
     }
+
 
     @Override
     public List<Transaction> findAll(Long userId) {

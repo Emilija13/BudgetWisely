@@ -30,7 +30,6 @@ function OverviewPage() {
     const [totalBalance, setTotalBalance] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [user, setUser] = useState<User>();
-    // const [selectedRange, setSelectedRange] = useState<string>("This month"); // New State
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
@@ -39,11 +38,11 @@ function OverviewPage() {
     const [savedLastMonth, setSavedLastMonth] = useState<number>();
     const [donutChartTransactions, setDonutChartTransactions] = useState<FilteredTransactionsDto>();
     const [barChartTransactions, setBarChartTransactions] = useState<FilteredTransactionsDto>();
-    const [selectedRange, setSelectedRange] = useState<string>("This month"); // For the donut chart
-    const [barChartRange, setBarChartRange] = useState<string>("This month"); // For the bar chart
+    const [selectedRange, setSelectedRange] = useState<string>("This month");
+    const [barChartRange, setBarChartRange] = useState<string>("This month");
     const [totalExpenses, setTotalExpenses] = useState<number>();
     const [totalIncome, setTotalIncome] = useState<number>();
-    const [showBarChart, setShowBarChart] = useState(false); 
+    const [showBarChart, setShowBarChart] = useState(false);
 
 
 
@@ -120,9 +119,11 @@ function OverviewPage() {
                 userId: +userId!,
                 accountId: null,
                 categoryId: null,
-                type: "EXPENSE", // Only expenses for the donut chart
+                type: "EXPENSE",
                 start: dateRange.start,
                 end: dateRange.end,
+                sortField: "date",
+                sortDirection: "DESC"
             };
             const response = await TransactionService.filter(filterDto);
             setDonutChartTransactions(response.data);
@@ -139,16 +140,16 @@ function OverviewPage() {
                 userId: +userId!,
                 accountId: null,
                 categoryId: null,
-                type: null, // All types for the bar chart
+                type: null,
                 start: dateRange.start,
                 end: dateRange.end,
+                sortField: "date",
+                sortDirection: "ASC"
             };
             const response = await TransactionService.filter(filterDto);
 
-            // Set bar chart transactions
             setBarChartTransactions(response.data);
 
-            // Set totalExpenses and totalIncome only for the first fetch and "This month"
             if (!totalExpenses && !totalIncome && barChartRange === "This month") {
                 setTotalExpenses(response.data?.totalExpense || 0);
                 setTotalIncome(response.data?.totalIncome || 0);
@@ -188,11 +189,6 @@ function OverviewPage() {
         end: now.toISOString().split('T')[0],
     };
 
-    // const donutChartDto: FilterDto = {
-    //     ...filterDto,
-    //     type: "EXPENSE",
-    // };
-
     const calculateDateRange = (range: string) => {
         const now = new Date();
         let start = new Date(now);
@@ -217,7 +213,6 @@ function OverviewPage() {
         return { start: start.toISOString().split("T")[0], end: now.toISOString().split("T")[0] };
     };
 
-    // Update `donutChartDto` based on the selected date range
     const dateRange = calculateDateRange(selectedRange);
     const donutChartDto: FilterDto = {
         userId: +userId!,
@@ -249,7 +244,6 @@ function OverviewPage() {
                 </Typography>
             </div>
 
-            {/* Conditional Rendering: Check if accounts exist */}
             {accounts.length === 0 ? (
                 <NoAccountsPage />
             ) : (
@@ -330,11 +324,6 @@ function OverviewPage() {
                                                     Transactions amount this month
                                                 </div>
                                                 <div className="flex justify-end">
-                                                    {/* <button className="text-end text-sm flex justify-end font-thin text-gray-400  mr-2">
-                                                        View more <svg className="w-5 h-5 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 12H5m14 0-4 4m4-4-4-4" />
-                                                        </svg>
-                                                    </button> */}
                                                 </div>
                                             </div>
                                             <IncomeExpenseTotal totalExpenses={totalExpenses!} totalIncome={totalIncome!}>
@@ -368,68 +357,55 @@ function OverviewPage() {
                         )}
                     </div>
 
+                    {transactions.length > 0 && (
+                        <div
+                            className="mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[0.5rem] px-[4rem] bg-white rounded-lg"
+                            style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
+                        >
+                            <div className="flex justify-between mb-[2rem]">
+                                <div className="text-md font-semibold dark-blue-text">Expenses Analytics</div>
 
+                                {showBarChart ? (
+                                    <button
+                                        className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
+                                        onClick={() => setShowBarChart(false)}
+                                    >
+                                        Close Chart
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
+                                        onClick={() => setShowBarChart(true)}
+                                    >
+                                        Open Chart
+                                    </button>
+                                )}
+                            </div>
 
-                    {/* <div className=" mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[2rem] px-[4rem] bg-white rounded-lg " style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
-                        <div className="text-md font-semibold dark-blue-text">Expenses Analytics</div>
-                        <div className="flex justify-end">
-                            <button className="text-end text-sm flex justify-end font-thin text-gray-400  mr-2">
-                                Open Chart <svg className="w-5 h-5 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 12H5m14 0-4 4m4-4-4-4" />
-                                </svg>
-                            </button>
+                            {/* Conditional Rendering of Chart */}
+                            {showBarChart && (
+                                <div>
+                                    <div className="custom-select flex justify-end mb-2">
+                                        <select
+                                            value={barChartRange}
+                                            onChange={(e) => setBarChartRange(e.target.value)}
+                                            className="cursor-pointer text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
+                                        >
+                                            <option value="This month">This month</option>
+                                            <option value="Last month">Last month</option>
+                                            <option value="Last 3 months">Last 3 months</option>
+                                            <option value="Last 6 months">Last 6 months</option>
+                                        </select>
+                                    </div>
+                                    <div className="h-[20rem] w-[100%] flex justify-center mb-[2rem]">
+                                        <BarChartTransactions
+                                            filteredTransactionsDto={barChartTransactions}
+                                        ></BarChartTransactions>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    </div> */}
-
-{transactions.length > 0 && (
-    <div
-        className="mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[0.5rem] px-[4rem] bg-white rounded-lg"
-        style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
-    >
-        <div className="flex justify-between mb-[2rem]">
-            <div className="text-md font-semibold dark-blue-text">Expenses Analytics</div>
-
-            {showBarChart ? (
-                <button
-                    className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
-                    onClick={() => setShowBarChart(false)}
-                >
-                    Close Chart
-                </button>
-            ) : (
-                <button
-                    className="text-end text-sm flex justify-end font-thin text-gray-600 hover:text-gray-800 mr-2 arial"
-                    onClick={() => setShowBarChart(true)}
-                >
-                    Open Chart
-                </button>
-            )}
-        </div>
-
-        {/* Conditional Rendering of Chart */}
-        {showBarChart && (
-            <div>
-                <div className="custom-select flex justify-end mb-2">
-                    <select
-                        value={barChartRange}
-                        onChange={(e) => setBarChartRange(e.target.value)}
-                        className="cursor-pointer text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm outline-none focus:ring-0 focus:border-transparent border-none"
-                    >
-                        <option value="This month">This month</option>
-                        <option value="Last month">Last month</option>
-                        <option value="Last 3 months">Last 3 months</option>
-                        <option value="Last 6 months">Last 6 months</option>
-                    </select>
-                </div>
-                <div className="h-[20rem] w-[100%] flex justify-center mb-[2rem]">
-                    <BarChartTransactions
-                        filteredTransactionsDto={barChartTransactions}
-                    ></BarChartTransactions>
-                </div>
-            </div>
-        )}
-    </div>
-)}
+                    )}
 
 
                 </div>

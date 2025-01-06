@@ -5,4 +5,6 @@ export interface FilterDto{
     type: string | null;
     start: string | null;
     end: string | null;
+    sortField: string;
+    sortDirection: string;
 }

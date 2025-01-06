@@ -25,6 +25,8 @@ const Filter: React.FC<FilterProps> = ({ categories = [], accounts = [], userId,
         type: selectedType,
         start: formatDate(startDate), 
         end: formatDate(endDate),
+        sortField: "date",
+        sortDirection: "DESC"
       };
       console.log("filter", filter);
       onFilterChange(filter);

@@ -16,4 +16,6 @@ public class FilterDto {
     String type;
     String start;
     String end;
+    String sortField;
+    String sortDirection;
 }
