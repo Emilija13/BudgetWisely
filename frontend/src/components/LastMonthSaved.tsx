@@ -9,7 +9,7 @@ const LastMonthSaved = ({ savedAmount }: { savedAmount: number }) => {
             >
                 <img 
                     className="w-[2rem] h-[2rem]" 
-                    src="../../save-money.png" 
+                    src="images/save-money.png" 
                     alt="Save Money" 
                 />
             </div>

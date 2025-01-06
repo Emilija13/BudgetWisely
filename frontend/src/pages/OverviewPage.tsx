@@ -43,7 +43,7 @@ function OverviewPage() {
     const [barChartRange, setBarChartRange] = useState<string>("This month"); // For the bar chart
     const [totalExpenses, setTotalExpenses] = useState<number>();
     const [totalIncome, setTotalIncome] = useState<number>();
-    const [showBarChart, setShowBarChart] = useState(false); // State to toggle between sections
+    const [showBarChart, setShowBarChart] = useState(false); 
 
 
 
@@ -232,9 +232,9 @@ function OverviewPage() {
     if (error) {
         return <div>{error}</div>;
     }
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    // if (loading) {
+    //     return <div>Loading...</div>;
+    // }
 
 
     return (

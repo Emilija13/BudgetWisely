@@ -53,7 +53,7 @@ console.log(user)
           style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
         >
           <div className="flex h-[40%] pb-11 ">
-            <img src="person.png" className="" />
+            <img src="images/person.png" className="" />
             <Typography
               variant="lead"
               className="font-semibold dark-blue-text text-3xl pl-11 pt-11"
