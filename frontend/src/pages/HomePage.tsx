@@ -146,7 +146,7 @@ const HomePage = () => {
             <div className="w-3/5">
               <Typography
                 variant="lead"
-                className="font-bold text-5xl main-color-text-darker pb-[5rem]"
+                className="font-bold text-5xl text-gray-700  /main-color-text-darker pb-[5rem]"
               >
                 Uncover the Hidden Path to Financial Freedom
               </Typography>
@@ -162,7 +162,7 @@ const HomePage = () => {
                 <div>
                   <Typography
                     variant="lead"
-                    className="font-bold text-xl main-color-text-darker pb-2"
+                    className="font-bold text-xl text-gray-600 /main-color-text-darker pb-2"
                   >
                     Discover the “Why”
                   </Typography>
@@ -176,7 +176,7 @@ const HomePage = () => {
 
                   <Typography
                     variant="lead"
-                    className="font-bold text-xl main-color-text-darker pb-2"
+                    className="font-bold text-xl text-gray-600  /main-color-text-darker pb-2"
                   >
                     Connecting the Dots
                   </Typography>
@@ -189,7 +189,7 @@ const HomePage = () => {
                   </Typography>
                   <Typography
                     variant="lead"
-                    className="font-bold text-xl main-color-text-darker pb-2"
+                    className="font-bold text-xl text-gray-600 /main-color-text-darker pb-2"
                   >
                     BudgetWisely: Your Guide to Financial Clarity
                   </Typography>
