@@ -230,7 +230,7 @@ const HomePage = () => {
         {/*Third part*/}
 
         {/*Fourth part*/}
-        <div className="main-color flex py-[4rem]">
+        <div className="main-color flex py-[4rem] ">
           <div className="flex ">
             <img
               src="images/laptop-1.jpg"
@@ -254,6 +254,59 @@ const HomePage = () => {
           </div>
         </div>
         {/*Fourth part*/}
+
+        {/*Footer*/}
+        <div className="dark-blue py-[2rem] text-white">
+          <div className="flex justify-center">
+            <div className="flex-col pr-4 border-r border-white">
+              <Typography
+                variant="lead"
+                className="font-bold text-white text-xl text-right mb-2"
+              >
+                Save smarter.
+              </Typography>
+              <Typography
+                variant="lead"
+                className="font-bold text-white text-xl text-right mb-3"
+              >
+                Spend wiser.
+              </Typography>
+              <Typography
+                variant="lead"
+                className="font-bold text-white text-xl text-right"
+              >
+                Grow faster.
+              </Typography>
+            </div>
+            <button
+              className="pl-4 text-sm flex items-center font-thin"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
+              Back to the top
+              <svg
+                className="w-[25px] text-white dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1"
+                  d="M12 19V5m0 0-4 4m4-4 4 4"
+                />
+              </svg>
+            </button>
+          </div>
+          <span className="mt-4 text-xs flex pl-5 justify-center">
+            Copyright © BudgetWisely
+          </span>
+        </div>
+        {/*Footer*/}
       </div>
     </div>
   );
