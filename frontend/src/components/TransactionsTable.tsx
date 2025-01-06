@@ -3,18 +3,17 @@ import { TableProps } from "./props/TableProps";
 import { TransactionType } from "../models/enum/TransactionType";
 import { Transaction } from "../models/Transaction";
 
-const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete,onEdit }) => {
-   
-    const handleDeleteClick = (id : number) => {
-        const isConfirmed = window.confirm("Are you sure you want to delete this item?");
-        if (isConfirmed) {
-          onDelete!(id); 
-        }
+const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete, onEdit }) => {
+
+  const handleDeleteClick = (id: number) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this item?");
+    if (isConfirmed) {
+      onDelete!(id);
     }
-    const handleEditClick = (transaction: Transaction) => {
-        // Pass the transaction object to the parent or directly open the form with the transaction details
-        onEdit!(transaction);
-    }
+  }
+  const handleEditClick = (transaction: Transaction) => {
+    onEdit!(transaction);
+  }
 
   return (
     <div className="overflow-hidden rounded-lg" style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}>
@@ -85,7 +84,7 @@ const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete,o
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      <a x-data="{ tooltip: 'Edit' }"  onClick={() => handleEditClick(transaction)}>
+                      <a x-data="{ tooltip: 'Edit' }" onClick={() => handleEditClick(transaction)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"

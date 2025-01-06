@@ -85,17 +85,17 @@ const AccountListItem: React.FC<AccountListItemProps> = ({
 
 const styles: { [key: string]: React.CSSProperties } = {
   card: {
-    backgroundColor: "#475EE1", // Blue background
-    color: "#ffffff", // White text
-    borderRadius: "12px", // Rounded corners
-    padding: "16px", // Internal spacing
-    minWidth: "230px", // Fixed width
-    minHeight: "140px", // Fixed height
+    backgroundColor: "#475EE1",
+    color: "#ffffff",
+    borderRadius: "12px",
+    padding: "16px", 
+    minWidth: "230px", 
+    minHeight: "140px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     position: "relative",
-    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Subtle shadow
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
   },
   button: {
     width: "3rem",

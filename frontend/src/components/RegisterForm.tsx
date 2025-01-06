@@ -61,9 +61,9 @@ const RegisterForm: React.FC<{ onRegisterError: (error: string) => void; }> = ({
             const errorMessage = error || 'Registration failed, please try again'
 
             setError(errorMessage);
-        
+
             onRegisterError(errorMessage);
-          }
+        }
     };
 
     return (

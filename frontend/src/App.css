@@ -2,10 +2,7 @@
   background-color: #F6F6FE;
 }
 .main-color{
-  /* background-color: rgb(90,53,245); */
   background-color: #475ee1;
-  /* background-color: white; */
-  /* 71, 94, 225 */
   color: white;
 }
 
@@ -36,33 +33,24 @@
 }
 
 .secondary-color{
-  /* 107, 73, 246 */
-
   background-color: rgb(105, 123, 225);
-  /* background-color: rgb(107, 73, 246); */
 }
 
 ::-webkit-scrollbar {
   width: 5px;
   height: 8px;
 }
-/* ::-webkit-scrollbar-horizontal {
-  width: 5px;
-  height: 1px;
-} */
 
 ::-webkit-scrollbar-track {
   background: #fbfbff;
   border-radius: 10px;
 }
  
-/* Handle */
 ::-webkit-scrollbar-thumb {
   background: #f0eded;
   border-radius: 8px;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #e2e2e9; 
 }
@@ -71,7 +59,6 @@
   font-family: Arial;
 }
 
-/* The container must be positioned relative: */
 .custom-select {
   position: relative;
   font-family: Arial;

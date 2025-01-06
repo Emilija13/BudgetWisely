@@ -1,9 +1,6 @@
-import React from "react";
 import { TableProps } from "./props/TableProps";
 import { TransactionType } from "../models/enum/TransactionType";
 import { useNavigate } from "react-router-dom";
-
-
 
 function LastTransactionsTable({ transactions = [] }: TableProps) {    
     const navigate = useNavigate();
@@ -53,7 +50,6 @@ function LastTransactionsTable({ transactions = [] }: TableProps) {
                             <div key={index} className="group hover:bg-gray-50">
                                 <div className="h-[3.7rem] pt-1">
                                     <div className="relative">
-                                        {/* Left colored div simulating the border with rounded left corners */}
                                         <div
                                             className={`absolute left-0 top-0 bottom-0 w-[0px] ${transaction.type === TransactionType.INCOME ? 'bg-[#00B58D]' : 'bg-[#FF6161]'} rounded-[2px] group-hover:w-[4px] group-hover:opacity-100 opacity-75 transition-all duration-200`}
                                         ></div>

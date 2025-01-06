@@ -6,8 +6,6 @@ const DateFilter: React.FC = () => {
 
   return (
     <div className="flex items-center justify-between pb-3">
-
-      {/* Month Selection */}
       <div className="flex gap-4">
         {months.map((month) => (
           <button

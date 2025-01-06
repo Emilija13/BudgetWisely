@@ -17,9 +17,6 @@ const AuthService = {
           localStorage.setItem('jwtToken', response.data.token);
           localStorage.setItem('user', JSON.stringify(response.data.user));
           this.setCurrentUser(response.data.user)
-  
-          //console.log("Token: ", localStorage.getItem('jwtToken'))
-          //console.log("User: ", localStorage.getItem('user'))
 
           return response.data;
         }
@@ -33,11 +30,10 @@ const AuthService = {
   register(user: any) {  //TODO Add RegisterRequest
     return axiosInstance.post(`${apiUrl}/register`, user)
       .then((response) => {
-        return response.data;  // Return the successful response data if needed
+        return response.data; 
       })
       .catch((error) => {
-        // console.log("Register error: ",error)
-        throw error;  // Only throw the message
+        throw error;
       });
   },
 

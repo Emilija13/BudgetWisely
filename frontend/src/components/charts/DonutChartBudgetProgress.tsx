@@ -39,7 +39,7 @@ const DonutChartBudgetProgress = ({ totalAmount, spent }: { totalAmount: number;
                         return chart.data.labels!!.map((label, i) => ({
                             text: `${label}: ${dataset.data[i]} MKD`,
                             fillStyle: backgroundColors[i] || '#000000',
-                            strokeStyle: 'transparent', // Remove the border
+                            strokeStyle: 'transparent',
                             hidden: !chart.getDataVisibility(i),
                             lineCap: 'butt',
                             lineDash: [],
@@ -65,7 +65,7 @@ const DonutChartBudgetProgress = ({ totalAmount, spent }: { totalAmount: number;
         },
         layout: {
             padding: {
-                bottom: 20, // Add padding to ensure the legend has enough space
+                bottom: 20,
             },
         },
     };
@@ -87,7 +87,6 @@ const DonutChartBudgetProgress = ({ totalAmount, spent }: { totalAmount: number;
 
             ctx.fillText(`${(spent / totalAmount * 100).toFixed(1)}%`, xCoor + 7, yCoor + 4);
             ctx.font = '500 16px Inter';
-            // ctx.fillText('MKD Spent', xCoor, yCoor + 15);
         },
     };
 

@@ -28,7 +28,7 @@ const AccountsList: React.FC<AccountListProps> = ({ accounts, onDeleteAcc, onEdi
 const styles: { [key: string]: React.CSSProperties } = {
   listContainer: {
     display: "flex",
-    flexWrap: "nowrap", // Enable flex wrapping
+    flexWrap: "nowrap",
     gap: "16px",
     padding: "16px",
     overflowX: "auto",

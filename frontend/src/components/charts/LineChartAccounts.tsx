@@ -29,15 +29,12 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Ensure filterDto.start and filterDto.end are Date objects
         const startDate = new Date(filterDto.start!);
         const endDate = new Date(filterDto.end!);
 
-        // Check if the start and end dates are on the same day
         const isSameDay =
           startDate.toDateString() === endDate.toDateString();
 
-        // Fetch balance history using the provided filterDto
         const response = await AccountService.getBalanceHistory(filterDto);
         const balanceHistory: BalanceDto[] = response.data;
 
@@ -47,8 +44,8 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
           const timestamp = new Date(item.timestamp);
 
           const dateKey = isSameDay
-            ? timestamp.toISOString().slice(0, 13) // Format: yyyy-MM-ddTHH
-            : timestamp.toISOString().split("T")[0]; // Format: yyyy-MM-dd
+            ? timestamp.toISOString().slice(0, 13)
+            : timestamp.toISOString().split("T")[0];
 
           const existing = groupedData.get(dateKey);
 
@@ -73,8 +70,8 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
           const timestamp = new Date(item.timestamp);
 
           const label = isSameDay
-            ? timestamp.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }) // e.g., 13:00
-            : timestamp.toLocaleDateString("en-US", { month: "short", day: "numeric" }); // e.g., Dec 19
+            ? timestamp.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false })
+            : timestamp.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
           dateLabels.push(label);
           dataPoints.push(item.totalBalance);
@@ -102,8 +99,8 @@ const LineChartAccountBalance = ({ filterDto }: { filterDto: FilterDto }) => {
         pointBorderColor: "#00B58D",
         borderWidth: 2,
         tension: 0,
-        pointRadius: 1, // Reduced point size
-        pointHoverRadius: 4, // Point size on hover
+        pointRadius: 1,
+        pointHoverRadius: 4,
       },
     ],
   };

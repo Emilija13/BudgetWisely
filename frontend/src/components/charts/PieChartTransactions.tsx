@@ -104,15 +104,9 @@ const PieChartTransactions = ({ filterDto }: BarChartTransactionsProps) => {
     };
 
     return (
-        // <div className='relative p-10'>
-        //   <div className='absolute top-[10rem] left-[10rem] transform -translate-x-1/2 -translate-y-1/2 text-center text-4xl font-md'>
-        //     <div className='inter'>{formattedTotal}</div>
-        //     <div className='text-md font-normal text-2xl'>MKD</div>
-        //   </div>
         <div>
             <Pie data={data} options={options} height={30} width={30} />
         </div>
-        // </div>
     );
 };
 

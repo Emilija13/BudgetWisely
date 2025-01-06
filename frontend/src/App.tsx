@@ -7,9 +7,6 @@ import LoggedInPage from "./pages/LoggedInPage";
 function App() {
   const user = localStorage.getItem("user");
 
-  //if (!user)
-  //return <LoginPage/>
-
   return (
     <BrowserRouter>
       <Routes>

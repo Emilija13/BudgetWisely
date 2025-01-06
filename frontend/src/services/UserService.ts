@@ -7,6 +7,4 @@ export const UserService = {
   getUser: async (user: number) => {
     return await axiosInstance.get<User>(`${UserService.url}/${user}`);
   },
-
-  
 };

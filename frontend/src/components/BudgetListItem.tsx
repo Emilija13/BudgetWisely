@@ -1,4 +1,3 @@
-import React, { useState, useEffect, useRef } from "react";
 import { CategoryListItemProps } from "./props/CategoryListItemProps";
 import { Typography } from "@material-tailwind/react";
 import ProgressBar from "./ProgressBar";
@@ -6,8 +5,6 @@ import ProgressBar from "./ProgressBar";
 const BudgetListItem: React.FC<CategoryListItemProps> = ({
   budget
 }) => {
-  const [isAdding, setIsAdding] = useState(false);
-  const [spendingLimit, setSpendingLimit] = useState<number | null>(null);
 
   const spent = (budget?.spendingLimit ?? 0) - (budget?.leftover ?? 0);
   const limit = budget?.spendingLimit ?? null;

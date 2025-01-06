@@ -1,8 +1,4 @@
-import { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Transaction } from '../../models/Transaction';
-import { TransactionService } from '../../services/TransactionService';
-import { BarChartTransactionsProps } from '../props/BarChartTransactionsProps';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, TooltipItem } from 'chart.js';
 import { ChartOptions } from 'chart.js';
 import { FilteredTransactionsDto } from '../../models/dto/FilteredTransactionsDto';
@@ -10,17 +6,6 @@ import { FilteredTransactionsDto } from '../../models/dto/FilteredTransactionsDt
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const BarChartTransactions = ({ filteredTransactionsDto }: { filteredTransactionsDto?: FilteredTransactionsDto }) => {
-  // const [transactions, setTransactions] = useState<Transaction[]>([]);
-
-  // useEffect(() => {
-  //   const fetchTransactions = async () => {
-  //     const response = await TransactionService.filter(filterDto);
-  //     setTransactions(response.data.transactions);
-  //   };
-
-  //   fetchTransactions();
-  // }, [filterDto]);
-
   const transactions = filteredTransactionsDto?.transactions || [];
 
   const getGroupedData = () => {
@@ -75,7 +60,6 @@ const BarChartTransactions = ({ filteredTransactionsDto }: { filteredTransaction
   const options: ChartOptions<"bar"> = {
     responsive: true,
     animation: false,
-    // aspectRatio: 2,
     devicePixelRatio: 4,
     plugins: {
       legend: {
@@ -121,8 +105,6 @@ const BarChartTransactions = ({ filteredTransactionsDto }: { filteredTransaction
         },
         grid: {
           display: true,
-          // borderColor: '#ddd', 
-          // borderWidth: 1,
           lineWidth: 1,
           color: 'rgba(0, 0, 0, 0.1)',
         },

@@ -23,11 +23,11 @@ const TransactionForm: React.FC<FormProps> = ({
   const [formData, setFormData] = useState({
     name: "",
     cost: 0,
-    date: getCurrentDateTime(), // Set the default date and time to now
+    date: getCurrentDateTime(),
     category: -1,
     user: userId,
     account: -1,
-    type: TransactionType.EXPENSE, // Set default type to "Expense"
+    type: TransactionType.EXPENSE, 
   });
 
   const handleChange = (
@@ -37,7 +37,6 @@ const TransactionForm: React.FC<FormProps> = ({
     setFormData((prevData) => {
       const updatedData = { ...prevData, [name]: value };
 
-      // Dynamically update the category based on the transaction type
       if (name === "type") {
         updatedData.category = value === TransactionType.INCOME ? 17 : -1;
       }
@@ -59,10 +58,6 @@ const TransactionForm: React.FC<FormProps> = ({
       alert("Select an account.");
       return false;
     }
-    // if (formData.type === "") {
-    //   alert("Select a type of transaction.");
-    //   return false;
-    // }
     if (formData.date === "") {
       alert("Select a date.");
       return false;

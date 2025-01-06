@@ -1,6 +1,5 @@
 import { Budget } from "../models/Budget";
 import BudgetListItem from "./BudgetListItem";
-import CategoryListItem from "./CategoryListItem";
 import { useNavigate } from "react-router-dom";
 
 interface BudgetsListProps {
