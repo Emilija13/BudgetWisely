@@ -179,7 +179,7 @@ const AccountsPage = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <div className="overflow-auto w-[1250px] pb-5">
+          <div className="overflow-auto w-[70rem] pb-5">
             <AccountsList
               accounts={accounts}
               onDeleteAcc={handleDeleteAcc}
@@ -190,7 +190,7 @@ const AccountsPage = () => {
 
 
         <div
-          className="mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[0.5rem] px-[4rem] bg-white rounded-lg"
+          className=" mt-[2.5rem] mb-[3rem] pt-[2rem] pb-[0.5rem] px-[4rem] bg-white rounded-lg"
           style={{ boxShadow: "0 0px 8px rgba(0, 0, 0, 0.05)" }}
         >
           <div className="flex justify-between mb-[2rem]">
@@ -228,7 +228,7 @@ const AccountsPage = () => {
           {showBarChart && (
             <div>
               <div className="flex p-8">
-                <div className="w-[85%]">
+                <div className="w-[80%]">
                   <LineChartAccountBalance filterDto={filterDto} />
                 </div>
 

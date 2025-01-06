@@ -123,7 +123,7 @@ const BarChartTransactions = ({ filteredTransactionsDto }: { filteredTransaction
   };
 
   return (
-    <Bar data={data} options={options} height={100} width={350} />
+    <Bar data={data} options={options} height={100} width={330} />
   );
 };
 
