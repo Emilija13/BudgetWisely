@@ -77,7 +77,7 @@ const HomePage = () => {
               </button>
             </div>
           </div>
-          <img src="images/main-page-img-1.jpg" className="w-3/5 rounded-lg" />
+          <img src="images/main-page-img.png" className="w-3/5 rounded-lg" />
         </div>
       </div>
       {/*First part*/}
