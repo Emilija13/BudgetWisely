@@ -1,5 +1,36 @@
-![budget-wisely-logo](https://github.com/user-attachments/assets/d01913ef-3846-479c-b676-58a6d26ae3e2)  # BudgetWisely
+<p align="center">
+  <img src="[your_relative_path_here](https://github.com/Emilija13/BudgetWisely/blob/main/frontend/images/budget-wisely-logo.png)" width="40" title="hover text">
+</p>
 
-BudgetWisely is an application designed to organize finances in an easy, structured, and effective way. The main motivation behind this project was to address the challenges that complicate the process of financial management—challenges such as a lack of clear insight into personal income and expenses, unplanned expenditures, and insufficient awareness about saving.
+# BudgetWisely  
 
-That's why BudgetWisely aims to solve these problems, enabling users to make better and easier financial decisions, manage their capital effectively, and ultimately achieve their financial goals.
+**BudgetWisely** is an application designed to help you organize your finances in an easy, structured, and effective way.
+
+## About
+
+The main motivation behind this project was to tackle common challenges in financial management, such as:
+- Lack of clear insight into personal income and expenses.
+- Unplanned expenditures.
+- Insufficient awareness about saving.
+
+BudgetWisely provides tools and features to solve these problems, enabling users to:
+- Make better and easier financial decisions.
+- Manage their capital effectively.
+- Achieve their financial goals.
+
+---
+
+### Features
+- **Track Expenses:** Gain clear insights into where your money is going.
+- **Budget Planning:** Set realistic budgets and monitor progress.
+- **Savings Goals:** Stay motivated with visual savings trackers.
+
+---
+
+### Screenshot
+
+<p align="center">
+  <img src="https://github.com/Emilija13/BudgetWisely/blob/main/frontend/images/browser.jpg" width="200" title="hover text">
+</p>
+
+---
