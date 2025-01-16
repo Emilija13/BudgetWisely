@@ -1,8 +1,8 @@
-<p align="center">
-  <img src="https://github.com/Emilija13/BudgetWisely/blob/main/frontend/images/budget-wisely-logo.png" width="80" title="hover text">
-</p>
+<div style="display: flex; align-items: center;">
+  <img src="https://github.com/Emilija13/BudgetWisely/blob/main/frontend/images/budget-wisely-logo.png" width="50" title="BudgetWisely Logo" style="margin-right: 10px;">
+  <h1 style="margin: 0;">BudgetWisely</h1>
+</div>
 
-# BudgetWisely  
 
 **BudgetWisely** is an application designed to help you organize your finances in an easy, structured, and effective way.
 
