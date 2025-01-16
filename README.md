@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="[your_relative_path_here](https://github.com/Emilija13/BudgetWisely/blob/main/frontend/images/budget-wisely-logo.png)" width="40" title="hover text">
+  <img src="https://github.com/Emilija13/BudgetWisely/blob/main/frontend/images/budget-wisely-logo.png" width="80" title="hover text">
 </p>
 
 # BudgetWisely  
@@ -30,7 +30,6 @@ BudgetWisely provides tools and features to solve these problems, enabling users
 ### Screenshot
 
 <p align="center">
-  <img src="https://github.com/Emilija13/BudgetWisely/blob/main/frontend/images/browser.jpg" width="200" title="hover text">
+  <img src="https://github.com/Emilija13/BudgetWisely/blob/main/frontend/images/browser.jpg" width="400" title="hover text">
 </p>
 
----
