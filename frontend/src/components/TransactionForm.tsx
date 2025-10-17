@@ -12,10 +12,10 @@ const TransactionForm: React.FC<FormProps> = ({
   const getCurrentDateTime = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0"); 
-    const day = String(now.getDate()).padStart(2, "0"); 
-    const hours = String(now.getHours()).padStart(2, "0"); 
-    const minutes = String(now.getMinutes()).padStart(2, "0"); 
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
 
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
@@ -27,7 +27,7 @@ const TransactionForm: React.FC<FormProps> = ({
     category: -1,
     user: userId,
     account: -1,
-    type: TransactionType.EXPENSE, 
+    type: TransactionType.EXPENSE,
   });
 
   const handleChange = (
@@ -112,6 +112,7 @@ const TransactionForm: React.FC<FormProps> = ({
               type="text"
               name="name"
               value={formData.name}
+              placeholder="ex. Jacket, Bus ticket,  etc."
               onChange={handleChange}
               className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
             />
