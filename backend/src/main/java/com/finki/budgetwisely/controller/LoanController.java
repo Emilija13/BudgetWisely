@@ -22,26 +22,31 @@ public class LoanController {
     private List<Loan> findAll() {
         return this.loanService.findAll();
     }
-
+    @GetMapping("/{user}")
+    private List<Loan> findAll(@PathVariable Long user) {
+        return this.loanService.findAll(user);
+    }
     @PostMapping("/add")
     public ResponseEntity<Loan> save(@RequestBody LoanRequestDto loanRequestDto) {
         return this.loanService.save(loanRequestDto)
                 .map(account -> ResponseEntity.ok().body(account))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
-
     @PutMapping("/edit/{id}")
     public ResponseEntity<Loan> save(@PathVariable Long id, @RequestBody LoanRequestDto loanRequestDto) {
         return this.loanService.edit(id, loanRequestDto)
                 .map(account -> ResponseEntity.ok().body(account))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteById(@PathVariable Long id) {
         this.loanService.deleteById(id);
         if (this.loanService.findById(id).isEmpty()) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
-
+    @GetMapping("/run-loan-scheduler")
+    public String runLoanSchedulerManually() {
+        loanService.generateMonthlyLoanPayments();
+        return "Loan scheduler executed manually!";
+    }
 }

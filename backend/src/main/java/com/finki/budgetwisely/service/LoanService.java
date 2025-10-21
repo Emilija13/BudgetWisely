@@ -9,7 +9,9 @@ import java.util.Optional;
 public interface LoanService {
     List<Loan> findAll();
     Optional<Loan> findById(Long id);
+    List<Loan> findAll(Long userId);
     Optional<Loan> save(LoanRequestDto loanDto);
     Optional<Loan> edit(Long id, LoanRequestDto loanDto);
     void deleteById(Long id);
+     void generateMonthlyLoanPayments();
 }
