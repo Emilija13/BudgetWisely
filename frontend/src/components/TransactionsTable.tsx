@@ -3,7 +3,7 @@ import { TableProps } from "./props/TableProps";
 import { TransactionType } from "../models/enum/TransactionType";
 import { Transaction } from "../models/Transaction";
 
-const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete, onEdit }) => {
+const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete, onEdit, onEditRecurring }) => {
 
   const handleDeleteClick = (id: number) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this item?");
@@ -36,6 +36,9 @@ const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete, 
               </th>
               <th scope="col" className="w-[1%] px-6 py-4 font-medium text-gray-600">
                 Type
+              </th>
+              <th scope="col" className="w-[10%] px-6 py-4 font-medium text-gray-600">
+                Recurring
               </th>
               <th scope="col" className="w-[1%] px-6 py-4 font-medium text-gray-900"></th>
             </tr>
@@ -81,6 +84,20 @@ const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete, 
                         Income
                       </span>
                     )}
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                  {transaction.recurringTransaction ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600 cursor-pointer"
+                      title={`This is a recurring transaction: ${transaction.recurringTransaction.frequency.toLowerCase()}`}
+                        onClick={() => onEditRecurring && onEditRecurring(transaction.recurringTransaction!)}>
+                      {transaction.recurringTransaction.frequency.charAt(0).toUpperCase() +
+                        transaction.recurringTransaction.frequency.slice(1).toLowerCase()}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-400 whitespace-nowrap">
+                      One-time
+                    </span>
+                  )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">

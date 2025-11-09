@@ -23,4 +23,6 @@ public interface TransactionService {
     void deleteById(Long id);
 
     List<Transaction> getLastTransactions(Long user);
+
+    Transaction saveGeneratedTransaction(Transaction transaction);
 }

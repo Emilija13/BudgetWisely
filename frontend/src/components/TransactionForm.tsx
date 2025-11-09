@@ -28,6 +28,8 @@ const TransactionForm: React.FC<FormProps> = ({
     user: userId,
     account: -1,
     type: TransactionType.EXPENSE, 
+    isRecurring: false,
+    frequency: "NONE",
   });
 
   const handleChange = (
@@ -39,6 +41,10 @@ const TransactionForm: React.FC<FormProps> = ({
 
       if (name === "type") {
         updatedData.category = value === TransactionType.INCOME ? 17 : -1;
+      }
+
+      if (name === "frequency") {
+        updatedData.isRecurring = value !== "NONE";
       }
 
       return updatedData;
@@ -80,6 +86,8 @@ const TransactionForm: React.FC<FormProps> = ({
           category: formData.category,
           account: formData.account,
           type: formData.type,
+          isRecurring: formData.isRecurring,
+          frequency: formData.frequency,
         };
 
         console.log(newTransaction);
@@ -229,6 +237,24 @@ const TransactionForm: React.FC<FormProps> = ({
               onChange={handleChange}
               className="purple-light w-full h-[2.3rem] p-2 text-sm text-gray-600 rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
             />
+          </div>
+
+          <div className="pb-3">
+            <label className="block text-sm font-light text-gray-600 mb-1">
+              Recurring Frequency
+            </label>
+            <select
+              name="frequency"
+              value={formData.frequency}
+              onChange={handleChange}
+              className="w-full h-[2.3rem] p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
+            >
+              <option value="NONE">One-time</option>
+              <option value="DAILY">Daily</option>
+              <option value="WEEKLY">Weekly</option>
+              <option value="MONTHLY">Monthly</option>
+              <option value="YEARLY">Yearly</option>
+            </select>
           </div>
 
           {/* Submit Button */}

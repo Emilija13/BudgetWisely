@@ -7,19 +7,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class TransactionRequestDto {
+public class RecurringTransactionDto {
     private String name;
     private Long cost;
-    private LocalDateTime date;
     private TransactionType type;
-    private Long category;
-    private Long account;
-    private Boolean isRecurring = false;
     private RecurrenceFrequency frequency;
+    private Integer dayOfMonth;
+    private Integer dayOfWeek;
+    private LocalDate startDate;
     private LocalDate endDate;
+    private Boolean isActive;
+    private Long categoryId;
+    private Long accountId;
 }

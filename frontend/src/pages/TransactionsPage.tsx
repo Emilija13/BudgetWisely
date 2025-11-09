@@ -14,6 +14,8 @@ import { FilterDto } from "../models/dto/FilterDto";
 import TransactionEditForm from "../components/TransactionEditForm";
 import { useNavigate } from "react-router-dom";
 import NoAccountsPage from "./NoAccountsPage";
+import { RecurringTransaction } from "../models/RecurringTransaction";
+import RecurringTransactionEditForm from "../components/RecurringTransactionEditForm";
 
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -26,6 +28,18 @@ const TransactionsPage = () => {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const userId = localStorage.getItem("userId");
+  const [selectedRecurring, setSelectedRecurring] = useState<RecurringTransaction | null>(null);
+  const [isRecurringFormVisible, setIsRecurringFormVisible] = useState(false);
+
+  const handleEditRecurring = (recurring: RecurringTransaction) => {
+    setSelectedRecurring(recurring);
+    setIsRecurringFormVisible(true);
+  };
+  const handleCloseRecurringForm = () => {
+    setIsRecurringFormVisible(false);
+    setSelectedRecurring(null);
+  };
+
 
   const fetchTransactions = async () => {
     try {
@@ -138,6 +152,35 @@ const TransactionsPage = () => {
         </div>
       )}
 
+      {/* Recurring Transaction Form Modal */}
+      {isRecurringFormVisible && selectedRecurring && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg relative">
+            <button
+              onClick={handleCloseRecurringForm}
+              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
+            >
+              ✕
+            </button>
+            <RecurringTransactionEditForm
+              recurringTransaction={selectedRecurring}
+              onSave={(updated) => {
+                console.log("Saved recurring transaction:", updated);
+                handleCloseRecurringForm();
+                fetchTransactions(); // if updating should refresh list
+              }}
+              onStop={() => {
+                console.log("Stopped recurring transaction");
+                handleCloseRecurringForm();
+                fetchTransactions();
+              }}
+              onClose={handleCloseRecurringForm}
+            />
+          </div>
+        </div>
+      )}
+
+
       {/* Main Content */}
       <div>
         <div className="p-10 mx-10 pt-[4rem]">
@@ -174,6 +217,7 @@ const TransactionsPage = () => {
                 transactions={transactions}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onEditRecurring={handleEditRecurring}
               />
             </div>
           </div>
