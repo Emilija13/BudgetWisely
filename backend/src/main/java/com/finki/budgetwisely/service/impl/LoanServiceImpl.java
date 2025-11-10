@@ -24,14 +24,16 @@ public class LoanServiceImpl implements LoanService {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
+    private final AccountHistoryRepository accountHistoryRepository;
     private final TransactionService transactionService;
 
-    public LoanServiceImpl(LoanRepository loanRepository, UserRepository userRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, CategoryRepository categoryRepository, TransactionService transactionService) {
+    public LoanServiceImpl(LoanRepository loanRepository, UserRepository userRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, CategoryRepository categoryRepository, AccountHistoryRepository accountHistoryRepository, TransactionService transactionService) {
         this.loanRepository = loanRepository;
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
+        this.accountHistoryRepository = accountHistoryRepository;
         this.transactionService = transactionService;
     }
 
@@ -62,6 +64,46 @@ public class LoanServiceImpl implements LoanService {
         }
         return false;
     }
+    private void generatePastPayments(Loan loan) {
+        LocalDate startDate = loan.getStart_date();
+        LocalDate today = LocalDate.now();
+        Account account = loan.getAccount();
+
+        Optional<AccountHistory> firstHistoryOpt = accountHistoryRepository.findFirstByAccountOrderByCreatedAtAsc(account);
+
+        if (firstHistoryOpt.isPresent()) {
+            LocalDate accountCreationDate = firstHistoryOpt.get().getCreatedAt().toLocalDate();
+
+            if (accountCreationDate.isAfter(startDate)) {
+                return;
+            }
+        }
+
+        int monthsPassed = getMonthsBetween(startDate, today);
+
+        for (int i = 0; i <= monthsPassed && i < loan.getPeriod(); i++) {
+            LocalDate paymentDate = startDate.plusMonths(i);
+
+            // Skip if payment date is not before today (including today)
+            if (paymentDate.isAfter(today)) continue;
+
+            boolean exists = transactionRepository.existsLoanPaymentForDate(account, paymentDate, loan.getPurpose());
+            if (exists) continue;
+
+            String name = "Payment no." + (i + 1) + " of " + loan.getPurpose();
+
+            TransactionRequestDto transaction = new TransactionRequestDto(
+                    name,
+                    loan.getMonthly_payment(),
+                    LocalDateTime.of(paymentDate, LocalTime.of(0, 0)),
+                    TransactionType.EXPENSE,
+                    Long.valueOf(2),
+                    account.getId()
+            );
+
+            transactionService.save(transaction);
+        }
+    }
     @Override
     public Optional<Loan> save(LoanRequestDto loanDto) {
         Account account = this.accountRepository.findById(loanDto.getAccount())
@@ -86,6 +128,10 @@ public class LoanServiceImpl implements LoanService {
                 account,
                 user);
         loanRepository.save(loan);
+
+        if (loan.getStart_date().isBefore(LocalDate.now()) || loan.getStart_date().equals(LocalDate.now())) {
+            generatePastPayments(loan);
+        }
 
         return Optional.of(loan);
     }
@@ -140,7 +186,7 @@ public class LoanServiceImpl implements LoanService {
         return totalMonths;
     }
 
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void generateMonthlyLoanPayments() {
         LocalDate today = LocalDate.now();
         List<Loan> allLoans = loanRepository.findAll();
@@ -167,7 +213,8 @@ public class LoanServiceImpl implements LoanService {
                     );
                 }
                 if (!exists) {
-                    String name = "Payment no." + loan.getMonths_paid() + " of " + loan.getPurpose();
+                    int paymentNumber = loan.getMonths_paid() + 1;
+                    String name = "Payment no." + paymentNumber + " of " + loan.getPurpose();
 
                     TransactionRequestDto transaction = new TransactionRequestDto(name,
                             loan.getMonthly_payment(),
@@ -177,6 +224,8 @@ public class LoanServiceImpl implements LoanService {
                             loan.getAccount().getId());
 
                     transactionService.save(transaction);
+                    loan.setMonths_paid(paymentNumber);
+                    loanRepository.save(loan);
                 }
             }
         }

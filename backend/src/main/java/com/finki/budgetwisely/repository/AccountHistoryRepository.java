@@ -1,6 +1,7 @@
 package com.finki.budgetwisely.repository;
 
 import com.finki.budgetwisely.dto.AccountBalanceDto;
+import com.finki.budgetwisely.model.Account;
 import com.finki.budgetwisely.model.AccountHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 public interface AccountHistoryRepository extends JpaRepository<AccountHistory, Long> {
 
+    Optional<AccountHistory> findFirstByAccountOrderByCreatedAtAsc(Account account);
     List<AccountHistory> findAllByTimestampAfter(LocalDateTime timestamp);
 
     @Query("SELECT ah FROM AccountHistory ah WHERE ah.account.id = :accountId AND ah.timestamp <= :timestamp ORDER BY ah.timestamp DESC, ah.createdAt DESC")
