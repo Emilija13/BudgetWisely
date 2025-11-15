@@ -3,7 +3,7 @@ import { TableProps } from "./props/TableProps";
 import { TransactionType } from "../models/enum/TransactionType";
 import { Transaction } from "../models/Transaction";
 
-const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete, onEdit }) => {
+const TransactionsTable: React.FC<TableProps> = ({ transactions = [], onDelete, onEdit, onEditRecurring }) => {
 
   const handleDeleteClick = (id: number) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this item?");
