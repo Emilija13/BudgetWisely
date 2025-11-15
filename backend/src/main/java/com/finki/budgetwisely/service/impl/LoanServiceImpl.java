@@ -4,6 +4,7 @@ import com.finki.budgetwisely.dto.LoanRequestDto;
 import com.finki.budgetwisely.dto.TransactionRequestDto;
 import com.finki.budgetwisely.exceptions.*;
 import com.finki.budgetwisely.model.*;
+import com.finki.budgetwisely.model.enums.RecurrenceFrequency;
 import com.finki.budgetwisely.model.enums.TransactionType;
 import com.finki.budgetwisely.repository.*;
 import com.finki.budgetwisely.service.LoanService;
@@ -98,7 +99,10 @@ public class LoanServiceImpl implements LoanService {
                     LocalDateTime.of(paymentDate, LocalTime.of(0, 0)),
                     TransactionType.EXPENSE,
                     Long.valueOf(2),
-                    account.getId()
+                    account.getId(),
+                    false,
+                    RecurrenceFrequency.NONE,
+                    null
             );
 
             transactionService.save(transaction);
@@ -221,7 +225,10 @@ public class LoanServiceImpl implements LoanService {
                             LocalDateTime.of(today, LocalTime.now()),
                             TransactionType.EXPENSE,
                             Long.valueOf(2),
-                            loan.getAccount().getId());
+                            loan.getAccount().getId(),
+                            false,
+                            RecurrenceFrequency.NONE,
+                            null);
 
                     transactionService.save(transaction);
                     loan.setMonths_paid(paymentNumber);
