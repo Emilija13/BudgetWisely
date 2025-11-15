@@ -1,86 +1,166 @@
 import React, { useState } from "react";
 import { RecurringTransaction } from "../models/RecurringTransaction";
+import { RecurrenceFrequency } from "../models/enum/RecurrenceFrequency";
 import { RecurringTransactionService } from "../services/RecurringTransactionService";
+import { AlertCircle } from "lucide-react";
 
-interface EditRecurringFormProps {
-  recurringTransaction: RecurringTransaction;
-  onSave: (updated: RecurringTransaction) => void;
-  onStop: () => void;
+interface EditRecurringProps {
+  recurring: RecurringTransaction;
+  categories: { id: number; name: string }[];
+  accounts: { id: number; name: string }[];
   onClose: () => void;
+  onSubmitSuccess: () => void; // renamed for clarity
 }
 
-const RecurringTransactionEditForm: React.FC<EditRecurringFormProps> = ({
-  recurringTransaction,
-  onSave,
-  onStop,
+const RecurringTransactionEditForm: React.FC<EditRecurringProps> = ({
+  recurring,
+  categories,
+  accounts,
   onClose,
+  onSubmitSuccess,
 }) => {
-  // Local state for editing
-  const [formData, setFormData] = useState({
-    frequency: recurringTransaction.frequency,
-    dayOfMonth: recurringTransaction.dayOfMonth || "",
-    dayOfWeek: recurringTransaction.dayOfWeek || "",
-    endDate: recurringTransaction.endDate || "",
-    amount: recurringTransaction.cost,
-  });
+  const [name, setName] = useState(recurring.name);
+  const [cost, setCost] = useState(recurring.cost);
+  const [account, setAccount] = useState(recurring.account.id);
+  const [category, setCategory] = useState(recurring.category.id);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const [frequency, setFrequency] = useState(recurring.frequency);
+  const [dayOfWeek, setDayOfWeek] = useState(recurring.dayOfWeek || 1);
+  const [dayOfMonth, setDayOfMonth] = useState(recurring.dayOfMonth || 1);
+  const [endDate, setEndDate] = useState(recurring.endDate || "");
+
+  const validate = () => {
+    if (!name.trim()) return alert("Name is required");
+    if (cost <= 0) return alert("Amount must be greater than 0");
+    if (account === -1) return alert("Select an account");
+    if (category === -1) return alert("Select a category");
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
+    if (!validate()) return;
 
-  // Build the payload (remember to use only primitives/IDs for relations)
-  const fields = {
-    name: recurringTransaction.name,
-    cost: Number(formData.amount),
-    type: recurringTransaction.type,
-    frequency: formData.frequency,
-    dayOfMonth: formData.dayOfMonth ? Number(formData.dayOfMonth) : null,
-    dayOfWeek: formData.dayOfWeek ? Number(formData.dayOfWeek) : null,
-    startDate: recurringTransaction.startDate,
-    endDate: recurringTransaction.endDate,
-    isActive: recurringTransaction.isActive,
-    categoryId: recurringTransaction.category.id,
-    accountId: recurringTransaction.account.id
+    try {
+      const updatedRecurring = {
+        name,
+        cost,
+        type: recurring.type,
+        frequency: String(frequency),
+        dayOfMonth,
+        dayOfWeek,
+        startDate: recurring.startDate,
+        endDate: endDate || null,
+        categoryId: category,
+        accountId: account,
+      };
+
+      await RecurringTransactionService.editRecurringTransaction(
+        recurring.id,
+        updatedRecurring
+      );
+
+      alert("Recurring transaction updated successfully");
+      onSubmitSuccess(); // call the parent callback after success
+    } catch (err) {
+      console.error("Update failed:", err);
+      alert("Failed to update recurring transaction");
+    }
   };
 
-  try {
-    await RecurringTransactionService.editRecurringTransaction(recurringTransaction.id, fields);
-    alert("Recurring transaction updated successfully");
-    onClose(); // to close the modal
-    // optionally, refresh transactions in parent using a callback or context
-  } catch (err) {
-    alert("Failed to update recurring transaction");
-    // Optionally, handle error state here
-  }
-};
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg relative">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-        >
-          ✕
-        </button>
-        <h3 className="text-md font-semibold text-gray-600 mb-6 text-center">
+    <div className="my-4 w-full">
+      <div className="relative px-3 pt-1 pb-3 bg-white rounded-xl max-h-[80vh] overflow-y-auto">
+        <h3 className="text-md font-semibold text-gray-600 mb-3">
           Edit Recurring Transaction
         </h3>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+
+        {/* Info Notice */}
+        <div className="flex items-start gap-2 bg-gray-50 border border-gray-200 text-gray-600 text-sm px-3 py-2 rounded-xl mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <p>Changes will apply to future transactions only. Already created transactions remain unchanged.</p>
+        </div>
+
+        <form className="space-y-3 px-[1.3rem]" onSubmit={handleSubmit}>
+          {/* Name */}
+          <div className="pb-2">
+            <label className="block text-sm font-light text-gray-600 mb-1">
+              Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="purple-light w-full p-2 text-sm rounded-3xl"
+            />
+          </div>
+
+          {/* Amount + Account */}
+          <div className="flex flex-wrap gap-5 pb-3">
+            <div className="flex-2 mr-4 w-[35%]">
+              <label className="block text-sm font-light text-gray-600 mb-1">
+                Amount
+              </label>
+              <input
+                type="number"
+                value={cost}
+                onChange={(e) => setCost(Number(e.target.value))}
+                className="purple-light w-full p-2 text-sm rounded-3xl"
+              />
+            </div>
+
+            <div className="flex-1">
+              <label className="block text-sm font-light text-gray-600 mb-1">
+                Account
+              </label>
+              <select
+                value={account}
+                onChange={(e) => setAccount(Number(e.target.value))}
+                className="w-full h-[2.3rem] p-2 text-sm purple-light rounded-3xl"
+              >
+                <option value={-1}>Select an account</option>
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Category */}
+          <div className="pb-3">
+            <label className="block text-sm font-light text-gray-600 mb-1">
+              Category
+            </label>
+
+            <select
+              value={category}
+              onChange={(e) => setCategory(Number(e.target.value))}
+              className="w-full h-[2.3rem] p-2 text-sm purple-light rounded-3xl"
+            >
+              <option value={-1}>Select a category</option>
+              {categories
+                .filter((c) => c.name !== "Income")
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
           {/* Frequency */}
-          <div>
+          <div className="pb-3">
             <label className="block text-sm font-light text-gray-600 mb-1">
               Frequency
             </label>
             <select
-              name="frequency"
-              value={formData.frequency}
-              onChange={handleChange}
-              className="w-full h-10 p-2 text-sm text-gray-600 purple-light rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              value={frequency}
+              onChange={(e) =>
+                setFrequency(e.target.value as RecurrenceFrequency)
+              }
+              className="purple-light w-full p-2 text-sm rounded-3xl"
             >
               <option value="DAILY">Daily</option>
               <option value="WEEKLY">Weekly</option>
@@ -88,53 +168,51 @@ const RecurringTransactionEditForm: React.FC<EditRecurringFormProps> = ({
               <option value="YEARLY">Yearly</option>
             </select>
           </div>
-          {/* Day of Month */}
-          {(formData.frequency === "MONTHLY" || formData.frequency === "YEARLY") && (
+
+          {/* WEEKLY → Day of week */}
+          {frequency === RecurrenceFrequency.WEEKLY && (
+            <div>
+              <label className="block text-sm font-light text-gray-600 mb-2">
+                Day of Week
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                  (day, index) => (
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => setDayOfWeek(index + 1)}
+                      className={`px-3 py-1 text-sm rounded-full border ${
+                        dayOfWeek === index + 1
+                          ? "bg-indigo-500 text-white"
+                          : "bg-white text-gray-600 hover:bg-indigo-100"
+                      }`}
+                    >
+                      {day}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* MONTHLY → Day of month */}
+          {frequency === RecurrenceFrequency.MONTHLY && (
             <div>
               <label className="block text-sm font-light text-gray-600 mb-1">
                 Day of Month
               </label>
               <input
                 type="number"
-                min={1}
-                max={31}
-                name="dayOfMonth"
-                value={formData.dayOfMonth}
-                onChange={handleChange}
-                className="w-full p-2 text-sm rounded-3xl purple-light focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                min="1"
+                max="31"
+                value={dayOfMonth}
+                onChange={(e) => setDayOfMonth(Number(e.target.value))}
+                className="purple-light w-full p-2 text-sm rounded-3xl"
               />
             </div>
           )}
-          {/* Day of Week */}
-          {formData.frequency === "WEEKLY" && (
-            <div>
-              <label className="block text-sm font-light text-gray-600 mb-1">
-                Day of Week (1=Monday)
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={7}
-                name="dayOfWeek"
-                value={formData.dayOfWeek}
-                onChange={handleChange}
-                className="w-full p-2 text-sm rounded-3xl purple-light focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
-          )}
-          {/* Amount */}
-          <div>
-            <label className="block text-sm font-light text-gray-600 mb-1">
-              Amount
-            </label>
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              className="w-full p-2 text-sm rounded-3xl purple-light focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
+
           {/* End Date */}
           <div>
             <label className="block text-sm font-light text-gray-600 mb-1">
@@ -142,26 +220,19 @@ const RecurringTransactionEditForm: React.FC<EditRecurringFormProps> = ({
             </label>
             <input
               type="date"
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleChange}
-              className="w-full h-10 p-2 text-sm rounded-3xl purple-light focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              value={endDate || ""}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="purple-light w-full p-2 text-sm rounded-3xl"
             />
           </div>
-          {/* Actions */}
-          <div className="flex justify-between mt-6">
-            <button
-              type="button"
-              onClick={onStop}
-              className="px-4 py-2 rounded-xl text-white bg-red-500 hover:bg-red-600 font-semibold"
-            >
-              Stop Recurrence
-            </button>
+
+          {/* Submit */}
+          <div className="flex justify-end mt-4">
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl text-white bg-indigo-500 hover:bg-indigo-600 font-semibold"
+              className="px-3 main-color font-sm font-light text-white p-2 rounded-xl shadow-md hover:bg-[rgb(81,103,233)] transition"
             >
-              Save Changes
+              Save
             </button>
           </div>
         </form>

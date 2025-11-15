@@ -16,9 +16,15 @@ import { useNavigate } from "react-router-dom";
 import NoAccountsPage from "./NoAccountsPage";
 import { RecurringTransaction } from "../models/RecurringTransaction";
 import RecurringTransactionEditForm from "../components/RecurringTransactionEditForm";
+import { RecurringTransactionService } from "../services/RecurringTransactionService";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "../components/Tabs";
+import { Repeat } from "lucide-react";
+import RecurringTransactionsView from "../components/RecurringTransactionsView";
 
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [showRecurring, setShowRecurring] = useState(false);
+  const [recurringTransactions, setRecurringTransactions] = useState<RecurringTransaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,6 +36,7 @@ const TransactionsPage = () => {
   const userId = localStorage.getItem("userId");
   const [selectedRecurring, setSelectedRecurring] = useState<RecurringTransaction | null>(null);
   const [isRecurringFormVisible, setIsRecurringFormVisible] = useState(false);
+  const [selectedTab, setSelectedTab] = useState("all");
 
   const handleEditRecurring = (recurring: RecurringTransaction) => {
     setSelectedRecurring(recurring);
@@ -62,6 +69,19 @@ const TransactionsPage = () => {
       setError("Failed to load transactions:");
     } finally {
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedTab === "recurring") {
+      fetchRecurringTransactions();
+    }
+  }, [selectedTab]);
+
+  const fetchRecurringTransactions = async () => {
+    if (userId) {
+      const response = await RecurringTransactionService.getAllRecurringTransactionsForUser(+userId);
+      setRecurringTransactions(response.data);
     }
   };
 
@@ -112,9 +132,25 @@ const TransactionsPage = () => {
     }
   };
 
+  const handleToggleActive = async (id: number) => {
+    setRecurringTransactions((prev) =>
+      prev.map((rt) => (rt.id === id ? { ...rt, isActive: !rt.isActive } : rt))
+    );
+  };
+
+  const handleDeleteRecurring = (id: number) => {
+    setRecurringTransactions((prev) => prev.filter((rt) => rt.id !== id));
+  };
+
   useEffect(() => {
     fetchTransactions();
   }, []);
+
+  useEffect(() => {
+  if (showRecurring) {
+    fetchRecurringTransactions();
+    }
+  }, [showRecurring]);
 
   if (error) {
     return <div>{error}</div>;
@@ -125,7 +161,7 @@ const TransactionsPage = () => {
       {/* Transaction Form Modal */}
       {isFormVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg relative">
+          <div className="bg-white w-[90%] max-w-xl p-6 rounded-lg relative">
             <button
               onClick={handleCloseForm}
               className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
@@ -152,10 +188,10 @@ const TransactionsPage = () => {
         </div>
       )}
 
-      {/* Recurring Transaction Form Modal */}
+      {/* Recurring Transaction Edit Form Modal */}
       {isRecurringFormVisible && selectedRecurring && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg relative">
+          <div className="bg-white w-[90%] max-w-xl p-6 rounded-lg relative">
             <button
               onClick={handleCloseRecurringForm}
               className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
@@ -163,62 +199,82 @@ const TransactionsPage = () => {
               ✕
             </button>
             <RecurringTransactionEditForm
-              recurringTransaction={selectedRecurring}
-              onSave={(updated) => {
-                console.log("Saved recurring transaction:", updated);
-                handleCloseRecurringForm();
-                fetchTransactions(); // if updating should refresh list
-              }}
-              onStop={() => {
-                console.log("Stopped recurring transaction");
-                handleCloseRecurringForm();
-                fetchTransactions();
-              }}
+              recurring={selectedRecurring}
+              categories={categories}
+              accounts={accounts}
               onClose={handleCloseRecurringForm}
+              onSubmitSuccess={() => {
+                handleCloseRecurringForm();
+                fetchRecurringTransactions();
+              }}
             />
           </div>
         </div>
       )}
 
-
       {/* Main Content */}
       <div>
-        <div className="p-10 mx-10 pt-[4rem]">
-          <Typography
-            variant="lead"
-            color="blue-gray"
-            className="font-bold text-lg dark-blue-text"
-          >
-            Transactions
-          </Typography>
-        </div>
+        
 
         {/* Conditional rendering based on accounts length */}
         {accounts.length === 0 ? (
           <NoAccountsPage></NoAccountsPage>
         ) : (
-          <div className="flex justify-center">
-            <div className="w-[92%] h-210 px-6 py-4 overflow-hidden">
-              <div className="flex justify-between">
-                <Filter
-                  categories={categories}
-                  accounts={accounts}
-                  userId={+userId!}
-                  onFilterChange={handleFilterChange}
-                />
-                <div className="mb-5 mr-6">
-                  <AddButton
-                    text="Add +"
-                    onClick={handleAddButtonClick} // Trigger form toggle
-                  />
+          <div className="flex justify-center pt-[4rem]">
+            <div className="w-[92%] h-210 px-6 py-1 overflow-hidden">
+
+              <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+                {/* Tabs header with Add button */}
+                <div className="flex items-center mb-6 w-full">
+                  <TabsList className="flex gap-2 w-full p-1 rounded-full">
+                    <TabsTrigger
+                      value="all"
+                      className="px-4 py-1 text-sm font-medium text-gray-600 rounded-full hover:bg-white hover:text-gray-900 data-[state=active]:bg-white data-[state=active]:text-gray-900 shadow-sm transition-colors"
+                    >
+                      All Transactions
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="recurring"
+                      className="flex items-center gap-1 px-4 py-1 text-sm font-medium text-gray-600 rounded-full hover:bg-white hover:text-gray-900 data-[state=active]:bg-white data-[state=active]:text-gray-900 shadow-sm transition-colors"
+                    >
+                      <Repeat className="h-4 w-4" />
+                      Recurring
+                    </TabsTrigger>
+
+                    {/* Push the Add button to the right */}
+                    <div className="ml-auto">
+                      <AddButton text="Add +" onClick={handleAddButtonClick} />
+                    </div>
+                  </TabsList>
                 </div>
-              </div>
-              <TransactionsTable
-                transactions={transactions}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onEditRecurring={handleEditRecurring}
-              />
+
+
+                {/* All Transactions Content */}
+                <TabsContent value="all" className="space-y-4">
+                  <Filter
+                    categories={categories}
+                    accounts={accounts}
+                    userId={+userId!}
+                    onFilterChange={handleFilterChange}
+                  />
+                  <TransactionsTable
+                    transactions={transactions}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onEditRecurring={handleEditRecurring}
+                  />
+                </TabsContent>
+
+                {/* Recurring Transactions Content */}
+                <TabsContent value="recurring">
+                  <RecurringTransactionsView
+                    recurringTransactions={recurringTransactions}
+                    onToggleActive={handleToggleActive}
+                    onDelete={handleDeleteRecurring}
+                    onEdit={handleEditRecurring}
+                  />
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         )}

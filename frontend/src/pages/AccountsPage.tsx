@@ -109,6 +109,8 @@ const AccountsPage = () => {
     accountId: selectedAccountId,
     categoryId: null,
     type: null,
+    sortField: "",
+    sortDirection: "",
     start,
     end,
   };

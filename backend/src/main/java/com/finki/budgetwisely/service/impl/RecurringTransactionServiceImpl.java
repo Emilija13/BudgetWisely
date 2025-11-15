@@ -14,6 +14,9 @@ import com.finki.budgetwisely.service.RecurringTransactionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class RecurringTransactionServiceImpl implements RecurringTransactionService {
 
@@ -31,7 +34,7 @@ public class RecurringTransactionServiceImpl implements RecurringTransactionServ
     }
 
     @Transactional
-    public RecurringTransaction editRecurringTransaction(
+    public Optional<RecurringTransaction> editRecurringTransaction(
             Long id,
             RecurringTransactionDto dto
     ) {
@@ -59,6 +62,31 @@ public class RecurringTransactionServiceImpl implements RecurringTransactionServ
             recurring.setAccount(account);
         }
 
-        return recurringTransactionRepository.save(recurring);
+        return Optional.of(recurringTransactionRepository.save(recurring));
+    }
+
+    @Override
+    public List<RecurringTransaction> findAll(Long userId) {
+        return recurringTransactionRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public RecurringTransaction toggleActiveStatus(Long id, boolean active) {
+        RecurringTransaction recurringTransaction = recurringTransactionRepository.findById(id)
+                .orElseThrow(() -> new RecurringTransactionNotFoundException(id));
+
+        recurringTransaction.setIsActive(active);
+
+        return recurringTransactionRepository.save(recurringTransaction);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        this.recurringTransactionRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<RecurringTransaction> findById(Long id) {
+        return this.recurringTransactionRepository.findById(id);
     }
 }

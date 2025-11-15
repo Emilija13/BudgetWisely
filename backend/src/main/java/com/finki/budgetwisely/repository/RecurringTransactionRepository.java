@@ -19,6 +19,8 @@ public interface RecurringTransactionRepository extends JpaRepository<RecurringT
 
     List<RecurringTransaction> findByAccountUserId(Long userId);
 
-    @Query("SELECT rt FROM RecurringTransaction rt WHERE rt.account.user.id = :userId")
+    @Query("SELECT rt FROM RecurringTransaction rt " +
+            "JOIN rt.account a " +
+            "WHERE a.user.id = :userId")
     List<RecurringTransaction> findAllByUserId(@Param("userId") Long userId);
 }
