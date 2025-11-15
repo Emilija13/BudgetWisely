@@ -138,6 +138,7 @@ const TransactionForm: React.FC<FormProps> = ({
               type="text"
               name="name"
               value={formData.name}
+              placeholder="ex. Jacket, Bus ticket,  etc."
               onChange={handleChange}
               className="purple-light w-full p-2 text-sm rounded-3xl focus:outline-none hover:ring-2 hover:ring-indigo-300 focus:ring-2 focus:ring-indigo-400"
             />

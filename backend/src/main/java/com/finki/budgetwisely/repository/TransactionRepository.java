@@ -1,10 +1,12 @@
 package com.finki.budgetwisely.repository;
 
+import com.finki.budgetwisely.model.Account;
 import com.finki.budgetwisely.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,5 +36,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             "LIMIT 6"
     )
     List<Transaction> getLastTransactions(@Param("userId") Long userId);
+
+    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM Transaction t " +
+            "WHERE t.account = :account " +
+            "AND DATE(t.date) = :date " +
+            "AND t.name LIKE CONCAT('%', :purpose, '%')")
+    boolean existsLoanPaymentForDate(@Param("account") Account account,
+                                     @Param("date") LocalDate date,
+                                     @Param("purpose") String purpose);
 
 }

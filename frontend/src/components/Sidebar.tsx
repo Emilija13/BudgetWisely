@@ -16,15 +16,23 @@ export default function Sidebar() {
       <nav className="h-full flex flex-col bg-white border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
           <div
-            className={`overflow-hidden transition-all ${expanded ? "w-28" : "w-0"
-              }`}
+            className={`overflow-hidden transition-all ${
+              expanded ? "w-28" : "w-0"
+            }`}
           ></div>
 
           <button
             onClick={() => setExpanded((curr) => !curr)}
             className="p-2 rounded-lg bg-gray-50 hover:bg-gray-100"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 50 50">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              x="0px"
+              y="0px"
+              width="20"
+              height="20"
+              viewBox="0 0 50 50"
+            >
               <path d="M 3 9 A 1.0001 1.0001 0 1 0 3 11 L 47 11 A 1.0001 1.0001 0 1 0 47 9 L 3 9 z M 3 24 A 1.0001 1.0001 0 1 0 3 26 L 47 26 A 1.0001 1.0001 0 1 0 47 24 L 3 24 z M 3 39 A 1.0001 1.0001 0 1 0 3 41 L 47 41 A 1.0001 1.0001 0 1 0 47 39 L 3 39 z"></path>
             </svg>
           </button>
@@ -114,6 +122,31 @@ export default function Sidebar() {
             <SidebarItem
               icon={
                 <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="lucide lucide-scale-icon lucide-scale"
+                >
+                  <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                  <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                  <path d="M7 21h10" />
+                  <path d="M12 3v18" />
+                  <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+                </svg>
+              }
+              text="Loans"
+              to="/loans"
+              active={location.pathname === "/loans"}
+            />
+            <SidebarItem
+              icon={
+                <svg
                   className="w-6 h-6 text-gray-600 dark:text-gray-400"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +193,6 @@ export default function Sidebar() {
               active={location.pathname === "/profile"}
             />
           </ul>
-
         </SidebarContext.Provider>
       </nav>
     </aside>
@@ -177,50 +209,53 @@ interface SidebarItemProps {
 function SidebarItem({ icon, text, active, to }: SidebarItemProps) {
   const context = useContext(SidebarContext);
   if (!context) {
-    throw new Error("SidebarItem must be used within a SidebarContext provider");
+    throw new Error(
+      "SidebarItem must be used within a SidebarContext provider"
+    );
   }
   const { expanded } = context;
 
   return (
     <Link to={to} className="">
-    <li
-      className={`relative flex items-center py-2 px-3 my-1
+      <li
+        className={`relative flex items-center py-2 px-3 my-1
         transition-colors group
-        ${active
-          ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 rounded-lg text-indigo-800"
-          : "hover:bg-indigo-50 rounded-lg text-gray-600"
+        ${
+          active
+            ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 rounded-lg text-indigo-800"
+            : "hover:bg-indigo-50 rounded-lg text-gray-600"
         }
       `}
-    >
-      
+      >
         {icon}
         <span
-          className={`overflow-hidden transition-all ${expanded ? "w-[8rem] ml-3" : "w-0"
-            }`}
+          className={`overflow-hidden transition-all ${
+            expanded ? "w-[8rem] ml-3" : "w-0"
+          }`}
         >
           {text}
         </span>
 
-      {active && (
-        <div
-          className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? "" : "top-2"
+        {active && (
+          <div
+            className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
+              expanded ? "" : "top-2"
             }`}
-        />
-      )}
+          />
+        )}
 
-      {!expanded && (
-        <div
-          className={`absolute left-full rounded-md px-2 py-1 ml-6
+        {!expanded && (
+          <div
+            className={`absolute left-full rounded-md px-2 py-1 ml-6
           bg-indigo-100 text-indigo-800 text-sm
           invisible opacity-20 -translate-x-3 transition-all
           group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
       `}
-        >
-          {text}
-        </div>
-      )}
-    </li>
-    
+          >
+            {text}
+          </div>
+        )}
+      </li>
     </Link>
   );
 }
