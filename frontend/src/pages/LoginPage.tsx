@@ -78,7 +78,7 @@ function LoginPage() {
         background: "linear-gradient(to bottom right, #516bff, #2c45d6)",
       }}>
         <div className="text-[2rem] font-semibold pb-10">Your Financial Journey Awaits</div>
-        <img className="w-[22rem] h-auto" src="../../login-register-blue.png"></img>
+        <img className="w-[22rem] h-auto" src="images/login-register-blue.png"></img>
         <div className="mt-4">Track your progress and make smarter financial decisions.</div>
         {/* Optionally add additional content here */}
       </div>
